@@ -14,5 +14,22 @@ class Docente extends Model
         'name',
         'dni',
         'email',
+        'user_id',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($docente) {
+            if ($docente->user) {
+                $docente->user->delete();
+            }
+        });
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

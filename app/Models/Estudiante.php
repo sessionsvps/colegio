@@ -17,6 +17,23 @@ class Estudiante extends Model
         'grade',
         'level',
         'section',
+        'user_id',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($estudiante) {
+            if ($estudiante->user) {
+                $estudiante->user->delete();
+            }
+        });
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

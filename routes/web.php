@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EstudianteController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,5 @@ Route::middleware([
 
     Route::resource('estudiantes',EstudianteController::class);
     Route::resource('docentes', DocenteController::class);
-
+    Route::resource('users', UserController::class);
 });

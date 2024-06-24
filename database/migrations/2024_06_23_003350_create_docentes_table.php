@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('docentes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->unique(); // Agregar columna user_id
             $table->string('name');
             $table->string('dni')->unique();
             $table->string('email')->unique();
             $table->timestamps();
+            // Definir la clave foránea
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
