@@ -5,54 +5,29 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Routing\Controller as BaseController;
+use Spatie\Permission\Models\Role;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    public function __construct()
+    {
+        $this->middleware('can:users.control');
+    }
+
     public function index()
     {
-        $users = User::all();
+        $users = User::where('esActivo','=', 1)->get();
         return view('users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
         return view('users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $user = User::findOrFail($id);
@@ -77,30 +52,41 @@ class UserController extends Controller
         // Actualizar el usuario
         $user->update($data);
 
-        // // Actualizar los datos del Docente asociado solo si han cambiado
-        // $docenteData = [];
-        // if ($request->input('name') !== $user->docente->name) {
-        //     $docenteData['name'] = $request->input('name');
-        // }
-        // if ($request->input('email') !== $user->docente->email) {
-        //     $docenteData['email'] = $request->input('email');
-        // }
+        // get the names of the user's roles
+        $roles = $user->getRoleNames(); // Returns a collection
 
-        // if (!empty($docenteData)) {
-        //     $user->docente->update($docenteData);
-        // }
+        // Actualizar los datos del Docente asociado solo si han cambiado
+        $data = [];
+        if ($roles[0]=='Docente'){
+            if ($request->input('name') !== $user->docente->name) {
+                $data['name'] = $request->input('name');
+            }
+            if ($request->input('email') !== $user->docente->email) {
+                $data['email'] = $request->input('email');
+            }
+            if (!empty($data)) {
+                $user->docente->update($data);
+            }
+        }else{
+            if ($request->input('name') !== $user->estudiante->name) {
+                $data['name'] = $request->input('name');
+            }
+            if ($request->input('email') !== $user->estudiante->email) {
+                $data['email'] = $request->input('email');
+            }
+            if (!empty($data)) {
+                $user->estudiante->update($data);
+            }
+        }
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
+        $user->esActivo = 0;
+        $user->save();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }

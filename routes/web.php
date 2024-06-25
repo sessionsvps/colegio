@@ -18,7 +18,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::resource('estudiantes',EstudianteController::class);
-    Route::resource('docentes', DocenteController::class);
-    Route::resource('users', UserController::class);
+    Route::resource('estudiantes',EstudianteController::class)->except('show');
+    Route::resource('docentes', DocenteController::class)->except('show');
+    Route::resource('users', UserController::class)->except('show');
 });

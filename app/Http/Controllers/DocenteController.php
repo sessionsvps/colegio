@@ -6,30 +6,32 @@ use App\Models\Docente;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controller as BaseController;
 
 
-class DocenteController extends Controller
+class DocenteController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:docentes.index')->only('index');
+        $this->middleware('can:docentes.control')->only('create', 'store', 'edit', 'update', 'destroy');
+    }
+
     public function index()
     {
-        $docentes = Docente::all();
+        $docentes = Docente::whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })->get();
         return view('docentes.index', compact('docentes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('docentes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -44,7 +46,12 @@ class DocenteController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')), // Hashear la contraseña
+            'esActivo' => True,
         ]);
+
+        // Asignar el rol al usuario
+        $role = Role::findOrFail(2);
+        $user->assignRole($role);
         
         // Crear el estudiante
         $docente = Docente::create([
@@ -57,26 +64,12 @@ class DocenteController extends Controller
         return redirect()->route('docentes.index')->with('success', 'Docente registrado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $docente = Docente::findOrFail($id);
         return view('docentes.edit', compact('docente'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $docente = Docente::findOrFail($id);
@@ -105,13 +98,12 @@ class DocenteController extends Controller
         return redirect()->route('docentes.index')->with('success', 'Docente actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $docente = Docente::findOrFail($id);
-        $docente->delete();
+        $user = User::findOrFail($docente->user_id);
+        $user->esActivo = 0;
+        $user->save();
         return redirect()->route('docentes.index')->with('success', 'Docente eliminado exitosamente.');
     }
 }

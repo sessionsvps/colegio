@@ -43,12 +43,14 @@
                     <tr>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $user->name }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $user->email }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">
-                            <a href="{{route('users.edit', $user->id)}}"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                            <button type="button" onclick="confirmDelete('{{ $user->id }}')"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
-                        </td>
+                        @can('users.control')
+                            <td class="py-2 px-4 border-b border-gray-200">
+                                <a href="{{route('users.edit', $user->id)}}"
+                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
+                                <button type="button" onclick="confirmDelete('{{ $user->id }}')"
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
+                            </td>
+                        @endcan
                     </tr>
                     @endforeach
                     @endif

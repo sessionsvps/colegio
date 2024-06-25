@@ -6,29 +6,31 @@ use App\Models\Estudiante;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controller as BaseController;
 
-class EstudianteController extends Controller
+class EstudianteController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:estudiantes.index')->only('index');
+        $this->middleware('can:estudiantes.control')->only('create','store','edit','update','destroy');
+    }
+
     public function index()
     {
-        $estudiantes = Estudiante::all();
+        $estudiantes = Estudiante::whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })->get();
         return view('estudiantes.index', compact('estudiantes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('estudiantes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +48,12 @@ class EstudianteController extends Controller
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')), // Hashear la contraseña
+            'esActivo' => True,
         ]);
+
+        // Asignar el rol al usuario
+        $role = Role::findOrFail(3);
+        $user->assignRole($role);
 
         // Crear el estudiante
         $estudiante = Estudiante::create([
@@ -63,26 +70,12 @@ class EstudianteController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $estudiante = Estudiante::findOrFail($id);
         return view('estudiantes.edit', compact('estudiante'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $estudiante = Estudiante::findOrFail($id);
@@ -115,14 +108,12 @@ class EstudianteController extends Controller
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado exitosamente.');
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $estudiante = Estudiante::findOrFail($id);
-        $estudiante->delete();
+        $user = User::findOrFail($estudiante->user_id);
+        $user->esActivo = 0;
+        $user->save();
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante eliminado exitosamente.');
     }
 }

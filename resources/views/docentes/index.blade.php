@@ -19,10 +19,12 @@
     <div>
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-bold">Lista de Docentes</h2>
-            <a href="{{ route('docentes.create') }}"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Añadir Docente
-            </a>
+            @can('docentes.control')
+                <a href="{{ route('docentes.create') }}"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Añadir Docente
+                </a>
+            @endcan
         </div>
         <table class="min-w-full bg-white">
             <thead>
@@ -36,9 +38,10 @@
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                         Correo</th>
-                    <th
-                        class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Acciones</th>
+                    @can('docentes.control')
+                        <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                            Acciones</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
@@ -51,12 +54,14 @@
                         <td class="py-2 px-4 border-b border-gray-200">{{ $docente->name }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $docente->dni }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $docente->email }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">
-                            <a href="{{route('docentes.edit', $docente->id)}}"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                            <button type="button" onclick="confirmDelete('{{ $docente->id }}')"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
-                        </td>
+                        @can('docentes.control')
+                            <td class="py-2 px-4 border-b border-gray-200">
+                                <a href="{{route('docentes.edit', $docente->id)}}"
+                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
+                                <button type="button" onclick="confirmDelete('{{ $docente->id }}')"
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
+                            </td>
+                        @endcan
                     </tr>
                     @endforeach
                     @endif
