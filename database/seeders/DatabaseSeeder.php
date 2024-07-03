@@ -17,10 +17,15 @@ class DatabaseSeeder extends Seeder
 
         $this->call(RoleSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'test@example.com',
-            'esActivo' => True,
-        ])->assignRole('Admin');
+        User::factory()->create()->assignRole('Admin');
+
+        $this->call([
+            EstadoSeeder::class,
+            CursoSeeder::class,
+            NivelSeeder::class,
+            GradoSeeder::class,
+            SeccionSeeder::class,
+            Curso_por_nivelSeeder::class,
+        ]);
     }
 }

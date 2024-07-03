@@ -28,7 +28,7 @@
     </div>
     @endif
 
-    <form method="POST" action='{{ route('estudiantes.update',$estudiante->id) }}'
+    {{-- <form method="POST" action='{{ route('estudiantes.update',$estudiante->codigo_estudiante) }}'
         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         @csrf
         @method('PUT')
@@ -123,6 +123,173 @@
                 type="submit">
                 Actualizar
             </button>
+        </div>
+    </form> --}}
+    <form method="POST" action='{{ route('estudiantes.update', $estudiante->codigo_estudiante) }}' class="bg-white
+        shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        @csrf
+        @method('PUT')
+        <div class="mb-4">
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="primer_nombre">
+                        Primer Nombre
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="primer_nombre" name="primer_nombre" type="text" placeholder="Primer Nombre"
+                        value="{{ old('primer_nombre', $estudiante->primer_nombre) }}">
+                    @error('primer_nombre')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="otros_nombres">
+                        Otros Nombres
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="otros_nombres" name="otros_nombres" type="text" placeholder="Otros Nombres"
+                        value="{{ old('otros_nombres', $estudiante->otros_nombres) }}">
+                    @error('otros_nombres')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_paterno">
+                        Apellido Paterno
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="apellido_paterno" name="apellido_paterno" type="text" placeholder="Apellido Paterno"
+                        value="{{ old('apellido_paterno', $estudiante->apellido_paterno) }}">
+                    @error('apellido_paterno')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_materno">
+                        Apellido Materno
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="apellido_materno" name="apellido_materno" type="text" placeholder="Apellido Materno"
+                        value="{{ old('apellido_materno', $estudiante->apellido_materno) }}">
+                    @error('apellido_materno')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
+                        DNI
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="dni" name="dni" type="text" placeholder="DNI" value="{{ old('dni', $estudiante->dni) }}"
+                        maxlength="8" pattern="[0-9]{8}">
+                    @error('dni')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Correo
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email" name="email" type="email" placeholder="Correo"
+                        value="{{ old('email', $estudiante->email) }}">
+                    @error('email')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
+                        Fecha de Nacimiento
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
+                        value="{{ old('fecha_nacimiento', \Carbon\Carbon::parse($estudiante->fecha_nacimiento)->format('Y-m-d')) }}">
+                    @error('fecha_nacimiento')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="sexo">
+                        Sexo
+                    </label>
+                    <select
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="sexo" name="sexo">
+                        <option value="">Seleccionar Sexo</option>
+                        <option value="1" {{ old('sexo', $estudiante->sexo) == '1' ? 'selected' : '' }}>Masculino</option>
+                        <option value="0" {{ old('sexo', $estudiante->sexo) == '0' ? 'selected' : '' }}>Femenino</option>
+                    </select>
+                    @error('sexo')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="año_ingreso">
+                        Año de Ingreso
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="año_ingreso" name="año_ingreso" type="number" placeholder="Año de Ingreso"
+                        value="{{ old('año_ingreso', $estudiante->año_ingreso) }}">
+                    @error('año_ingreso')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="lengua_materna">
+                        Lengua Materna
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="lengua_materna" name="lengua_materna" type="text" placeholder="Lengua Materna"
+                        value="{{ old('lengua_materna', $estudiante->lengua_materna) }}">
+                    @error('lengua_materna')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="colegio_procedencia">
+                        Colegio de Procedencia
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="colegio_procedencia" name="colegio_procedencia" type="text" placeholder="Colegio de Procedencia"
+                        value="{{ old('colegio_procedencia', $estudiante->colegio_procedencia) }}">
+                    @error('colegio_procedencia')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+    
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">
+                    Actualizar
+                </button>
+            </div>
         </div>
     </form>
 </div>

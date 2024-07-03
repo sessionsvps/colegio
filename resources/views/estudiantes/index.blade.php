@@ -29,9 +29,13 @@
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Código</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Nombre</th>
+                        Nombre(s)</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Apellidos</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                         DNI</th>
@@ -40,13 +44,17 @@
                         Correo</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Nivel</th>
+                        Fecha Nacimiento</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Grado</th>
+                        Sexo</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Sección</th>
+                        Año Ingreso</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Lengua Materna</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Colegio Procedencia</th>
                     @can('estudiantes.control')
                         <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                             Acciones</th>
@@ -56,22 +64,26 @@
             <tbody>
                 @if (count($estudiantes)<=0)
                     <tr>
-                        <td class="text-center py-2 px-4 border-b border-gray-200" colspan="7">No hay registros</td>
+                        <td class="text-center py-2 px-4 border-b border-gray-200" colspan="11">No hay registros</td>
                     </tr>
                 @else
                     @foreach ( $estudiantes as $estudiante )
                     <tr>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->name }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->codigo_estudiante }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->primer_nombre . ' ' . $estudiante->otros_nombres }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->apellido_paterno . ' ' . $estudiante->apellido_materno }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->dni }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->email }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->level }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->grade }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->section }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ \Carbon\Carbon::parse($estudiante->fecha_nacimiento)->format('d/m/Y') }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->sexo }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->año_ingreso }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->lengua_materna }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->colegio_procedencia }}</td>
                         @can('estudiantes.control')
                             <td class="py-2 px-4 border-b border-gray-200">
-                                <a href="{{route('estudiantes.edit', $estudiante->id)}}"
+                                <a href="{{route('estudiantes.edit', $estudiante->codigo_estudiante)}}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                                <button type="button" onclick="confirmDelete('{{ $estudiante->id }}')"
+                                <button type="button" onclick="confirmDelete('{{ $estudiante->codigo_estudiante }}')"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
                             </td>
                         @endcan

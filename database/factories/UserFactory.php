@@ -27,15 +27,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
+            'name' => 'Admin',
+            'email' => 'test@example.com',
             'password' => static::$password ??= Hash::make('admin123'),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
+            'esActivo' => True,
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
-            'current_team_id' => null,
         ];
     }
 

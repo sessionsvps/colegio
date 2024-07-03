@@ -78,4 +78,10 @@ class User extends Authenticatable
         return $this->hasOne(Estudiante::class);
     }
 
+    //Relación uno a uno con domicilio
+    public function domicilio()
+    {
+        return $this->hasOne(Domicilio::class);
+    }
+
 }

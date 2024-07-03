@@ -29,15 +29,23 @@
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Código</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Nombre</th>
+                        Nombre(s)</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Apellidos</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Sexo</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                         DNI</th>
                     <th
                         class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                         Correo</th>
+                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
+                        Estado Civil</th>
                     @can('docentes.control')
                         <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                             Acciones</th>
@@ -46,19 +54,23 @@
             </thead>
             <tbody>
                 @if (count($docentes)<=0) <tr>
-                    <td class="text-center py-2 px-4 border-b border-gray-200" colspan="7">No hay registros</td>
+                    <td class="text-center py-2 px-4 border-b border-gray-200" colspan="8">No hay registros</td>
                     </tr>
                     @else
                     @foreach ( $docentes as $docente )
                     <tr>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->name }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->codigo_docente }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->primer_nombre . ' ' . $docente->otros_nombres }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->apellido_paterno . ' ' . $docente->apellido_materno }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->sexo ? 'Masculino' : 'Femenino' }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $docente->dni }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $docente->email }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $docente->estado_civil->detalle }}</td>
                         @can('docentes.control')
                             <td class="py-2 px-4 border-b border-gray-200">
-                                <a href="{{route('docentes.edit', $docente->id)}}"
+                                <a href="{{route('docentes.edit', $docente->codigo_docente)}}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                                <button type="button" onclick="confirmDelete('{{ $docente->id }}')"
+                                <button type="button" onclick="confirmDelete('{{ $docente->codigo_docente }}')"
                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
                             </td>
                         @endcan

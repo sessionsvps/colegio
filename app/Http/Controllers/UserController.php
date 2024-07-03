@@ -55,7 +55,7 @@ class UserController extends BaseController
         // get the names of the user's roles
         $roles = $user->getRoleNames(); // Returns a collection
 
-        // Actualizar los datos del Docente asociado solo si han cambiado
+        // Actualizar los datos del Docente o Estudiante asociado solo si han cambiado
         $data = [];
         if ($roles[0]=='Docente'){
             if ($request->input('name') !== $user->docente->name) {

@@ -34,18 +34,32 @@ class EstudianteController extends BaseController
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
+            'primer_nombre' => 'required|string|max:30',
+            'otros_nombres' => 'nullable|string|max:30',
+            'apellido_paterno' => 'required|string|max:30',
+            'apellido_materno' => 'required|string|max:30',
             'dni' => 'required|string|min:8|max:8|unique:estudiantes,dni',
-            'email' => 'required|string|email|max:100|unique:estudiantes,email',
-            'grade' => 'required|string',
-            'level' => 'required|string',
-            'section' => 'required|string',
+            'email' => 'required|string|email|max:50|unique:estudiantes,email',
+            'fecha_nacimiento' => 'required|date',
+            'sexo' => 'required|boolean',
+            'año_ingreso' => 'required|integer',
+            'lengua_materna' => 'required|string|max:30',
+            'colegio_procedencia' => 'nullable|string|max:50',
             'password' => 'required|string|min:8|max:30', // Validación de la contraseña
         ]);
 
+        // Generar un código estudiante aleatorio de 10 dígitos
+        do {
+            $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
+
+        do {
+            $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
+
         // Crear el usuario
         $user = User::create([
-            'name' => $request->input('name'),
+            'name' => $request->input('primer_nombre'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')), // Hashear la contraseña
             'esActivo' => True,
@@ -57,36 +71,48 @@ class EstudianteController extends BaseController
 
         // Crear el estudiante
         $estudiante = Estudiante::create([
-            'name' => $request->input('name'),
+            'codigo_estudiante' => $codigoEstudiante,
+            'user_id' => $user->id,
+            'primer_nombre' => $request->input('primer_nombre'),
+            'otros_nombres' => $request->input('otros_nombres'),
+            'apellido_paterno' => $request->input('apellido_paterno'),
+            'apellido_materno' => $request->input('apellido_materno'),
             'dni' => $request->input('dni'),
             'email' => $request->input('email'),
-            'grade' => $request->input('grade'),
-            'level' => $request->input('level'),
-            'section' => $request->input('section'),
-            'user_id' => $user->id, // Relaciona el docente con el usuario
+            'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+            'sexo' => $request->input('sexo'),
+            'nro_matricula' => $nroMatricula,
+            'año_ingreso' => $request->input('año_ingreso'),
+            'lengua_materna' => $request->input('lengua_materna'),
+            'colegio_procedencia' => $request->input('colegio_procedencia'),
         ]);
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
 
     }
 
-    public function edit(string $id)
+    public function edit(string $codigo_estudiante)
     {
-        $estudiante = Estudiante::findOrFail($id);
+        $estudiante = Estudiante::findOrFail($codigo_estudiante);
         return view('estudiantes.edit', compact('estudiante'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $codigo_estudiante)
     {
-        $estudiante = Estudiante::findOrFail($id);
+        $estudiante = Estudiante::findOrFail($codigo_estudiante);
 
         $request->validate([
-            'name' => 'nullable|string|max:100',
-            'dni' => 'nullable|string|min:8|max:8|unique:estudiantes,dni,' . $estudiante->id,
-            'email' => 'nullable|string|email|max:100|unique:estudiantes,email,' . $estudiante->id,
-            'grade' => 'nullable|string',
-            'level' => 'nullable|string',
-            'section' => 'nullable|string',
+            'primer_nombre' => 'nullable|string|max:30',
+            'otros_nombres' => 'nullable|string|max:30',
+            'apellido_paterno' => 'nullable|string|max:30',
+            'apellido_materno' => 'nullable|string|max:30',
+            'dni' => 'nullable|string|size:8|unique:estudiantes,dni,' . $estudiante->codigo_estudiante . ',codigo_estudiante',
+            'email' => 'nullable|string|email|max:50|unique:estudiantes,email,' . $estudiante->codigo_estudiante . ',codigo_estudiante',
+            'fecha_nacimiento' => 'nullable|date',
+            'sexo' => 'nullable|boolean',
+            'año_ingreso' => 'nullable|integer',
+            'lengua_materna' => 'nullable|string|max:30',
+            'colegio_procedencia' => 'nullable|string|max:50',
         ]);
 
         // Actualizar los datos del Estudiante
@@ -94,8 +120,8 @@ class EstudianteController extends BaseController
 
         // Actualizar los datos del Usuario asociado solo si han cambiado
         $userData = [];
-        if ($request->input('name') !== $estudiante->user->name) {
-            $userData['name'] = $request->input('name');
+        if ($request->input('primer_nombre') !== $estudiante->user->name) {
+            $userData['name'] = $request->input('primer_nombre');
         }
         if ($request->input('email') !== $estudiante->user->email) {
             $userData['email'] = $request->input('email');
@@ -108,9 +134,9 @@ class EstudianteController extends BaseController
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado exitosamente.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $codigo_estudiante)
     {
-        $estudiante = Estudiante::findOrFail($id);
+        $estudiante = Estudiante::findOrFail($codigo_estudiante);
         $user = User::findOrFail($estudiante->user_id);
         $user->esActivo = 0;
         $user->save();
