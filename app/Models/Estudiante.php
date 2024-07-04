@@ -5,19 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Thiagoprz\CompositeKey\HasCompositeKey;
+use Illuminate\Support\Facades\DB;
 
 class Estudiante extends Model
 {
     use HasFactory;
+    use HasCompositeKey;
 
-    public $incrementing = false;
     protected $primaryKey = ['codigo_estudiante', 'user_id'];
-
+    public $incrementing = false;
 
     # ESTOS CAMPOS NO PUEDEN SER ASIGNADOS EN MASA
     protected $guarded = [];
 
     protected $dates = ['fecha_nacimiento'];
+
+    public function getKeyName()
+    {
+        return ['codigo_estudiante', 'user_id'];
+    }
 
     public function user()
     {
@@ -40,6 +47,36 @@ class Estudiante extends Model
     {
         return $this->belongsToMany(Curso::class, 'exoneraciones', ['codigo_estudiante', 'user_id'], ['codigo_curso'])
         ->withPivot('año_escolar');
+    }
+    // Obtener id_nivel desde la tabla intermedia
+    public function getNivelIdAttribute()
+    {
+        $registro = DB::table('estudiante_secciones')
+        ->where('codigo_estudiante', $this->codigo_estudiante)
+            ->where('user_id', $this->user_id)
+            ->first();
+
+        return $registro ? $registro->id_nivel : null;
+    }
+
+    public function getGradoIdAttribute()
+    {
+        $registro = DB::table('estudiante_secciones')
+        ->where('codigo_estudiante', $this->codigo_estudiante)
+            ->where('user_id', $this->user_id)
+            ->first();
+
+        return $registro ? $registro->id_grado : null;
+    }
+
+    public function getSeccionIdAttribute()
+    {
+        $registro = DB::table('estudiante_secciones')
+        ->where('codigo_estudiante', $this->codigo_estudiante)
+            ->where('user_id', $this->user_id)
+            ->first();
+
+        return $registro ? $registro->id_seccion : null;
     }
 
 }

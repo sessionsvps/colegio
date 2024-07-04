@@ -26,7 +26,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
         'esActivo',
@@ -82,6 +81,17 @@ class User extends Authenticatable
     public function domicilio()
     {
         return $this->hasOne(Domicilio::class);
+    }
+
+    public function getFullNameAttribute()
+    {
+        if ($this->docente) {
+            return $this->docente->primer_nombre . ' ' . $this->docente->apellido_paterno;
+        } elseif ($this->estudiante) {
+            return $this->estudiante->primer_nombre . ' ' . $this->estudiante->apellido_paterno;
+        } else {
+            return 'Admin';
+        }
     }
 
 }

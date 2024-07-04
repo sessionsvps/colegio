@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Routing\Controller as BaseController;
-use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController
 {
@@ -33,8 +32,7 @@ class UserController extends BaseController
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'nullable|string|max:100',
-            'email' => 'nullable|string|email|max:100|unique:users,email,' . $user->id,
+            'email' => 'required|string|email|max:100|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|max:30',
         ]);
 
@@ -52,30 +50,14 @@ class UserController extends BaseController
         // Actualizar el usuario
         $user->update($data);
 
-        // get the names of the user's roles
-        $roles = $user->getRoleNames(); // Returns a collection
-
-        // Actualizar los datos del Docente o Estudiante asociado solo si han cambiado
-        $data = [];
-        if ($roles[0]=='Docente'){
-            if ($request->input('name') !== $user->docente->name) {
-                $data['name'] = $request->input('name');
-            }
+        //Actualizar correo de un docente o estudiante si se modifica
+        if ($user->docente) {
             if ($request->input('email') !== $user->docente->email) {
-                $data['email'] = $request->input('email');
+                $user->docente->update(['email' => $request->input('email')]);
             }
-            if (!empty($data)) {
-                $user->docente->update($data);
-            }
-        }else{
-            if ($request->input('name') !== $user->estudiante->name) {
-                $data['name'] = $request->input('name');
-            }
+        } elseif ($user->estudiante) {
             if ($request->input('email') !== $user->estudiante->email) {
-                $data['email'] = $request->input('email');
-            }
-            if (!empty($data)) {
-                $user->estudiante->update($data);
+                $user->estudiante->update(['email' => $request->input('email')]);
             }
         }
 

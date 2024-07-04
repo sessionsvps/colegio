@@ -10,6 +10,7 @@ class Seccion extends Model
     use HasFactory;
     use \Awobaz\Compoships\Compoships;
 
+    protected $table = 'secciones';
     protected $primaryKey = ['id_seccion','id_grado', 'id_nivel'];
     public $incrementing = false;
 

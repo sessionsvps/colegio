@@ -41,7 +41,7 @@
                     @else
                     @foreach ( $users as $user )
                     <tr>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $user->name }}</td>
+                        <td class="py-2 px-4 border-b border-gray-200">{{ $user->full_name }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $user->email }}</td>
                         @can('users.control')
                             <td class="py-2 px-4 border-b border-gray-200">

@@ -11,9 +11,9 @@ class Domicilio extends Model
 
     protected $primaryKey = 'user_id';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $guarded = []; // guarded indica que campos no pueden asignarse masivamente
-
 
     public function user()
     {

@@ -9,6 +9,7 @@ class Curso_por_nivel extends Model
 {
     use HasFactory;
 
+    protected $table = 'curso_por_niveles';
     public $incrementing = false;
     protected $primaryKey = ['codigo_curso', 'id_nivel'];
 

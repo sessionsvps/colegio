@@ -21,4 +21,5 @@ Route::middleware([
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
+
 });

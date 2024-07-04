@@ -4,17 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Thiagoprz\CompositeKey\HasCompositeKey;
 
 class Docente extends Model
 {
     use HasFactory;
-    use \Awobaz\Compoships\Compoships;
-
-    public $incrementing = false;
+    use HasCompositeKey;
+    
     protected $primaryKey = ['codigo_docente', 'user_id'];
+    public $incrementing = false;
 
     # ESTOS CAMPOS NO PUEDEN SER ASIGNADOS EN MASA
     protected $guarded = [];
+
+    public function getKeyName()
+    {
+        return ['codigo_docente', 'user_id'];
+    }
 
     public function user()
     {
@@ -23,7 +30,7 @@ class Docente extends Model
 
     public function estado_civil()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'id_estado');
     }
 
     public function catedras()
@@ -37,5 +44,14 @@ class Docente extends Model
             ->withPivot('año_escolar');
     }
 
+    public function getFechaNacimientoAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getFechaIngresoAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
 
 }

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('dni', 8)->unique();
             $table->string('email', 50)->unique();
             $table->boolean('sexo');
+            $table->string('telefono_celular', 9)->nullable();
             $table->string('nacionalidad',30);
             $table->string('departamento', 30);
             $table->string('provincia', 30);
