@@ -36,7 +36,7 @@ class DocenteController extends BaseController
     public function create()
     {
         $estados = Estado::all();
-        return view('docentes.create', compact('estados','cursos_primaria','cursos_secundaria','grados_primaria','grados_secundaria','niveles'));
+        return view('docentes.create', compact('estados'));
     }
 
     public function store(Request $request)

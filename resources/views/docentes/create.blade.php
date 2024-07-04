@@ -978,7 +978,7 @@
         e.target.value = value.replace(/[^0-9]/g, '').slice(0, 9);
     });
 </script>
-<script>
+{{-- <script>
     function updateCursos() {
         var nivel = document.getElementById('nivel').value;
         var cursos = @json(['primaria' => $cursos_primaria, 'secundaria' => $cursos_secundaria]);
@@ -1003,5 +1003,5 @@
         }
     }
     
-</script>
+</script> --}}
 @endsection
