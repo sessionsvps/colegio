@@ -28,7 +28,7 @@ class EstudianteController extends BaseController
     {
         $estudiantes = Estudiante::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->get();
+        })->paginate(10);
         return view('estudiantes.index', compact('estudiantes'));
     }
 

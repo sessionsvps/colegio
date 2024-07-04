@@ -22,7 +22,7 @@
             @can('docentes.control')
                 <a href="{{ route('docentes.create') }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Añadir Docente
+                    Añadir
                 </a>
             @endcan
         </div>
@@ -73,6 +73,9 @@
                     @endif
             </tbody>
         </table>
+        <div class="mt-10">
+            {{ $docentes->links() }}
+        </div>
     </div>
 @endsection
 

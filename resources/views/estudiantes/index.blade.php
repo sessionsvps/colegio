@@ -18,11 +18,11 @@
     @endif
     <div>
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold">Lista de Alumnos</h2>
+            <h2 class="text-xl font-bold">Lista de Estudiantes</h2>
             @can('estudiantes.control')
                 <a href="{{ route('estudiantes.create') }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Añadir Estudiante
+                    Añadir
                 </a>
             @endcan
         </div>
@@ -74,6 +74,9 @@
                 @endif         
             </tbody>
         </table>
+        <div class="mt-10">
+            {{ $estudiantes->links() }}
+        </div>
     </div>
 @endsection
 

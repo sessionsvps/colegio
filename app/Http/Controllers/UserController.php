@@ -17,7 +17,7 @@ class UserController extends BaseController
 
     public function index()
     {
-        $users = User::where('esActivo','=', 1)->get();
+        $users = User::where('esActivo','=', 1)->paginate(10);
         return view('users.index', compact('users'));
     }
 
