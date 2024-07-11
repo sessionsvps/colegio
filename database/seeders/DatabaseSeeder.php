@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             GradoSeeder::class,
             SeccionSeeder::class,
             Curso_por_nivelSeeder::class,
+            DocenteSeeder::class,
+            EstudianteSeeder::class,
         ]);
     }
 }

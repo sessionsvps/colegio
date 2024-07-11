@@ -29,7 +29,7 @@ class DocenteController extends BaseController
     {
         $docentes = Docente::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->get();
+        })->paginate(10);
         return view('docentes.index', compact('docentes'));
     }
 
