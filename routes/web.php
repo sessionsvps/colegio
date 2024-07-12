@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CursoController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
@@ -21,5 +22,5 @@ Route::middleware([
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
-
+    Route::resource('cursos', CursoController::class)->except('show');
 });
