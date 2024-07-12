@@ -20,6 +20,8 @@ Route::middleware([
     })->name('dashboard');
 
     Route::resource('estudiantes',EstudianteController::class)->except('show');
+    Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');
+    Route::post('/matriculado',[EstudianteController::class,'realizarMatricula'])->name('estudiantes.realizarMatricula');
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');

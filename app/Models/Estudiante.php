@@ -51,9 +51,11 @@ class Estudiante extends Model
     // Obtener id_nivel desde la tabla intermedia
     public function getNivelIdAttribute()
     {
+        $currentYear = Carbon::now()->year;        
         $registro = DB::table('estudiante_secciones')
         ->where('codigo_estudiante', $this->codigo_estudiante)
             ->where('user_id', $this->user_id)
+            ->where('año_escolar',$currentYear)
             ->first();
 
         return $registro ? $registro->id_nivel : null;
@@ -61,9 +63,11 @@ class Estudiante extends Model
 
     public function getGradoIdAttribute()
     {
+        $currentYear = Carbon::now()->year;
         $registro = DB::table('estudiante_secciones')
         ->where('codigo_estudiante', $this->codigo_estudiante)
             ->where('user_id', $this->user_id)
+            ->where('año_escolar',$currentYear)
             ->first();
 
         return $registro ? $registro->id_grado : null;
@@ -71,9 +75,11 @@ class Estudiante extends Model
 
     public function getSeccionIdAttribute()
     {
+        $currentYear = Carbon::now()->year;
         $registro = DB::table('estudiante_secciones')
         ->where('codigo_estudiante', $this->codigo_estudiante)
             ->where('user_id', $this->user_id)
+            ->where('año_escolar',$currentYear)
             ->first();
 
         return $registro ? $registro->id_seccion : null;

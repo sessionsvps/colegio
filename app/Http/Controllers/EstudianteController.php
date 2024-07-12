@@ -232,6 +232,35 @@ class EstudianteController extends BaseController
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado exitosamente.');
     }
 
+    public function matricular()
+    {
+        $estudiantes = Estudiante::whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })->get();
+        $niveles = Nivel::all();
+        $grados_primaria = Grado::where('id_nivel', 1)->get();
+        $grados_secundaria = Grado::where('id_nivel', 2)->get();
+        return view('estudiantes.matricular',compact('niveles', 'grados_primaria', 'grados_secundaria', 'estudiantes'));
+    }
+
+    public function realizarMatricula(Request $request)
+    {
+        $codigo_estudiante = $request->codigo_estudiante;
+        $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
+        $user = User::where('id',$estudiante->user_id)->first();
+
+        $estudiante_seccion = Estudiante_Seccion::create([
+            'codigo_estudiante' => $codigo_estudiante,
+            'user_id' => $user->id,
+            'año_escolar' => $request->input('año_ingreso'),
+            'id_nivel' => $request->input('nivel'),
+            'id_grado' => $request->input('grado'),
+            'id_seccion' => $request->input('seccion'),
+        ]);
+
+        return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
+    }
+
     public function destroy(string $codigo_estudiante)
     {
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
