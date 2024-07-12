@@ -53,6 +53,12 @@ class CursoController extends Controller
         }      
     }
 
+    public function mallaCurricular()
+    {
+        $cursos = Curso::where('esActivo',1)->get();
+        return view('cursos.malla',compact('cursos'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

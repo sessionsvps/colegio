@@ -31,4 +31,14 @@ class Curso extends Model
         return $this->belongsToMany(Estudiante::class, 'exoneraciones', ['codigo_curso'], ['codigo_estudiante', 'user_id'])
         ->withPivot('año_escolar');
     }
+
+    public function competencias()
+    {
+        return $this->hasMany(Competencia::class, 'codigo_curso', 'codigo_curso');
+    }
+
+    public function getCompetencias()
+    {
+        return $this->competencias()->orderBy('orden')->get();
+    }
 }

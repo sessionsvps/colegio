@@ -25,4 +25,5 @@ Route::middleware([
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
+    Route::get('/malla',[CursoController::class,'mallaCurricular']);
 });
