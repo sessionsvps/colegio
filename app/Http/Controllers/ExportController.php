@@ -6,11 +6,8 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports\EstudiantesExport;
 use App\Models\Estudiante;
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf;
+use Illuminate\Support\Facades\View;
 
 class ExportController extends Controller
 {
@@ -20,23 +17,22 @@ class ExportController extends Controller
 
     public function exportPdf()
     {
-        // Generar el archivo Excel y guardarlo temporalmente
-        $filePath = 'exports/estudiantes.xlsx';
-        Excel::store(new EstudiantesExport, $filePath);
+        // Obtener los datos de los estudiantes
+        $estudiantes = Estudiante::all();
 
-        // Cargar el archivo Excel desde el almacenamiento temporal
-        $spreadsheet = IOFactory::load(storage_path('app/' . $filePath));
+        // Convertir la imagen a base64
+        $path = public_path('img/logo.png');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-        // Convertir el archivo Excel a HTML
-        $writer = IOFactory::createWriter($spreadsheet, 'Html');
-        ob_start();
-        $writer->save('php://output');
-        $htmlContent = ob_get_clean();
+        // Generar el HTML de la vista Blade
+        $htmlContent = View::make('exportar.exEstudiantes', ['estudiantes' => $estudiantes, 'base64' => $base64])->render();
 
         // Crear una instancia de Dompdf con opciones
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
-        $options->set('isRemoteEnabled', true);
+        $options->set('isRemoteEnabled', true); // Permitir recursos remotos
 
         $dompdf = new Dompdf($options);
 
@@ -50,18 +46,11 @@ class ExportController extends Controller
         $dompdf->render();
 
         // Configurar la respuesta HTTP para descargar el archivo PDF
-        $response = response()->streamDownload(
+        return response()->streamDownload(
             function () use ($dompdf) {
                 echo $dompdf->output();
             },
             'estudiantes.pdf'
         );
-
-        // Programar la eliminación del archivo temporal
-        register_shutdown_function(function () use ($filePath) {
-            Storage::delete($filePath);
-        });
-
-        return $response;
     }
 }
