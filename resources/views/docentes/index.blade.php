@@ -26,6 +26,8 @@
                 </a>
             @endcan
         </div>
+        <div>
+        </div>
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
