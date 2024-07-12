@@ -27,27 +27,29 @@
             @endcan --}}
         </div>
         
-        <form method="GET" action="{{ route('cursos.index') }}" class="mb-6">
-            <div class="mb-4">
-                <label for="nivel_educativo" class="block text-sm font-medium text-gray-700">Nivel Educativo:</label>
-                <select name="nivel_educativo" id="nivel_educativo" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="0">Todos</option>
-                    @foreach($niveles as $nivel)
-                        <option value="{{ $nivel->id_nivel }}"
-                            @if ($nivel->id_nivel == $filtranivel)
-                                selected 
-                            @endif
-                        >
-                            {{ $nivel->detalle }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Filtrar
-            </button>
-        </form>
-    
+        @if($user->hasRole('Admin'))
+            <form method="GET" action="{{ route('cursos.index') }}" class="mb-6">
+                <div class="mb-4">
+                    <label for="nivel_educativo" class="block text-sm font-medium text-gray-700">Nivel Educativo:</label>
+                    <select name="nivel_educativo" id="nivel_educativo" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="0">Todos</option>
+                        @foreach($niveles as $nivel)
+                            <option value="{{ $nivel->id_nivel }}"
+                                @if ($nivel->id_nivel == $filtranivel)
+                                    selected 
+                                @endif
+                            >
+                                {{ $nivel->detalle }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Filtrar
+                </button>
+            </form>
+        @endif
+
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
