@@ -4,6 +4,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,4 +27,7 @@ Route::middleware([
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
+
+    Route::get('/export',[ExportController::class,'export'])->name('export');
+    Route::get('/export-pdf', [ExportController::class, 'exportPdf'])->name('exportPdf');
 });

@@ -26,6 +26,27 @@
                 </a>
             @endcan
         </div>
+        <div class="flex mb-6">
+            <div class="w-full md:w-1/3 px-3 mb-0">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="reporte">
+                    Elija un Formato
+                </label>
+                <select
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="reporte" name="reporte">
+                    <option value="" disabled selected></option>
+                </select>
+                @error('reporte')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="flex justify-between items-center mt-6">
+                <a
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="reportButton">
+                    Generar Reporte
+                </a>
+            </div>
+        </div>
         <table class="min-w-full bg-white">
             <thead>
                 <tr>
@@ -71,7 +92,7 @@
                         @endcan
                     </tr>
                     @endforeach
-                @endif         
+                @endif
             </tbody>
         </table>
         <div class="mt-10">
@@ -112,4 +133,38 @@
             });
         }
     </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var reporteSelect = document.getElementById('reporte');
+        var generateReportButton = document.getElementById('reportButton');
+        var optionsAdded = false;
+
+        reporteSelect.addEventListener('focus', function () {
+            if (!optionsAdded) {
+                var excelOption = document.createElement('option');
+                excelOption.value = '1';
+                excelOption.text = 'EXCEL';
+
+                var pdfOption = document.createElement('option');
+                pdfOption.value = '0';
+                pdfOption.text = 'PDF';
+
+                reporteSelect.add(excelOption);
+                reporteSelect.add(pdfOption);
+
+                optionsAdded = true;
+            }
+        });
+
+        reporteSelect.addEventListener('change', function () {
+            var selectedValue = this.value;
+            if (selectedValue == '1') { // EXCEL
+                generateReportButton.href = "{{ route('export') }}";
+            } else if (selectedValue == '0') { // PDF
+                generateReportButton.href = "{{ route('exportPdf') }}";
+            }
+        });
+    });
+</script>
 @endsection
