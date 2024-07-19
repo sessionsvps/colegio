@@ -312,6 +312,30 @@
         <!-- Datos del Estudiante -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-lg font-bold mb-4">Datos del Estudiante</h2>
+            <!-- DNI y Verificar -->
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
+                        DNI
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="dni" name="dni" type="text" placeholder="DNI" value="{{ old('dni') }}" maxlength="8" pattern="[0-9]{8}">
+                    @error('dni')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 flex items-end">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="button" id="boton_verificar">
+                        Verificar
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full" id="mensaje_verificacion"></div>
+            
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="primer_nombre">
@@ -320,7 +344,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="primer_nombre" name="primer_nombre" type="text" placeholder="Primer Nombre"
-                        value="{{ old('primer_nombre') }}">
+                        value="{{ old('primer_nombre') }}" readonly>
                     @error('primer_nombre')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -332,13 +356,13 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="otros_nombres" name="otros_nombres" type="text" placeholder="Otros Nombres"
-                        value="{{ old('otros_nombres') }}">
+                        value="{{ old('otros_nombres') }}" readonly>
                     @error('otros_nombres')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
-    
+            
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_paterno">
@@ -347,7 +371,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="apellido_paterno" name="apellido_paterno" type="text" placeholder="Apellido Paterno"
-                        value="{{ old('apellido_paterno') }}">
+                        value="{{ old('apellido_paterno') }}" readonly>
                     @error('apellido_paterno')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -359,7 +383,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="apellido_materno" name="apellido_materno" type="text" placeholder="Apellido Materno"
-                        value="{{ old('apellido_materno') }}">
+                        value="{{ old('apellido_materno') }}" readonly>
                     @error('apellido_materno')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -367,19 +391,7 @@
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
-                        DNI
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="dni" name="dni" type="text" placeholder="DNI" value="{{ old('dni') }}" maxlength="8"
-                        pattern="[0-9]{8}">
-                    @error('dni')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
                         Teléfono Celular
                     </label>
@@ -391,16 +403,14 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="sexo">
                         Sexo
                     </label>
-                    <select
+                    <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="sexo" name="sexo">
-                        <option value="1" {{ old('sexo')=='1' ? 'selected' : '' }}>Masculino</option>
-                        <option value="0" {{ old('sexo')=='0' ? 'selected' : '' }}>Femenino</option>
-                    </select>
+                        id="sexo_texto" name="sexo_texto" type="text" placeholder="Sexo" value="{{ old('sexo_texto') }}" readonly>
+                    <input id="sexo" name="sexo" type="hidden" value="{{ old('sexo') }}">
                     @error('sexo')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -415,7 +425,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
-                        value="{{ old('fecha_nacimiento') }}">
+                        value="{{ old('fecha_nacimiento') }}" readonly>
                     @error('fecha_nacimiento')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -510,7 +520,7 @@
                 </div>
             </div>
 
-            <div class="flex flex-wrap -mx-3 mb-6">
+            {{-- <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nivel">
                         Nivel
@@ -559,7 +569,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
+            </div> --}}
         </div>
     
         <!-- Datos del Usuario -->
@@ -708,4 +718,5 @@
             }
         }
     </script>
+    <script src="{{asset('js/verificar_dni.js')}}"></script>
 @endsection

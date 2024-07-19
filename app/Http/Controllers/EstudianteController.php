@@ -71,9 +71,9 @@ class EstudianteController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
-            'nivel' => 'required',
-            'grado' => 'required',
-            'seccion' => 'required',
+            // 'nivel' => 'required',
+            // 'grado' => 'required',
+            // 'seccion' => 'required',
         ]);
 
         // Generar un código estudiante aleatorio de 10 dígitos
@@ -130,14 +130,14 @@ class EstudianteController extends BaseController
         ]);
 
         // LLenar la tabla intermedia
-        $estudiante_seccion = Estudiante_Seccion::create([
-            'codigo_estudiante' => $codigoEstudiante,
-            'user_id' => $user->id,
-            'año_escolar' => $request->input('año_ingreso'),
-            'id_nivel' => $request->input('nivel'),
-            'id_grado' => $request->input('grado'),
-            'id_seccion' => $request->input('seccion'),
-        ]);
+        // $estudiante_seccion = Estudiante_Seccion::create([
+        //     'codigo_estudiante' => $codigoEstudiante,
+        //     'user_id' => $user->id,
+        //     'año_escolar' => $request->input('año_ingreso'),
+        //     'id_nivel' => $request->input('nivel'),
+        //     'id_grado' => $request->input('grado'),
+        //     'id_seccion' => $request->input('seccion'),
+        // ]);
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
 
