@@ -27,10 +27,6 @@ class EstudianteSeeder extends Seeder
                 $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
             } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
 
-            do {
-                $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
-            } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
-
             // Crear el usuario
             $user = User::create([
                 'email' => $faker->unique()->safeEmail,
@@ -65,7 +61,7 @@ class EstudianteSeeder extends Seeder
                 'telefono_celular' => $faker->optional()->regexify('[0-9]{9}'),
                 'fecha_nacimiento' => $faker->date,
                 'sexo' => $faker->boolean,
-                'nro_matricula' => $nroMatricula,
+                'nro_matricula' => null,
                 'año_ingreso' => $faker->year,
                 'lengua_materna' => $faker->word,
                 'colegio_procedencia' => $faker->optional()->company,
@@ -76,14 +72,14 @@ class EstudianteSeeder extends Seeder
             ]);
 
             // Llenar la tabla intermedia
-            Estudiante_Seccion::create([
-                'codigo_estudiante' => $codigoEstudiante,
-                'user_id' => $user->id,
-                'año_escolar' => $faker->year,
-                'id_nivel' => $faker->numberBetween(1, 2),
-                'id_grado' => $faker->numberBetween(1, 6),
-                'id_seccion' => $faker->numberBetween(1, 4),
-            ]);
+            // Estudiante_Seccion::create([
+            //     'codigo_estudiante' => $codigoEstudiante,
+            //     'user_id' => $user->id,
+            //     'año_escolar' => $faker->year,
+            //     'id_nivel' => $faker->numberBetween(1, 2),
+            //     'id_grado' => $faker->numberBetween(1, 6),
+            //     'id_seccion' => $faker->numberBetween(1, 4),
+            // ]);
         }
     }
 }

@@ -747,19 +747,7 @@
             </div>
         
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
-                        Teléfono Celular
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="telefono_celular" name="telefono_celular" type="text" placeholder="Teléfono Celular"
-                        value="{{ old('telefono_celular') }}" maxlength="9">
-                    @error('telefono_celular')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 px-3 mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="sexo">
                         Sexo
                     </label>
@@ -768,6 +756,29 @@
                         id="sexo_texto" name="sexo_texto" type="text" placeholder="Sexo" value="{{ old('sexo_texto') }}" readonly>
                     <input id="sexo" name="sexo" type="hidden" value="{{ old('sexo') }}">
                     @error('sexo')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Correo
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email" name="email" type="email" placeholder="Correo" value="{{ old('email') }}">
+                    @error('email')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/3 px-3 mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
+                        Teléfono Celular
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="telefono_celular" name="telefono_celular" type="text" placeholder="Teléfono Celular"
+                        value="{{ old('telefono_celular') }}" maxlength="9">
+                    @error('telefono_celular')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
@@ -868,7 +879,7 @@
         </div>
     
         <!-- Datos del Usuario -->
-        <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {{-- <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-lg font-bold mb-4">Datos del Usuario</h2>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -894,7 +905,7 @@
                     @enderror
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- Datos del Domicilio -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">

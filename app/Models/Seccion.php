@@ -37,7 +37,11 @@ class Seccion extends Model
 
     public function estudiantes()
     {
-        return $this->belongsToMany(Estudiante::class, 'estudiante_secciones', ['id_seccion', 'id_grado', 'id_nivel'], ['codigo_estudiante', 'user_id'])
-        ->withPivot('año_escolar');
+        return $this->belongsToMany(
+            Estudiante::class,
+            'estudiante_secciones',
+            ['id_seccion', 'id_nivel', 'id_grado'],
+            ['codigo_estudiante', 'user_id']
+        )->withPivot('año_escolar');
     }
 }

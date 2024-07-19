@@ -236,6 +236,7 @@ class EstudianteController extends BaseController
     {
         $estudiantes = Estudiante::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
+            $query->where('nro_matricula', null);
         })->get();
         $niveles = Nivel::all();
         $grados_primaria = Grado::where('id_nivel', 1)->get();
@@ -245,20 +246,39 @@ class EstudianteController extends BaseController
 
     public function realizarMatricula(Request $request)
     {
+
+        $request->validate([
+            'codigo_estudiante' => 'required',
+            'año_escolar' => 'required|integer',
+            'nivel' => 'required',
+            'grado' => 'required',
+            'seccion' => 'required',
+        ]);
+
         $codigo_estudiante = $request->codigo_estudiante;
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
         $user = User::where('id',$estudiante->user_id)->first();
 
+        if ($estudiante->nro_matricula == null){
+            do {
+                $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+            } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
+
+            $estudiante->nro_matricula = $nroMatricula;
+            $estudiante->save();
+        }
+
         $estudiante_seccion = Estudiante_Seccion::create([
             'codigo_estudiante' => $codigo_estudiante,
             'user_id' => $user->id,
-            'año_escolar' => $request->input('año_ingreso'),
+            'año_escolar' => $request->input('año_escolar'),
             'id_nivel' => $request->input('nivel'),
             'id_grado' => $request->input('grado'),
             'id_seccion' => $request->input('seccion'),
         ]);
 
-        return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
+    return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
+
     }
 
     public function destroy(string $codigo_estudiante)

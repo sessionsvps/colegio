@@ -50,10 +50,13 @@
                         </option>
                         @endforeach
                     </select>
+                    @error('codigo_estudiante')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
                 </div>
                 <div class="w-full md:w-1/3 px-3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="año_ingreso">
-                        Año de Matrícula
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="año_escolar">
+                        Año Escolar
                     </label>
                     @php
                         use Carbon\Carbon;
@@ -61,9 +64,9 @@
                     @endphp
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="año_ingreso" name="año_ingreso" type="number" placeholder="Año de Ingreso"
-                        value="{{ $año }}">
-                    @error('año_ingreso')
+                        id="año_escolar" name="año_escolar" type="number" placeholder="Año Escolar"
+                        value="{{ $año }}" readonly>
+                    @error('año_escolar')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
