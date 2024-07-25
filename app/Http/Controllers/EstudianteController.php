@@ -81,9 +81,9 @@ class EstudianteController extends BaseController
             $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
 
-        do {
-            $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
-        } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
+        // do {
+        //     $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        // } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
 
         // Crear el usuario
         $user = User::create([
@@ -119,7 +119,7 @@ class EstudianteController extends BaseController
             'telefono_celular' => $request->input('telefono_celular'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
             'sexo' => $request->input('sexo'),
-            'nro_matricula' => $nroMatricula,
+            'nro_matricula' => null,
             'año_ingreso' => $request->input('año_ingreso'),
             'lengua_materna' => $request->input('lengua_materna'),
             'colegio_procedencia' => $request->input('colegio_procedencia'),
