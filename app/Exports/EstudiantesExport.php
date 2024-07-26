@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Estudiante;
+use App\Models\User;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -34,7 +35,9 @@ class EstudiantesExport implements FromArray, WithStyles, WithDrawings, WithEven
 
     public function array(): array
     {
-        $estudiantes = Estudiante::all()->toArray();
+        $estudiantes = Estudiante::whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })->get()->toArray();
 
         $data = [
             [' ', ' ', 'COLEGIO', 'Sideral Carrion'],
