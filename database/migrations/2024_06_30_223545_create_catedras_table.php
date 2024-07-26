@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreign('codigo_docente')->references('codigo_docente')->on('docentes');
             $table->foreign('user_id')->references('user_id')->on('docentes');
             // Definir clave primaria compuesta
-            $table->primary(['codigo_curso', 'id_seccion', 'id_nivel', 'id_grado']);
+            $table->primary(['codigo_curso', 'id_seccion', 'id_nivel', 'id_grado', 'año_escolar']);
         });
     }
 

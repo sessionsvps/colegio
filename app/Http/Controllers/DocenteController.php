@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Credenciales;
 use App\Models\Docente;
 use App\Models\User;
 use App\Models\Catedra;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Models\Estado;
 use Illuminate\Routing\Controller as BaseController;
-
+use Illuminate\Support\Facades\Mail;
 
 class DocenteController extends BaseController
 {
@@ -49,7 +50,7 @@ class DocenteController extends BaseController
             'apellido_materno' => 'required|string|max:30',
             'dni' => 'required|string|size:8|unique:docentes,dni',
             'email' => 'required|string|email|max:50|unique:docentes,email',
-            'password' => 'required|string|min:8|max:30',
+            // 'password' => 'required|string|min:8|max:30',
             'sexo' => 'required|boolean',
             'telefono_celular' => 'nullable|string|size:9',
             'id_estado' => 'required|integer|exists:estados,id_estado',
@@ -71,10 +72,18 @@ class DocenteController extends BaseController
             $codigoDocente = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         } while (Docente::where('codigo_docente', $codigoDocente)->exists());
 
+        // Generar el correo electrónico basado en la lógica dada
+        $primerNombre = $request->input('primer_nombre');
+        $apellidoPaterno = $request->input('apellido_paterno');
+        $apellidoMaterno = $request->input('apellido_materno');
+
+        $email = strtolower(substr($primerNombre, 0, 1) . $apellidoPaterno . substr($apellidoMaterno, 0, 1)) . '@sideral.com';
+        $password = $request->input('dni');
+
         // Crear el usuario
         $user = User::create([
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+            'email' => $email,
+            'password' => Hash::make($password),
             'esActivo' => true,
         ]);
 
@@ -113,6 +122,9 @@ class DocenteController extends BaseController
             'esTutor' => False,
             'fecha_ingreso' => $request->input('fecha_ingreso'),
         ]);
+
+        // Enviar correo con credenciales generadas
+        Mail::to($request->input('email'))->send(new Credenciales($email, $password));
 
         return redirect()->route('docentes.index')->with('success', 'Docente registrado exitosamente.');
     }

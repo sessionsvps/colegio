@@ -23,11 +23,11 @@ return new class extends Migration
             $table->string('email', 50)->unique();
             $table->boolean('sexo');
             $table->string('telefono_celular', 9)->nullable();
-            $table->string('nacionalidad', 30);
+            $table->string('nacionalidad', 50);
             $table->string('departamento', 30);
             $table->string('provincia', 30);
             $table->string('distrito', 30);
-            $table->string('nro_matricula', 10)->unique();
+            $table->string('nro_matricula', 10)->nullable()->unique();
             $table->integer('año_ingreso');
             $table->string('lengua_materna', 30);
             $table->string('colegio_procedencia', 50)->nullable();

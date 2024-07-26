@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Awobaz\Compoships\Compoships;
 use Thiagoprz\CompositeKey\HasCompositeKey;
 use Illuminate\Support\Facades\DB;
 
 class Estudiante extends Model
 {
     use HasFactory;
+    Use Compoships;
     use HasCompositeKey;
 
     protected $primaryKey = ['codigo_estudiante', 'user_id'];
@@ -38,8 +40,12 @@ class Estudiante extends Model
 
     public function secciones()
     {
-        return $this->belongsToMany(Seccion::class, 'estudiante_secciones', ['codigo_estudiante', 'user_id'], ['id_seccion', 'id_grado', 'id_nivel'])
-        ->withPivot('año_escolar');
+        return $this->belongsToMany(
+            Seccion::class,
+            'estudiante_secciones',
+            ['codigo_estudiante', 'user_id'],
+            ['id_seccion', 'id_nivel', 'id_grado']
+        )->withPivot('año_escolar');
     }
 
     // Relación muchos a muchos con Curso

@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             Curso_por_nivelSeeder::class,
             DocenteSeeder::class,
             EstudianteSeeder::class,
+            CompetenciaSeeder::class,
         ]);
     }
 }
