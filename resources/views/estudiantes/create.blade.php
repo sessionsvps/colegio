@@ -392,14 +392,14 @@
     
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
-                        Teléfono Celular
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
+                        Fecha de Nacimiento
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="telefono_celular" name="telefono_celular" type="text" placeholder="Teléfono Celular"
-                        value="{{ old('telefono_celular') }}" maxlength="9">
-                    @error('telefono_celular')
+                        id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
+                        value="{{ old('fecha_nacimiento') }}" readonly>
+                    @error('fecha_nacimiento')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
@@ -418,19 +418,30 @@
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
-                        Fecha de Nacimiento
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Correo
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
-                        value="{{ old('fecha_nacimiento') }}" readonly>
-                    @error('fecha_nacimiento')
+                        id="email" name="email" type="email" placeholder="Correo" value="{{ old('email') }}">
+                    @error('email')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
+                        Teléfono Celular
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="telefono_celular" name="telefono_celular" type="text" placeholder="Teléfono Celular"
+                        value="{{ old('telefono_celular') }}" maxlength="9">
+                    @error('telefono_celular')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/3 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="año_ingreso">
                         Año de Ingreso
                     </label>
@@ -445,7 +456,7 @@
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="colegio_procedencia">
                         Colegio de Procedencia
                     </label>
@@ -457,7 +468,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="lengua_materna">
                         Lengua Materna
                     </label>
@@ -469,7 +480,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
                         Nacionalidad
                     </label>
@@ -484,7 +495,7 @@
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
                         Departamento
                     </label>
@@ -496,7 +507,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia">
                         Provincia
                     </label>
@@ -507,7 +518,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3">
+                <div class="w-full md:w-1/3 px-3">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito">
                         Distrito
                     </label>
@@ -519,74 +530,13 @@
                     @enderror
                 </div>
             </div>
-
-            {{-- <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nivel">
-                        Nivel
-                    </label>
-                    <select
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="nivel" name="nivel" onchange="updateGrados()">
-                        <option value="" selected disabled>Seleccione un nivel</option>
-                        @foreach($niveles as $nivel)
-                        <option value="{{ $nivel->id_nivel }}">
-                            {{ $nivel->detalle }}
-                        </option>
-                        @endforeach
-                    </select>
-                    @error('nivel')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="grado">
-                        Grado
-                    </label>
-                    <select
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="grado" name="grado">
-                        <option value="" selected disabled>Seleccione un grado</option>
-                    </select>
-                    @error('grado')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="seccion">
-                        Sección
-                    </label>
-                    <select
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="seccion" name="seccion">
-                        <option value="" selected disabled>Seleccione una sección</option>
-                        <option value="1">A</option>
-                        <option value="2">B</option>
-                        <option value="3">C</option>
-                        <option value="4">D</option>
-                    </select>
-                    @error('seccion')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div> --}}
         </div>
     
         <!-- Datos del Usuario -->
-        <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {{-- <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-lg font-bold mb-4">Datos del Usuario</h2>
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                        Correo
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email" name="email" type="email" placeholder="Correo" value="{{ old('email') }}">
-                    @error('email')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
+                
                 <div class="w-full md:w-1/2 px-3">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                         Contraseña
@@ -599,13 +549,13 @@
                     @enderror
                 </div>
             </div>
-        </div>
+        </div> --}}
     
         <!-- Datos del Domicilio -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-lg font-bold mb-4">Datos del Domicilio</h2>
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-2/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="direccion">
                         Dirección
                     </label>
@@ -616,9 +566,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-1/3 px-3 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_fijo">
                         Teléfono Fijo
                     </label>
@@ -630,6 +578,9 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento_d">
                         Departamento
@@ -642,7 +593,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3">
+                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia_d">
                         Provincia
                     </label>
@@ -654,16 +605,13 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito_d">
                         Distrito
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito_d" name="distrito_d" type="text" placeholder="Distrito"
-                        value="{{ old('distrito_d') }}">
+                        id="distrito_d" name="distrito_d" type="text" placeholder="Distrito" value="{{ old('distrito_d') }}">
                     @error('distrito_d')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror

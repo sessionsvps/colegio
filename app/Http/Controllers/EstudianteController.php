@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CredencialesEstudiante;
 use App\Models\Curso;
 use App\Models\Domicilio;
 use App\Models\Estudiante;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Routing\Controller as BaseController;
-use phpDocumentor\Reflection\Types\Null_;
+use Illuminate\Support\Facades\Mail;
 
 class EstudianteController extends BaseController
 {
@@ -55,7 +56,6 @@ class EstudianteController extends BaseController
             'apellido_materno' => 'required|string|max:30',
             'dni' => 'required|string|min:8|max:8|unique:estudiantes,dni',
             'email' => 'required|string|email|max:50|unique:estudiantes,email',
-            'password' => 'required|string|min:8|max:30',
             'fecha_nacimiento' => 'required|date',
             'sexo' => 'required|boolean',
             'telefono_celular' => 'nullable|string|size:9',
@@ -70,10 +70,7 @@ class EstudianteController extends BaseController
             'telefono_fijo' => 'nullable|string|max:30',
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
-            'distrito_d' => 'required|string|max:30',
-            // 'nivel' => 'required',
-            // 'grado' => 'required',
-            // 'seccion' => 'required',
+            'distrito_d' => 'required|string|max:30'
         ]);
 
         // Generar un código estudiante aleatorio de 10 dígitos
@@ -81,14 +78,18 @@ class EstudianteController extends BaseController
             $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
 
-        // do {
-        //     $nroMatricula = str_pad(rand(0, 9999999999), 10, '0', STR_PAD_LEFT);
-        // } while (Estudiante::where('nro_matricula', $nroMatricula)->exists());
+        // Generar el correo electrónico
+        $primerNombre = $request->input('primer_nombre');
+        $apellidoPaterno = $request->input('apellido_paterno');
+        $apellidoMaterno = $request->input('apellido_materno');
 
-        // Crear el usuario
+        $email = strtolower(substr($primerNombre, 0, 1) . $apellidoPaterno . substr($apellidoMaterno, 0, 1)) . '@sideral.com';
+        $password = $request->input('dni');
+
+        // Crear el usuario (Por defecto inactivo hasta que se matricule)
         $user = User::create([
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')), // Hashear la contraseña
+            'email' => $email,
+            'password' => Hash::make($password), // Hashear la contraseña
             'esActivo' => True,
         ]);
 
@@ -129,38 +130,22 @@ class EstudianteController extends BaseController
             'distrito' => $request->input('distrito'),
         ]);
 
-        // LLenar la tabla intermedia
-        // $estudiante_seccion = Estudiante_Seccion::create([
-        //     'codigo_estudiante' => $codigoEstudiante,
-        //     'user_id' => $user->id,
-        //     'año_escolar' => $request->input('año_ingreso'),
-        //     'id_nivel' => $request->input('nivel'),
-        //     'id_grado' => $request->input('grado'),
-        //     'id_seccion' => $request->input('seccion'),
-        // ]);
+        // Enviar correo con credenciales generadas
+        Mail::to($request->input('email'))->send(new CredencialesEstudiante($email, $password));
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
-
     }
 
     public function edit(string $codigo_estudiante)
     {
-        $cursos_primaria = Curso::whereHas('niveles', function ($query) {
-            $query->where('detalle', 'Primaria');
-        })->get();
-        $cursos_secundaria = Curso::whereHas('niveles', function ($query) {
-            $query->where('detalle', 'Secundaria');
-        })->get();
-        $grados_primaria = Grado::where('id_nivel', 1)->get();
-        $grados_secundaria = Grado::where('id_nivel', 2)->get();
-        $niveles = Nivel::all();
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
-        return view('estudiantes.edit', compact('estudiante', 'cursos_primaria', 'cursos_secundaria', 'grados_primaria', 'grados_secundaria', 'niveles'));
+        return view('estudiantes.edit', compact('estudiante'));
     }
 
     public function update(Request $request, string $codigo_estudiante)
     {
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
+        $domicilio = Domicilio::findOrFail($estudiante->user_id);
 
         $request->validate([
             'primer_nombre' => 'required|string|max:30',
@@ -169,7 +154,6 @@ class EstudianteController extends BaseController
             'apellido_materno' => 'required|string|max:30',
             'dni' => 'required|string|size:8|unique:estudiantes,dni,' . $estudiante->codigo_estudiante . ',codigo_estudiante',
             'email' => 'required|string|email|max:50|unique:estudiantes,email,' . $estudiante->codigo_estudiante . ',codigo_estudiante',
-            'password' => 'nullable|string|min:8|max:30',
             'fecha_nacimiento' => 'required|date',
             'sexo' => 'required|boolean',
             'año_ingreso' => 'required|integer',
@@ -184,50 +168,37 @@ class EstudianteController extends BaseController
             'telefono_fijo' => 'nullable|string|max:30',
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
-            'distrito_d' => 'required|string|max:30',
-            'nivel' => 'required',
-            'grado' => 'required',
-            'seccion' => 'required',
+            'distrito_d' => 'required|string|max:30'
         ]);
 
-        // Actualizar los datos del Estudiante
-        $estudiante->primer_nombre = $request->input('primer_nombre', $estudiante->primer_nombre);
-        $estudiante->otros_nombres = $request->input('otros_nombres', $estudiante->otros_nombres);
-        $estudiante->apellido_paterno = $request->input('apellido_paterno', $estudiante->apellido_paterno);
-        $estudiante->apellido_materno = $request->input('apellido_materno', $estudiante->apellido_materno);
-        $estudiante->dni = $request->input('dni', $estudiante->dni);
-        $estudiante->fecha_nacimiento = $request->input('fecha_nacimiento', $estudiante->fecha_nacimiento);
-        $estudiante->sexo = $request->input('sexo', $estudiante->sexo);
-        $estudiante->año_ingreso = $request->input('año_ingreso', $estudiante->año_ingreso);
-        $estudiante->telefono_celular = $request->input('telefono_celular', $estudiante->telefono_celular);
-        $estudiante->lengua_materna = $request->input('lengua_materna', $estudiante->lengua_materna);
-        $estudiante->colegio_procedencia = $request->input('colegio_procedencia', $estudiante->colegio_procedencia);
-        $estudiante->nacionalidad = $request->input('nacionalidad', $estudiante->nacionalidad);
-        $estudiante->departamento = $request->input('departamento', $estudiante->departamento);
-        $estudiante->provincia = $request->input('provincia', $estudiante->provincia);
-        $estudiante->distrito = $request->input('distrito', $estudiante->distrito);
+        // Actualizar datos del estudiante
+        $estudiante->update([
+            'primer_nombre' => $request->primer_nombre,
+            'otros_nombres' => $request->otros_nombres,
+            'apellido_paterno' => $request->apellido_paterno,
+            'apellido_materno' => $request->apellido_materno,
+            'dni' => $request->dni,
+            'email' => $request->email,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'sexo' => $request->sexo,
+            'año_ingreso' => $request->año_ingreso,
+            'telefono_celular' => $request->telefono_celular,
+            'lengua_materna' => $request->lengua_materna,
+            'colegio_procedencia' => $request->colegio_procedencia,
+            'nacionalidad' => $request->nacionalidad,
+            'departamento' => $request->departamento,
+            'provincia' => $request->provincia,
+            'distrito' => $request->distrito,
+        ]);
 
-        $estudiante->save();
-
-        // Actualizar los datos del Usuario asociado solo si han cambiado
-        $domicilio = Domicilio::findOrFail($estudiante->user_id);
-
-        $domicilio->telefono_fijo = $request->input('telefono_fijo', $domicilio->telefono_fijo);
-        $domicilio->departamento = $request->input('departamento_d', $domicilio->departamento);
-        $domicilio->provincia = $request->input('provincia_d', $domicilio->provincia);
-        $domicilio->distrito = $request->input('distrito_d', $domicilio->distrito);
-        $domicilio->direccion = $request->input('direccion', $domicilio->direccion);
-
-        $domicilio->save();
-
-        // Actualizar solo el correo electrónico del Usuario asociado si ha cambiado
-        if ($request->input('email') !== $estudiante->user->email) {
-            $estudiante->user->update(['email' => $request->input('email')]);
-        }
-        // Si la contraseña está presente, hashearla
-        if ($request->filled('password')) {
-            $estudiante->user->update(['password' => Hash::make($request->password)]);
-        }
+        // Actualizar datos del domicilio
+        $domicilio->update([
+            'direccion' => $request->direccion,
+            'telefono_fijo' => $request->telefono_fijo,
+            'departamento' => $request->departamento_d,
+            'provincia' => $request->provincia_d,
+            'distrito' => $request->distrito_d
+        ]);
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado exitosamente.');
     }
@@ -257,7 +228,6 @@ class EstudianteController extends BaseController
 
         $codigo_estudiante = $request->codigo_estudiante;
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
-        $user = User::where('id',$estudiante->user_id)->first();
 
         if ($estudiante->nro_matricula == null){
             do {
@@ -270,7 +240,7 @@ class EstudianteController extends BaseController
 
         $estudiante_seccion = Estudiante_Seccion::create([
             'codigo_estudiante' => $codigo_estudiante,
-            'user_id' => $user->id,
+            'user_id' => $estudiante->user_id,
             'año_escolar' => $request->input('año_escolar'),
             'id_nivel' => $request->input('nivel'),
             'id_grado' => $request->input('grado'),
