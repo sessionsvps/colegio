@@ -18,8 +18,8 @@ class Competencia extends Model
         return $this->belongsTo(Curso::class, 'codigo_curso', 'codigo_curso');
     }
 
-    public function notasPorCompetencias()
+    public function nota()
     {
-        return $this->hasMany(Notas_por_competencia::class, ['codigo_curso', 'orden'], ['codigo_curso', 'orden']);
+        return $this->hasOne(Notas_por_competencia::class, ['codigo_curso', 'orden'], ['codigo_curso', 'orden']);
     }
 }
