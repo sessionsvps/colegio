@@ -8,15 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Competencia extends Model
 {
     use HasFactory;
-    protected $table = 'competencias';
-    public $incrementing = false;
     protected $primaryKey = ['codigo_curso', 'orden'];
+    public $incrementing = false;
     public $timestamps = false;
-
     protected $guarded = [];
 
     public function curso()
     {
         return $this->belongsTo(Curso::class, 'codigo_curso', 'codigo_curso');
+    }
+
+    public function notasPorCompetencias()
+    {
+        return $this->hasMany(Notas_por_competencia::class, ['codigo_curso', 'orden'], ['codigo_curso', 'orden']);
     }
 }
