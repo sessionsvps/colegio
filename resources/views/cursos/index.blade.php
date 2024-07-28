@@ -55,10 +55,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach ($cursos as $curso)
-            <div class="relative flex flex-col mt-3 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
+            <div class="relative flex flex-col mt-3 text-gray-700 bg-gray-50 shadow-md bg-clip-border rounded-xl">
                 <div
                     class="relative mx-4 mt-6 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
-                    <img src="{{ asset('img/cursos.jpg') }}" alt="card-image" />
+                    <img src="{{ asset("img/cursos.jpg") }}" alt="card-image" />
                 </div>
                 <div class="p-6">
                     <h5

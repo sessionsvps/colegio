@@ -2,27 +2,44 @@
 
 @section('contenido')
 <div class="container mx-auto">
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">{{ $curso->descripcion }}</h2>
-        <p class="text-gray-600"><span class="font-semibold">Código:</span> {{ $curso->codigo_curso }}</p>
-        <p class="text-gray-600"><span class="font-semibold">Año de actualización:</span> {{ $curso->año_actualizacion
-            }}</p>
+    <!-- Información del Curso -->
+    <div
+        class="mb-6 flex flex-col md:flex-row items-center md:justify-between bg-gray-50 shadow-lg rounded-lg p-6">
+        <div class="flex-1">
+            <h2 class="text-xl sm:text-2xl lg:text-4xl font-bold text-gray-800 mb-2">{{ $curso->descripcion }}</h2>
+            <p class="text-gray-600 sm:text-lg lg:text-xl mt-3"><span class="font-semibold">Código:</span> {{ $curso->codigo_curso }}</p>
+            <p class="text-gray-600 sm:text-lg lg:text-xl mt-1"><span class="font-semibold">Año de actualización:</span> {{
+                $curso->año_actualizacion }}</p>
+        </div>
+        <div class="hidden md:block flex-shrink-0 mt-4 lg:mt-0">
+            <img src="{{ asset("img/info_cursos/$curso->codigo_curso.webp") }}" alt="Imagen del Curso"
+            class="w-48 h-48 lg:w-64 lg:h-64 object-cover rounded-full shadow-md">
+        </div>
     </div>
 
-    <div class="mb-6">
-        <h3 class="text-xl font-semibold text-gray-800">Competencias</h3>
-        <ul class="mt-3 space-y-2">
+    <!-- Competencias del Curso -->
+    <div class="mb-6 bg-gray-50 shadow-lg rounded-lg p-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Competencias</h3>
+        <ul class="space-y-4">
             @foreach ($competencias as $competencia)
-            <li class="p-4 bg-gray-100 rounded-lg shadow-sm">
-                {{ $competencia->descripcion }}
+            <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                <div class="flex-shrink-0 mr-4">
+                    <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                    </svg>
+                </div>
+                <div class="flex-1 text-gray-800">
+                    {{ $competencia->descripcion }}
+                </div>
             </li>
             @endforeach
         </ul>
     </div>
 
-    <div class="mb-6">
+    <div class="mb-6 bg-gray-50 shadow-lg rounded-lg p-6">
         <h3 class="text-xl font-semibold text-gray-800">Docentes</h3>
-        <div class="mt-3 relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="mt-6 relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
                 <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -38,16 +55,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($catedras as $catedra)
+                    @foreach ($docentes as $docente)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $catedra->docente->codigo_docente }}
+                            {{ $docente->codigo_docente }}
                         </th>
                         <td class="px-6 py-4">
-                            {{ $catedra->docente->primer_nombre . ' ' . $catedra->docente->otros_nombres .
+                            {{ $docente->primer_nombre . ' ' . $docente->otros_nombres .
                             ' ' .
-                            $catedra->docente->apellido_paterno . ' ' .
-                            $catedra->docente->apellido_materno }}
+                            $docente->apellido_paterno . ' ' .
+                            $docente->apellido_materno }}
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-center">
@@ -61,13 +78,31 @@
         </div>
     </div>
 
-    <div class="mb-6">
+    <div class="mb-6 bg-gray-50 shadow-lg rounded-lg p-6">
         <h3 class="text-xl font-semibold text-gray-800">Estudiantes Matriculados</h3>
         <!-- Filtros -->
-        <div class="flex flex-wrap -mx-3 mb-6">
+        <div class="flex flex-wrap -mx-3 mt-6 mb-8">
             <form id="filter-form" action="{{ route('cursos.info', $curso->codigo_curso) }}" method="GET"
                 class="flex flex-wrap w-full">
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-3 lg:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="docente">
+                        Docente
+                    </label>
+                    <select
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="docente" name="docente" onchange="document.getElementById('filter-form').submit();">
+                        <option value="" selected>Todos</option>
+                        @foreach($docentes as $docente)
+                        <option value="{{ $docente->codigo_docente }}" {{ request('docente')==$docente->codigo_docente ? 'selected' : '' }}>
+                            {{ $docente->primer_nombre }} {{ $docente->otros_nombres }} {{ $docente->apellido_paterno }} {{ $docente->apellido_materno }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('nivel')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-3 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nivel">
                         Nivel
                     </label>
@@ -85,7 +120,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-3 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="grado">
                         Grado
                     </label>
@@ -103,7 +138,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/3 px-3">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="seccion">
                         Sección
                     </label>
@@ -122,7 +157,7 @@
                 </div>
             </form>
         </div>
-        <div class="mt-3 relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
                 <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -150,7 +185,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($catedras as $catedra)
+                    @foreach ($catedras_filtradas as $catedra)
                     @foreach ($catedra->secciones as $seccion)
                     @foreach ($seccion->estudiantes_matriculados as $info_estudiante)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
