@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             DocenteSeeder::class,
             EstudianteSeeder::class,
             CompetenciaSeeder::class,
+            BimestreSeeder::class,
         ]);
     }
 }
