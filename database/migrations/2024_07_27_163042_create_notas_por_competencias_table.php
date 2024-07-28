@@ -18,8 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_bimestre');
             $table->string('codigo_curso', 4);
             $table->tinyInteger('orden');
-            $table->string('nivel_logro',2);
-            $table->string('conclusion',50);
+            $table->string('nivel_logro',2)->nullable();
+            //$table->string('conclusion',50)->nullable();
             $table->boolean('exoneracion');
             // Definir la clave foránea
             $table->foreign('codigo_estudiante')->references('codigo_estudiante')->on('boleta_de_notas');

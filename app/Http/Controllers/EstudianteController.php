@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Mail\CredencialesEstudiante;
+use App\Models\Asistencia;
+use App\Models\Boleta_de_nota;
+use App\Models\Competencia;
 use App\Models\Curso;
+use App\Models\Curso_por_nivel;
 use App\Models\Domicilio;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
+use App\Models\Notas_por_competencia;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -247,7 +252,45 @@ class EstudianteController extends BaseController
             'id_seccion' => $request->input('seccion'),
         ]);
 
-    return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
+        $boleta_nota = Boleta_de_nota::create([
+            'codigo_estudiante' => $codigo_estudiante,
+            'user_id' => $estudiante->user_id,
+            'año_escolar' => $request->input('año_escolar'),
+            'codigo_modular' => '1554526057',
+        ]);
+
+        for ($i = 1; $i <= 4; $i++) {
+            Asistencia::create([
+                'codigo_estudiante' => $codigo_estudiante,
+                'user_id' => $estudiante->user_id,
+                'año_escolar' => $request->input('año_escolar'),
+                'id_bimestre' => $i,
+                'inasistencias_justificadas' => 0,
+                'inasistencias_injustificadas' => 0,
+                'tardanzas_justificadas' => 0,
+                'tardanzas_injustificadas' => 0,
+            ]);
+        }
+
+        $cursos = Curso_por_nivel::where('id_nivel', $request->input('nivel'))->get();
+        foreach($cursos as $curso){
+            foreach($curso->curso->competencias as $competencia){
+                for ($i = 1; $i <= 4; $i++) {
+                    Notas_por_competencia::create([
+                        'codigo_estudiante' => $codigo_estudiante,
+                        'user_id' => $estudiante->user_id,
+                        'año_escolar' => $request->input('año_escolar'),
+                        'id_bimestre' => $i,
+                        'codigo_curso' => $competencia->codigo_curso,
+                        'orden' => $competencia->orden,
+                        'nivel_logro' => null,
+                        'exoneracion' => false,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
 
     }
 
