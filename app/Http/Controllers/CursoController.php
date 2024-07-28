@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Catedra;
 use App\Models\Curso;
 use App\Models\Estudiante;
+use App\Models\Grado;
 use App\Models\Nivel;
+use App\Models\Seccion;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -107,11 +110,32 @@ class CursoController extends Controller
         //
     }
 
-    public function info(string $codigo_curso)
+    public function info(string $codigo_curso, Request $request)
     {
         $curso = Curso::where('codigo_curso', $codigo_curso)->firstOrFail();
         $competencias = $curso->competencias;
-        $catedras = $curso->catedras;
-        return view('cursos.info', compact('curso','competencias','catedras'));
+        $query = Catedra::where('codigo_curso', $codigo_curso);
+
+        // Obtener niveles, grados y secciones relacionados con las cátedras del curso
+        $niveles = Nivel::all();
+        $grados_primaria = Grado::where('id_nivel', 1)->get();
+        $grados_secundaria = Grado::where('id_nivel', 2)->get();
+
+        // Filtrar cátedras según los parámetros del request
+        if ($request->filled('nivel')) {
+            $query->where('id_nivel', $request->nivel);
+        }
+
+        if ($request->filled('grado')) {
+            $query->where('id_grado', $request->grado);
+        }
+
+        if ($request->filled('seccion')) {
+            $query->where('id_seccion', $request->seccion);
+        }
+
+        $catedras = $query->get();
+
+        return view('cursos.info', compact('curso','competencias','catedras','niveles','grados_primaria', 'grados_secundaria'));
     }
 }
