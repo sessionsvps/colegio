@@ -26,7 +26,7 @@
                 </a>
             @endcan --}}
         </div>
-        
+    
         @if($user->hasRole('Admin'))
             <form method="GET" action="{{ route('cursos.index') }}" class="mb-6">
                 <div class="mb-4">
@@ -53,7 +53,31 @@
             </form>
         @endif
 
-        <table class="min-w-full bg-white">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach ($cursos as $curso)
+            <div class="relative flex flex-col mt-3 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl">
+                <div
+                    class="relative mx-4 mt-6 overflow-hidden text-white shadow-lg bg-clip-border rounded-xl bg-blue-gray-500 shadow-blue-gray-500/40">
+                    <img src="{{ asset('img/cursos.jpg') }}" alt="card-image" />
+                </div>
+                <div class="p-6">
+                    <h5
+                        class="block mb-2 text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
+                        {{ $curso->descripcion }}
+                    </h5>
+                </div>
+                <div class="p-6 pt-0">
+                    <a
+                        class="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                        type="button" href="{{ route('cursos.info', $curso->codigo_curso) }}">
+                        Ver más
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- <table class="min-w-full bg-white">
             <thead>
                 <tr>
                     <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
@@ -63,10 +87,6 @@
                         Descripción</th>
                     <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
                         Año de actualización</th>
-                    {{-- @can('docentes.control')
-                        <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                            Acciones</th>
-                    @endcan --}}
                 </tr>
             </thead>
             <tbody>
@@ -79,19 +99,12 @@
                         <td class="py-2 px-4 border-b border-gray-200">{{ $curso->codigo_curso }}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $curso->descripcion}}</td>
                         <td class="py-2 px-4 border-b border-gray-200">{{ $curso->año_actualizacion }}</td>
-                        {{-- @can('docentes.control')
-                            <td class="py-2 px-4 border-b border-gray-200">
-                                <a href="{{ route('docentes.edit', $docente->codigo_docente) }}"
-                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                                <button type="button" onclick="confirmDelete('{{ $docente->codigo_docente }}')"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
-                            </td>
-                        @endcan --}}
                     </tr>
                     @endforeach
                     @endif
             </tbody>
-        </table>
+        </table> --}}
+        
         <div class="mt-10">
             {{ $cursos->links() }}
         </div>

@@ -106,4 +106,12 @@ class CursoController extends Controller
     {
         //
     }
+
+    public function info(string $codigo_curso)
+    {
+        $curso = Curso::where('codigo_curso', $codigo_curso)->firstOrFail();
+        $competencias = $curso->competencias;
+        $catedras = $curso->catedras;
+        return view('cursos.info', compact('curso','competencias','catedras'));
+    }
 }

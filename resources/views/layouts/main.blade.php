@@ -9,13 +9,13 @@
     <!-- Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 
+    <!-- Material Tailwind -->
+    <link rel="stylesheet" href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css" />
+
     <!-- Estilos -->
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
-
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script src="{{asset('js/alertify.min.js')}}"></script>
-
+    
     <title>{{ config('app.name', 'Dashboard') }}</title>
 </head>
 
@@ -261,6 +261,8 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <script src="{{asset('js/alertify.min.js')}}"></script>
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/script-name.js"></script>
     @yield('scripts')
 </body>
 

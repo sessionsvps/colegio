@@ -26,6 +26,7 @@ Route::middleware([
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
+    Route::get('cursos/{id}/info', [CursoController::class, 'info'])->name('cursos.info');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
 
     Route::get('/export',[ExportController::class,'export'])->name('export');
