@@ -21,7 +21,7 @@
     <div class="mb-6 bg-gray-50 shadow-lg rounded-lg p-6">
         <h3 class="text-xl font-semibold text-gray-800 mb-4">Competencias</h3>
         <ul class="space-y-4">
-            @foreach ($competencias as $competencia)
+            @forelse ($competencias as $competencia)
             <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
                 <div class="flex-shrink-0 mr-4">
                     <svg class="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
@@ -33,7 +33,18 @@
                     {{ $competencia->descripcion }}
                 </div>
             </li>
-            @endforeach
+            @empty
+            <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                <div class="flex-shrink-0 mr-4">
+                    <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                    </svg>
+                </div>
+                <div class="flex-1 text-gray-800">
+                    No hay Competencias para este curso
+                </div>
+            </li>
+            @endforelse
         </ul>
     </div>
 
@@ -55,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($docentes as $docente)
+                    @forelse ($docentes as $docente)
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                             {{ $docente->codigo_docente }}
@@ -72,7 +83,13 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center">
+                                No hay docentes asignados
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
