@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Catedra extends Model
 {
 
-    use HasFactory;
-    use \Awobaz\Compoships\Compoships;
+    use HasFactory, Compoships;
 
-    protected $primaryKey = ['codigo_curso', 'id_seccion', 'id_grado', 'id_nivel'];
+    protected $primaryKey = ['codigo_curso', 'id_seccion', 'id_grado', 'id_nivel', 'año_escolar'];
     public $incrementing = false;
 
     protected $guarded = [];
@@ -21,9 +21,9 @@ class Catedra extends Model
         return $this->belongsTo(Docente::class,['codigo_docente', 'user_id'], ['codigo_docente', 'user_id']);
     }
 
-    public function seccion()
+    public function secciones()
     {
-        return $this->belongsTo(Seccion::class,['id_seccion', 'id_nivel', 'id_grado'], ['id_seccion', 'id_nivel', 'id_grado']);
+        return $this->hasMany(Seccion::class,['id_seccion', 'id_nivel', 'id_grado'], ['id_seccion', 'id_nivel', 'id_grado']);
     }
 
     public function curso()

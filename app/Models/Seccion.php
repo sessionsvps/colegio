@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Seccion extends Model
 {
     use HasFactory;
-    use \Awobaz\Compoships\Compoships;
+    use Compoships;
 
     protected $table = 'secciones';
     protected $primaryKey = ['id_seccion','id_grado', 'id_nivel'];
@@ -38,10 +39,11 @@ class Seccion extends Model
     public function estudiantes()
     {
         return $this->belongsToMany(
-            Estudiante::class,
-            'estudiante_secciones',
-            ['id_seccion', 'id_nivel', 'id_grado'],
-            ['codigo_estudiante', 'user_id']
-        )->withPivot('año_escolar');
+            Estudiante::class,['id_seccion', 'id_nivel', 'id_grado'],['codigo_estudiante', 'user_id'])->withPivot('año_escolar');
+    }
+
+    public function estudiantes_matriculados()
+    {
+        return $this->hasMany(Estudiante_Seccion::class, ['id_seccion', 'id_nivel', 'id_grado'], ['id_seccion', 'id_nivel', 'id_grado']);
     }
 }

@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('competencias', function (Blueprint $table) {
-            $table->string('codigo_curso');
+            $table->string('codigo_curso',4);
             $table->tinyInteger('orden');
-            $table->string('descripcion');
-            $table->foreign('codigo_curso')->references('codigo_curso')->on('cursos');
+            $table->string('descripcion',300);
+            // PK
             $table->primary(['codigo_curso', 'orden']);
+            // FK
+            $table->foreign('codigo_curso')->references('codigo_curso')->on('cursos');
+            // Agregar índices
+            $table->index('orden');
         });
     }
 

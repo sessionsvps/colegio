@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
@@ -9,8 +10,7 @@ use Thiagoprz\CompositeKey\HasCompositeKey;
 
 class Docente extends Model
 {
-    use HasFactory;
-    use HasCompositeKey;
+    use HasFactory,HasCompositeKey,Compoships;
     
     protected $primaryKey = ['codigo_docente', 'user_id'];
     public $incrementing = false;

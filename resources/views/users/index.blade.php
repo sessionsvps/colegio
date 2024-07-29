@@ -16,52 +16,63 @@
         </div>
     </div>
     @endif
-    <div>
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold">Lista de Usuarios</h2>
-        </div>
-        <table class="min-w-full bg-white">
-            <thead>
+    <div class="flex justify-between items-center mb-10">
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Usuarios</h2>
+    </div>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
+            <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th
-                        class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Nombre</th>
-                    <th
-                        class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Correo</th>
-                    <th
-                        class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Acciones</th>
+                    <th scope="col" class="px-6 py-3">
+                        ID
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Nombre
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Correo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Acciones
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                @if (count($users)<=0) <tr>
-                    <td class="text-center py-2 px-4 border-b border-gray-200" colspan="7">No hay registros</td>
-                    </tr>
-                    @else
-                    @foreach ( $users as $user )
-                    <tr>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $user->full_name }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $user->email }}</td>
-                        @can('users.control')
-                            <td class="py-2 px-4 border-b border-gray-200">
-                                <a href="{{route('users.edit', $user->id)}}"
-                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Editar</a>
-                                <button type="button" onclick="confirmDelete('{{ $user->id }}')"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Borrar</button>
-                            </td>
-                        @endcan
-                    </tr>
-                    @endforeach
-                    @endif
+                @forelse ($users as $user)
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $user->id }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ $user->full_name }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $user->email }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-center">
+                            <a href="{{ route('users.edit', $user->id) }}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                            <button type="button" onclick="confirmDelete('{{ $user->id }}')"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center">
+                        No hay registros
+                    </td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
-        <div class="mt-10">
-            {{ $users->links() }}
-        </div>
+    </div>
+    <div class="mt-10">
+        {{ $users->links() }}
     </div>
 @endsection
-
+    
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {

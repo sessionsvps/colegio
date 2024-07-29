@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Credenciales extends Mailable
+class CredencialesEstudiante extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,13 +29,10 @@ class Credenciales extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
-            view: 'emails.credenciales',
+            view: 'emails.credenciales_estudiante',
             with: [
                 'email' => $this->email,
                 'password' => $this->password,

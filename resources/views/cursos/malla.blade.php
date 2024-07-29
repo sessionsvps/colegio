@@ -45,35 +45,4 @@
 @endsection
 
 @section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(function() {
-                        var successMessage = document.getElementById('success-message');
-                        if (successMessage) {
-                            successMessage.style.transition = 'opacity 0.5s ease';
-                            successMessage.style.opacity = '0';
-                            setTimeout(function() {
-                                successMessage.remove();
-                            }, 500); // Espera el tiempo de la transición para eliminar el elemento
-                        }
-                    }, 3000); // 3 segundos antes de empezar a desvanecer
-                });
-    </script>
-
-    <script>
-        function confirmDelete(id){
-                alertify.confirm("¿Seguro que quieres eliminar al docente?",
-                function(){
-                    let form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/docentes/' + id ;
-                    form.innerHTML = '@csrf @method("DELETE")';
-                    document.body.appendChild(form);
-                    form.submit();
-                },
-                function(){
-                    alertify.error('Cancelado');
-                });
-            }
-    </script>
 @endsection

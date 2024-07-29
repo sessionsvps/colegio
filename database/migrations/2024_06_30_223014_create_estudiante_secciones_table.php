@@ -27,6 +27,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('user_id')->on('estudiantes');
             // Definir clave primaria compuesta
             $table->primary(['codigo_estudiante', 'user_id', 'año_escolar']);
+            // Agregar índices
+            $table->index('año_escolar');
         });
     }
 
