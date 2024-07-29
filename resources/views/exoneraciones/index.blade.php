@@ -66,17 +66,20 @@
                             ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
                     </div>
                 </div>
-                <div class=" bg-gray-50 shadow-md rounded-lg p-6">
-                    <div class="flex justify-end mb-4">
-                        {{-- <a
-                            href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->estudiante->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre]) }}"> --}}
-                            <button
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Editar
-                            </button>
-                        {{-- </a> --}}
-                    </div>
-                    <ul class="space-y-4">
+                <div class=" bg-gray-50 shadow-md rounded-lg p-6 flex flex-col justify-center items-center">
+                    @if ($estudiante->año_escolar == 2024)
+                        <div class="flex w-full justify-end mb-4">
+                            {{-- <a
+                                href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->estudiante->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre]) }}">
+                                --}}
+                                <button
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Editar
+                                </button>
+                                {{-- </a> --}}
+                        </div>
+                    @endif
+                    <ul class="space-y-4 w-full">
                         @forelse ($exoneraciones as $exoneracion)
                         <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
                             <div class="flex-shrink-0 mr-4">
