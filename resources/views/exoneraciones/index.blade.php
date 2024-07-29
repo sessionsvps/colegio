@@ -30,11 +30,11 @@
                     <label for="año_escolar" class="block text-sm font-medium text-gray-700">Año Escolar</label>
                     <select id="año_escolar" name="año_escolar"
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="2023" {{ request('año_escolar')=='2023' ? 'selected' : '' }}>
-                            2023
-                        </option>
                         <option value="2024" {{ request('año_escolar')=='2024' ? 'selected' : '' }}>
                             2024
+                        </option>
+                        <option value="2023" {{ request('año_escolar')=='2023' ? 'selected' : '' }}>
+                            2023
                         </option>
                     </select>
                 </div>
@@ -69,14 +69,10 @@
                 <div class=" bg-gray-50 shadow-md rounded-lg p-6 flex flex-col justify-center items-center">
                     @if ($estudiante->año_escolar == 2024)
                         <div class="flex w-full justify-end mb-4">
-                            {{-- <a
-                                href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->estudiante->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre]) }}">
-                                --}}
-                                <button
-                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    Editar
-                                </button>
-                                {{-- </a> --}}
+                            <a href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white
+                                bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Editar
+                            </a>
                         </div>
                     @endif
                     <ul class="space-y-4 w-full">
@@ -89,7 +85,7 @@
                                 </svg>
                             </div>
                             <div class="flex-1 text-gray-800">
-                                Curso: {{ $exoneracion->curso->descripcion }}
+                                {{ $exoneracion->curso->descripcion }}
                             </div>
                         </li>
                         @empty

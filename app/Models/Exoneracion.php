@@ -5,16 +5,23 @@ namespace App\Models;
 use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Thiagoprz\CompositeKey\HasCompositeKey;
 
 class Exoneracion extends Model
 {
-    use HasFactory, Compoships;
+    use HasFactory, Compoships, HasCompositeKey;
     
     protected $table = 'exoneraciones';
     protected $primaryKey = ['codigo_estudiante', 'codigo_curso', 'año_escolar', 'user_id'];
-    public $incrementing = false;    
+    public $incrementing = false;
+    public $timestamps = false;
 
     protected $guarded = [];
+
+    public function getKeyName()
+    {
+        return ['codigo_estudiante', 'codigo_curso', 'año_escolar', 'user_id'];
+    }
 
     public function curso()
     {

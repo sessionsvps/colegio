@@ -34,7 +34,8 @@ Route::middleware([
     Route::resource('notas', NotasController::class)->except('show');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
     Route::resource('exoneraciones', ExoneracionController::class)->except('show');
-    Route::get('/exoneraciones/{codigo_estudiante}/{codigo_curso}/{año_escolar}/edit', [ExoneracionController::class, 'edit'])->name('exoneraciones.edit');
+    Route::get('/exoneraciones/{codigo_estudiante}/{año_escolar}/edit', [ExoneracionController::class, 'edit'])->name('exoneraciones.edit');
+    Route::put('/exoneraciones/{codigo_estudiante}/{año_escolar}', [ExoneracionController::class, 'update'])->name('exoneraciones.update');
     Route::get('/asistencias/{codigo_estudiante}/{id_bimestre}/edit', [AsistenciaController::class, 'edit'])->name('asistencias.edit');
     Route::put('/asistencias/{codigo_estudiante}/{id_bimestre}', [AsistenciaController::class, 'update'])->name('asistencias.update');
     Route::get('/export',[ExportController::class,'export'])->name('export');
