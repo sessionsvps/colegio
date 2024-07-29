@@ -185,7 +185,7 @@
     </aside>
 
     <div class="p-4 sm:ml-64">
-        <div class="px-4 mt-20">
+        <div class="px-4 mt-20 container mx-auto">
             @yield('contenido')
         </div>
     </div>
