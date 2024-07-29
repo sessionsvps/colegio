@@ -2,18 +2,18 @@
 
 @section('contenido')
 
-<div class="container mx-auto">
     <a href="{{ route('exoneraciones.index') }}"
         class="bg-red-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block">
         Volver
     </a>
     <h2 class="text-xl lg:text-2xl font-bold my-10">Registro de Exoneraciones</h2>
-
-    <form action="{{ route('exoneraciones.update', ['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}"
+    
+    <form
+        action="{{ route('exoneraciones.update', ['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}"
         method="POST">
         @csrf
         @method('PUT')
-
+    
         <div class="mt-10 grid lg:grid-cols-2 gap-5">
             <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
                 <div class="flex-shrink-0">
@@ -42,12 +42,12 @@
                 <ul class="space-y-4">
                     @foreach ($cursos_exonerables as $curso)
                     <li class="flex items-center p-4 bg-white rounded-lg shadow-sm">
-                        <input type="checkbox" id="curso_exonerado_{{ $curso->codigo_curso }}"
-                            name="cursos_exonerados[]" value="{{ $curso->codigo_curso }}"
-                            class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                            @if ($exoneraciones->contains('codigo_curso', $curso->codigo_curso))
-                            checked
-                            @endif
+                        <input type="checkbox" id="curso_exonerado_{{ $curso->codigo_curso }}" name="cursos_exonerados[]"
+                            value="{{ $curso->codigo_curso }}"
+                            class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" @if
+                            ($exoneraciones->contains('codigo_curso', $curso->codigo_curso))
+                        checked
+                        @endif
                         >
                         <label for="curso_exonerado_{{ $curso->codigo_curso }}" class="ml-3 text-gray-800">
                             {{ $curso->descripcion }}
@@ -57,7 +57,7 @@
                 </ul>
             </div>
         </div>
-
+    
         <div class="flex mt-10 items-center justify-center">
             <button
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -66,7 +66,7 @@
             </button>
         </div>
     </form>
-</div>
+
 @endsection
 
 @section('scripts')
