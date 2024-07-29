@@ -34,7 +34,7 @@ class CatedraController extends Controller
             $query->where('id_nivel', $filtra_nivel)
                   ->where('id_grado', $filtra_grado)
                   ->where('id_seccion', $filtra_seccion)
-                  ->where('año_escolar',2024)
+                  ->where('año_escolar',Carbon::now()->year)
                   ->with('docente');
         }])
         ->paginate(10)
@@ -47,17 +47,18 @@ class CatedraController extends Controller
         $niveles = Nivel::all();
         $grados_primaria = Grado::where('id_nivel', 1)->get();
         $grados_secundaria = Grado::where('id_nivel', 2)->get();
+        // dd($filtra_nivel);
 
         if($filtra_nivel!=null) {
             $aula = Seccion::where('id_nivel',$filtra_nivel)
                            ->where('id_grado',$filtra_grado)
                            ->where('id_seccion',$filtra_seccion)
                            ->first();
-            return view('catedras.index',compact('cursos', 'user', 'niveles', 'grados_primaria', 'grados_secundaria' , 'aula'));
+            return view('catedras.index',compact('cursos', 'user', 'niveles', 'grados_primaria', 'grados_secundaria' , 'aula', 'filtra_nivel'));
         }
         else
         {
-            return view('catedras.index',compact('cursos', 'user', 'niveles', 'grados_primaria', 'grados_secundaria' ,'filtra_nivel', 'filtra_grado', 'filtra_seccion'));
+            return view('catedras.index',compact('cursos', 'user', 'niveles', 'grados_primaria', 'grados_secundaria'));
         }
         
     }

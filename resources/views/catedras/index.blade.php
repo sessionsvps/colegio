@@ -36,7 +36,7 @@
                             id="nivel" name="nivel" onchange="updateGrados()" required>
                             <option value="" selected disabled>Seleccione un nivel</option>
                             @foreach($niveles as $nivel)
-                            <option value="{{ $nivel->id_nivel }} ">
+                            <option value="{{ $nivel->id_nivel }} " {{ request('nivel')== $nivel->id_nivel ? 'selected' : '' }} >
                                 {{ $nivel->detalle }}
                             </option>
                             @endforeach
@@ -52,7 +52,23 @@
                         <select
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="grado" name="grado" required>
-                            <option value="" selected disabled>Seleccione un grado</option>
+                            @if(!isset($filtra_nivel))
+                                <option value="" selected disabled>Seleccione un grado</option>
+                            @else
+                                @if($filtra_nivel == 1)
+                                    @foreach($grados_primaria as $grado_p)
+                                        <option value="{{ $grado_p->id_grado }}" {{ request('grado') == $grado_p->id_grado ? 'selected' : '' }}>
+                                            {{ $grado_p->detalle }}
+                                        </option>
+                                    @endforeach
+                                @elseif($filtra_nivel == 2)
+                                    @foreach($grados_secundaria as $grado_s)
+                                        <option value="{{ $grado_s->id_grado }}" {{ request('grado') == $grado_s->id_grado ? 'selected' : '' }}>
+                                            {{ $grado_s->detalle }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            @endif
                         </select>
                         @error('grado')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -66,10 +82,10 @@
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             id="seccion" name="seccion" required>
                             <option value="" selected disabled>Seleccione una sección</option>
-                            <option value="1">A</option>
-                            <option value="2">B</option>
-                            <option value="3">C</option>
-                            <option value="4">D</option>
+                            <option value="1" {{ request('seccion')== 1 ? 'selected' : '' }}>A</option>
+                            <option value="2" {{ request('seccion')== 2 ? 'selected' : '' }}>B</option>
+                            <option value="3" {{ request('seccion')== 3 ? 'selected' : '' }}>C</option>
+                            <option value="4" {{ request('seccion')== 4 ? 'selected' : '' }}>D</option>
                         </select>
                         @error('seccion')
                         <p class="text-red-500 text-xs italic">{{ $message }}</p>
@@ -161,7 +177,7 @@
             var grados = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
             
             var gradoSelect = document.getElementById('grado');
-            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset options
+            gradoSelect.innerHTML = '<option value="" selected disabled >Seleccione un grado</option>'; // Reset options
             
             if (nivel == 1) {
                 grados.primaria.forEach(function(grado) {
