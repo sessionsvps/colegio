@@ -121,9 +121,10 @@
                         </td>
                         <td class="py-2 px-4 border-b border-gray-200">
                             @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
-                                <a href="{{ route('catedras.edit', $aula->detalle) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Modificar</a>
+                                <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Modificar</a>
                             @else
-                                <a href="{{ route('catedras.create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Asignar</a>
                             @endif
                         </td>
