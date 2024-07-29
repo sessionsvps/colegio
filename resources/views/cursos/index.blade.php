@@ -18,7 +18,7 @@
     @endif
     <div>
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold">Lista de Cursos</h2>
+            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Cursos</h2>
             {{-- @can('docentes.control')
                 <a href="{{ route('docentes.create') }}"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">

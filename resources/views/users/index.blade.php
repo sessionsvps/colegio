@@ -17,7 +17,7 @@
     </div>
     @endif
     <div class="flex justify-between items-center mb-10">
-        <h2 class="text-xl lg:text-2xl font-bold">Lista de Usuarios</h2>
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Usuarios</h2>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
