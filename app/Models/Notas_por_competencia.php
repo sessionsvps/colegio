@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Notas_por_competencia extends Model
 {
-    use HasFactory;
+    use HasFactory, Compoships;
     protected $primaryKey = ['codigo_estudiante', 'año_escolar', 'user_id', 'id_bimestre', 'codigo_curso', 'orden'];
     public $incrementing = false;
     public $timestamps = false;
