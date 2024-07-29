@@ -105,9 +105,7 @@
             </tbody>
         </table> --}}
         
-        <div class="mt-10">
-            {{ $cursos->links() }}
-        </div>
+        
     </div>
 @endsection
 
