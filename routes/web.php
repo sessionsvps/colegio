@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\CatedraController;
+use App\Http\Controllers\BoletaNotaController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\UserController;
@@ -41,6 +42,7 @@ Route::middleware([
    
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
     Route::resource('notas', NotasController::class)->except('show');
+    Route::resource('boleta_notas', BoletaNotaController::class)->except('show');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
     Route::resource('exoneraciones', ExoneracionController::class)->except('show');
     Route::get('/exoneraciones/{codigo_estudiante}/{año_escolar}/edit', [ExoneracionController::class, 'edit'])->name('exoneraciones.edit');
