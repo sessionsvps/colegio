@@ -65,9 +65,23 @@ class CatedraController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
+    // public function create()
+    // {
        
+    // }
+    
+    public function create(string $codigo_curso, string $nivel, string $grado, string $seccion)
+    {
+        $curso = Curso::findOrFail($codigo_curso);
+        $docentes = Docente::whereHas('user', function($query) {
+            $query->where('esActivo', 1);
+        })->get();
+        $aula = Seccion::where('id_nivel',$nivel)
+                           ->where('id_grado',$grado)
+                           ->where('id_seccion',$seccion)
+                           ->first();
+        $año = Carbon::now()->year;
+        return view('catedras.create', compact('curso', 'nivel', 'grado', 'seccion', 'año', 'aula', 'docentes'));
     }
 
     /**
@@ -75,7 +89,46 @@ class CatedraController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'codigo_curso' => 'required',
+            'codigo_docente' =>'required|exists:docentes,codigo_docente',
+            'id_nivel' => 'required',
+            'id_grado' => 'required',
+            'id_seccion' => 'required',
+            'año_escolar' =>'required'
+        ], 
+        [
+
+        ]);
+
+        $codigo_docente = $request->codigo_docente;
+        $docente = Docente::where('codigo_docente', $codigo_docente)->firstOrFail();
+        $user_id = $docente->user->id;
+        // dd($codigo_docente, $user_id);
+
+        Catedra::create([
+            'codigo_curso' => $request->codigo_curso,
+            'codigo_docente' => $request->codigo_docente,
+            'id_nivel' => $request->id_nivel,
+            'id_grado' => $request->id_grado,
+            'id_seccion' => $request->id_seccion,
+            'año_escolar' => $request->año_escolar,
+            'user_id' => $user_id,
+        ]);
+        
+        return redirect()->route('catedras.index', [
+            'nivel' => $request->id_nivel,
+            'grado' => $request->id_grado,
+            'seccion' => $request->id_seccion,
+        ])->with('success', 'Docente asignado exitosamente.');
+    }
+
+    public function cancelar($nivel, $grado, $seccion) {
+        return redirect()->route('catedras.index', [
+            'nivel' => $nivel,
+            'grado' => $grado,
+            'seccion' => $seccion,
+        ]);
     }
 
     /**
@@ -89,24 +142,58 @@ class CatedraController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $aula)
+    public function edit(string $codigo_curso, string $nivel, string $grado, string $seccion)
     {
-        // $curso = Curso::findOrFail($codigo_curso);
-        $docentes = Docente::all();
-        dd($aula);
-        // $nivel = $aula->id_nivel;
-        // $grado = $aula->id_grado;
-        // $seccion = $aula->id_seccion;
-        $año = 2024;
-        return view('catedras.create', compact('curso', 'año'));
+        $curso = Curso::findOrFail($codigo_curso);
+        $docentes = Docente::whereHas('user', function($query) {
+            $query->where('esActivo', 1);
+        })->get();
+        $aula = Seccion::where('id_nivel',$nivel)
+                           ->where('id_grado',$grado)
+                           ->where('id_seccion',$seccion)
+                           ->first();
+        $año = Carbon::now()->year;
+        $catedra = Catedra::where('codigo_curso', $codigo_curso)
+                          ->where('id_nivel', $nivel)
+                          ->where('id_grado', $grado)
+                          ->where('id_seccion', $seccion)
+                          ->firstOrFail();
+        return view('catedras.edit', compact('curso', 'nivel', 'grado', 'seccion', 'año', 'aula', 'catedra', 'docentes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $codigo_curso, $nivel, $grado, $seccion)
     {
-        //
+        $request->validate([
+            'codigo_docente' => 'required|exists:docentes,codigo_docente',
+        ]);
+
+        $catedra = Catedra::where([
+            ['codigo_curso', '=', $codigo_curso],
+            ['id_nivel', '=', $nivel],
+            ['id_grado', '=', $grado],
+            ['id_seccion', '=', $seccion],
+            ['año_escolar', '=', Carbon::now()->year],
+        ])->firstOrFail();
+
+        $codigo_docente = $request->codigo_docente;
+        $docente = Docente::where('codigo_docente', $codigo_docente)->firstOrFail();
+        $user_id = $docente->user->id;
+        
+        $aux = $catedra;
+
+        $catedra->codigo_docente = $codigo_docente;
+        $catedra->user_id = $user_id;
+        // dd($aux, $catedra);
+        $catedra->save();
+
+        return redirect()->route('catedras.index', [
+            'nivel' => $nivel,
+            'grado' => $grado,
+            'seccion' => $seccion,
+        ])->with('success', 'Docente modificado exitosamente.');
     }
 
     /**

@@ -27,8 +27,13 @@ Route::middleware([
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');
     Route::post('/matriculado',[EstudianteController::class,'realizarMatricula'])->name('estudiantes.realizarMatricula');
-    // Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.create');
+    
+    Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.custom-create');
+    Route::get('catedras/edit/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'edit'])->name('catedras.custom-edit');
+    Route::put('catedras/update/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'update'])->name('catedras.custom-update');
+    Route::get('catedras/cancel/{nivel}/{grado}/{seccion}', [CatedraController::class, 'cancelar'])->name('catedras.cancelar');
     Route::resource('catedras', CatedraController::class);
+    
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
