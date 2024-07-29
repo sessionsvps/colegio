@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('codigo_estudiante', 4);
             $table->string('codigo_curso', 4);
             $table->integer('año_escolar');
-            
             // Definir la clave foránea
-            $table->foreign('codigo_estudiante')->references('codigo_estudiante')->on('estudiantes');
-            $table->foreign('user_id')->references('user_id')->on('estudiantes');
+            $table->foreign('codigo_estudiante')->references('codigo_estudiante')->on('estudiante_secciones');
+            $table->foreign('user_id')->references('user_id')->on('estudiante_secciones');
+            $table->foreign('año_escolar')->references('año_escolar')->on('estudiante_secciones');
             $table->foreign('codigo_curso')->references('codigo_curso')->on('cursos');
             // Definir clave primaria compuesta
-            $table->primary(['codigo_estudiante', 'codigo_curso','año_escolar','user_id']);
+            $table->primary(['codigo_estudiante','codigo_curso','año_escolar','user_id']);
         });
     }
 
