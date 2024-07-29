@@ -32,6 +32,8 @@ Route::middleware([
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
     Route::resource('notas', NotasController::class)->except('show');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
+    Route::get('/asistencias/{codigo_estudiante}/{id_bimestre}/edit', [AsistenciaController::class, 'edit'])->name('asistencias.edit');
+    Route::put('/asistencias/{codigo_estudiante}/{id_bimestre}', [AsistenciaController::class, 'update'])->name('asistencias.update');
     Route::get('/export',[ExportController::class,'export'])->name('export');
     Route::get('/export-pdf', [ExportController::class, 'exportPdf'])->name('exportPdf');
 });
