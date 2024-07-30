@@ -200,8 +200,21 @@ class CatedraController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($nivel, $grado, $seccion)
     {
-        //
+        // Catedra en cuestion
+        $catedra = Catedra::where('id_nivel', $nivel)
+                          ->where('id_grado', $grado)
+                          ->where('id_seccion', $seccion)
+                          ->firstOrFail();
+        // Estado 0                  
+        $catedra->esActivo = 0;
+        $catedra->save();
+        // Redirigir a index con un request
+        return redirect()->route('catedras.index', [
+            'nivel' => $nivel,
+            'grado' => $grado,
+            'seccion' => $seccion,     
+        ])->with('sucess', 'Docente asignado removido.');
     }
 }
