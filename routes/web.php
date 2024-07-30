@@ -32,6 +32,7 @@ Route::middleware([
     Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.custom-create');
     Route::get('catedras/edit/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'edit'])->name('catedras.custom-edit');
     Route::put('catedras/update/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'update'])->name('catedras.custom-update');
+    Route::delete('catedras/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'destroy'])->name('catedras.custom-delete');
     Route::get('catedras/cancel/{nivel}/{grado}/{seccion}', [CatedraController::class, 'cancelar'])->name('catedras.cancelar');
     Route::resource('catedras', CatedraController::class);
     

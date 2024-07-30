@@ -139,6 +139,8 @@
                             @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
                                 <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Modificar</a>
+                                <a href="" onclick="confirmDelete({{ $curso->codigo_curso }}, {{ $aula->grado->nivel->id_nivel }}, {{ $aula->grado->id_grado }}, {{ $aula->id_seccion }})"
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Eliminar</a>
                             @else
                                 <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Asignar</a>
@@ -169,6 +171,23 @@
                         }
                     }, 3000); // 3 segundos antes de empezar a desvanecer
                 });
+    </script>
+
+    <script>
+        function confirmDelete(codigo_curso, id_nivel, id_grado, id_seccion) {
+        alertify.confirm("¿Seguro que quieres eliminar la cátedra asignada?",
+            function() {
+                let form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/catedras/' + codigo_curso + '/' + id_nivel + '/' + id_grado + '/' + id_seccion;
+                form.innerHTML = '@csrf @method("DELETE")';
+                document.body.appendChild(form);
+                form.submit();
+            },
+            function() {
+                alertify.error('Cancelado');
+            });
+        }
     </script>
 
     <script>

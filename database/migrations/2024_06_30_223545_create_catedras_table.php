@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('codigo_docente', 4);
             $table->integer('año_escolar');
             $table->unsignedBigInteger('user_id');
+            $table->tinyInteger('esActivo');
 
             // Definir la clave foránea
             $table->foreign('codigo_curso')->references('codigo_curso')->on('cursos');

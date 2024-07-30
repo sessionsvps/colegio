@@ -200,10 +200,11 @@ class CatedraController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($nivel, $grado, $seccion)
+    public function destroy($codigo_curso, $nivel, $grado, $seccion)
     {
         // Catedra en cuestion
-        $catedra = Catedra::where('id_nivel', $nivel)
+        $catedra = Catedra::where('codigo_curso', $codigo_curso)
+                          ->where('id_nivel', $nivel)
                           ->where('id_grado', $grado)
                           ->where('id_seccion', $seccion)
                           ->firstOrFail();
