@@ -28,6 +28,7 @@ Route::middleware([
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');
     Route::post('/matriculado',[EstudianteController::class,'realizarMatricula'])->name('estudiantes.realizarMatricula');
+    Route::get('/estudiantes/{codigo_curso}/{nivel}/{grado}/{seccion}', [EstudianteController::class, 'vista_docente'])->name('estudiantes.filtrar-por-aula');
     
     Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.custom-create');
     Route::get('catedras/edit/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'edit'])->name('catedras.custom-edit');
