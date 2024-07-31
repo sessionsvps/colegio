@@ -79,7 +79,7 @@ class CursoController extends Controller
                         $cursos->push($q_curso);    
                     }
                 }
-                return view('cursos.index', compact('cursos','user'));
+                return view('cursos.index', compact('cursos','user', 'catedras'));
             break;
         }      
     }
@@ -136,6 +136,33 @@ class CursoController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function info_docente(string $codigo_curso) {
+        $auth = Auth::user()->id;
+        $user_id = User::findOrFail($auth)->id;
+        $curso = Curso::where('codigo_curso', $codigo_curso)
+                      ->where('esActivo',1)
+                      ->first() ;
+        $docente = Docente::whereHas('user', function($query) use($user_id) {
+            $query->where('id', $user_id)
+                  ->where('esActivo',1);
+        })->firstOrFail();
+        
+        $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
+                           ->where('codigo_curso', $curso->codigo_curso)
+                           ->get();
+
+        $aulas = new Collection();
+        foreach($catedras as $catedra) {
+            $aula = Seccion::where('id_nivel', $catedra->id_nivel)
+                           ->where('id_grado', $catedra->id_grado)
+                           ->where('id_seccion', $catedra->id_seccion)
+                           ->first();
+            $aulas->push($aula);
+        }
+        return view('cursos.info-docente', compact('aulas'));
+        // dd($curso->descripcion, $docente->primer_nombre,$aulas);
     }
 
     public function info(string $codigo_curso, Request $request)

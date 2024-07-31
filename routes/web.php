@@ -40,7 +40,7 @@ Route::middleware([
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
     Route::get('cursos/{id}/info', [CursoController::class, 'info'])->name('cursos.info');
-   
+    Route::get('cursos/{id}/info-docente', [CursoController::class, 'info_docente'])->name('cursos.info-docente');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
     Route::resource('notas', NotasController::class)->except('show');
     Route::resource('boleta_notas', BoletaNotaController::class)->except('show');
