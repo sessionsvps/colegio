@@ -14,7 +14,9 @@ use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
 use App\Models\Notas_por_competencia;
+use App\Models\Seccion;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -36,6 +38,29 @@ class EstudianteController extends BaseController
             $query->where('esActivo', 1);
         })->paginate(10);
         return view('estudiantes.index', compact('estudiantes'));
+    }
+
+    public function vista_docente($codigo_curso, $nivel, $grado, $seccion) 
+    {
+        // dd($codigo_curso, $nivel, $grado, $seccion);
+        $curso = Curso::where('codigo_curso', $codigo_curso)
+                      ->where('esActivo',1)
+                      ->first();
+
+        $q_seccion = Seccion::where('id_nivel', $nivel)
+                          ->where('id_grado', $grado)
+                          ->where('id_seccion', $seccion)
+                          ->first();
+        $estudiantes = Estudiante_Seccion::where('año_escolar', Carbon::now()->year)
+                                                ->where('id_nivel', $nivel)
+                                                ->where('id_grado', $grado)
+                                                ->where('id_seccion', $seccion)
+                                                ->whereDoesntHave('exoneraciones', function($query) use ($codigo_curso) {
+                                                    $query->where('codigo_curso', $codigo_curso);
+                                                })
+                                                ->get();
+        // dd($estudiantes);
+        return view('estudiantes.lista', compact('curso', 'estudiantes', 'q_seccion'));
     }
 
     public function create()

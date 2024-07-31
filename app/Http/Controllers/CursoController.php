@@ -161,8 +161,7 @@ class CursoController extends Controller
                            ->first();
             $aulas->push($aula);
         }
-        return view('cursos.info-docente', compact('aulas'));
-        // dd($curso->descripcion, $docente->primer_nombre,$aulas);
+        return view('cursos.info-docente', compact('aulas', 'curso'));
     }
 
     public function info(string $codigo_curso, Request $request)
