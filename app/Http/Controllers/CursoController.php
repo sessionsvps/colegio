@@ -9,11 +9,16 @@ use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
+use App\Models\Seccion;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Collection;
+
+use function PHPUnit\Framework\isEmpty;
 
 class CursoController extends Controller
 {
@@ -55,11 +60,26 @@ class CursoController extends Controller
                 return view('cursos.index',compact('cursos','user'));   
             break;
             case $user->hasRole('Docente'):
+                $user_id = $user->id;
+                $docente = Docente::whereHas('user', function($query) use($user_id) {
+                    $query->where('id',$user_id);
+                })->firstOrFail();
 
-                //Mostrar cursos que dicta el docente
-
-            break;
-            default:
+                // Coleccion de catedras del docente del año actual
+                $catedras = Catedra::where('año_escolar', Carbon::now()->year)
+                                   ->where('codigo_docente', $docente->codigo_docente)->get();
+                $cursos = new Collection();
+                $codigo_cursos = [];
+                foreach($catedras as $catedra){
+                    $q_curso = Curso::where('codigo_curso', $catedra->codigo_curso)
+                                  ->where('esActivo', 1)
+                                  ->firstOrFail();
+                    if($q_curso && !in_array($q_curso->codigo_curso, $codigo_cursos)) {
+                        $codigo_cursos[] = $q_curso->codigo_curso;
+                        $cursos->push($q_curso);    
+                    }
+                }
+                return view('cursos.index', compact('cursos','user'));
             break;
         }      
     }
