@@ -51,7 +51,7 @@
                     ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
             </div>
         </div>
-        <div class="mt-5 md:mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
+        {{-- <div class="mt-5 md:mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
                 <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -105,8 +105,7 @@
                             @endforelse
                         </td>
                         <td class="px-6 py-4">
-                            @foreach ($competencias as $competencia)
-                            @foreach ($competencia->notas->where('id_bimestre', 1) as $nota)
+                            @foreach ($notas->where('id_bimestre', 1)->where('codigo_curso',$curso->codigo_curso) as $nota)
                             <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm flex items-center justify-center">
                                 <span
                                     class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
@@ -114,11 +113,9 @@
                                 </span>
                             </div>
                             @endforeach
-                            @endforeach
                         </td>
                         <td class="px-6 py-4">
-                            @foreach ($competencias as $competencia)
-                            @foreach ($competencia->notas->where('id_bimestre', 2) as $nota)
+                            @foreach ($notas->where('id_bimestre', 2)->where('codigo_curso',$curso->codigo_curso) as $nota)
                             <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
                                 <span
                                     class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
@@ -126,11 +123,9 @@
                                 </span>
                             </div>
                             @endforeach
-                            @endforeach
                         </td>
                         <td class="px-6 py-4">
-                            @foreach ($competencias as $competencia)
-                            @foreach ($competencia->notas->where('id_bimestre', 3) as $nota)
+                            @foreach ($notas->where('id_bimestre', 3)->where('codigo_curso',$curso->codigo_curso) as $nota)
                             <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
                                 <span
                                     class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
@@ -138,25 +133,54 @@
                                 </span>
                             </div>
                             @endforeach
-                            @endforeach
                         </td>
                         <td class="px-6 py-4">
-                            @foreach ($competencias as $competencia)
-                            @foreach ($competencia->notas->where('id_bimestre', 4) as $nota)
+                            @foreach ($notas->where('id_bimestre', 4)->where('codigo_curso',$curso->codigo_curso) as $nota)
                             <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
                                 <span
                                     class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
                                     {{ $nota->nivel_logro }}
                                 </span>
                             </div>
-                            @endforeach
                             @endforeach
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div> --}}
+        @foreach ( $cursos as $curso )
+        @php
+        $competencias = $curso->curso->competencias
+        @endphp
+        <div class="mt-6 bg-gray-50 shadow-md rounded-lg p-6">
+            <p class="text-lg font-bold text-indigo-600">{{$curso->curso->descripcion}} ({{$curso->codigo_curso}})</p>
+            <div class="grid grid-cols-1 gap-4 mt-4">
+                @foreach ( $competencias as $competencia )
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <div class="bg-white text-indigo-900 p-2 rounded-lg shadow-sm">
+                        <div class="font-semibold flex items-center gap-2">
+                            <svg class="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                            </svg>
+                            {{$competencia->descripcion}}    
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                        @php
+                        $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_curso', $curso->codigo_curso)->where('orden',$competencia->orden)->first();
+                        @endphp
+                        <div class="text-center text-gray-700 border border-gray-300 rounded-lg p-2 shadow {{ $nota ? ($nota->nivel_logro == 'A' || $nota->nivel_logro == 'B' ? 'bg-green-100' : ($nota->nivel_logro == 'C' ? 'bg-red-100' : 'bg-white')) : 'bg-white' }}">
+                            {{ $nota ? $nota->nivel_logro : '' }}
+                        </div>
+                        @endfor
+                    </div>
+                </div>
+                @endforeach
+            </div>
         </div>
+        @endforeach
     @endif
 @endsection
 
