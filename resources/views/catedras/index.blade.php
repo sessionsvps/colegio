@@ -139,8 +139,8 @@
                             @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
                                 <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Modificar</a>
-                                <a href="" onclick="confirmDelete({{ $curso->codigo_curso }}, {{ $aula->grado->nivel->id_nivel }}, {{ $aula->grado->id_grado }}, {{ $aula->id_seccion }})"
-                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Eliminar</a>
+                                <button type="button" onclick="confirmDelete('{{ $curso->codigo_curso }}', '{{ $aula->grado->nivel->id_nivel }}', '{{ $aula->grado->id_grado }}', '{{ $aula->id_seccion }}')"
+                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Eliminar</button>
                             @else
                                 <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline mr-2">Asignar</a>
@@ -175,20 +175,39 @@
 
     <script>
         function confirmDelete(codigo_curso, id_nivel, id_grado, id_seccion) {
-        alertify.confirm("¿Seguro que quieres eliminar la cátedra asignada?",
-            function() {
-                let form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/catedras/' + codigo_curso + '/' + id_nivel + '/' + id_grado + '/' + id_seccion;
-                form.innerHTML = '@csrf @method("DELETE")';
-                document.body.appendChild(form);
-                form.submit();
-            },
-            function() {
-                alertify.error('Cancelado');
-            });
+            alertify.confirm("¿Seguro que quieres eliminar la cátedra asignada?", 
+                function() {
+                    // Crear formulario de eliminación
+                    let form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/catedras/' + codigo_curso + '/' + id_nivel + '/' + id_grado + '/' + id_seccion;
+    
+                    // Incluir CSRF y método DELETE
+                    let csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = '_token';
+                    csrfInput.value = '{{ csrf_token() }}'; // Laravel blade directive for CSRF token
+                    
+                    let methodInput = document.createElement('input');
+                    methodInput.type = 'hidden';
+                    methodInput.name = '_method';
+                    methodInput.value = 'DELETE';
+    
+                    // Agregar inputs al formulario
+                    form.appendChild(csrfInput);
+                    form.appendChild(methodInput);
+    
+                    // Adjuntar y enviar formulario
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                function() {
+                    alertify.error('Cancelado');
+                }
+            ).set('labels', {ok:'Sí', cancel:'No'}); // Opcional: Personalizar los botones
         }
     </script>
+    
 
     <script>
         function updateGrados() {

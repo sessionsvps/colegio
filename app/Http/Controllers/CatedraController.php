@@ -176,7 +176,7 @@ class CatedraController extends Controller
             ['id_nivel', '=', $nivel],
             ['id_grado', '=', $grado],
             ['id_seccion', '=', $seccion],
-            ['año_escolar', '=', Carbon::now()->year],
+            ['año_escolar', '=', Carbon::now()->year]
         ])->firstOrFail();
 
         $codigo_docente = $request->codigo_docente;
@@ -207,10 +207,8 @@ class CatedraController extends Controller
                           ->where('id_nivel', $nivel)
                           ->where('id_grado', $grado)
                           ->where('id_seccion', $seccion)
-                          ->firstOrFail();
-        // Estado 0                  
-        $catedra->esActivo = 0;
-        $catedra->save();
+                          ->firstOrFail();           
+        $catedra->delete();
         // Redirigir a index con un request
         return redirect()->route('catedras.index', [
             'nivel' => $nivel,
