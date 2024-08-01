@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Asistencia;
 use App\Models\Bimestre;
 use App\Models\Estudiante_Seccion;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
 class AsistenciaController extends BaseController
 {
@@ -23,13 +25,27 @@ class AsistenciaController extends BaseController
         $estudiante = null;
         $asistencia = null;
 
-        if ($request->filled('codigo_estudiante') && $request->filled('bimestre')) {
-            $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))->first();
-            $asistencia = Asistencia::where('codigo_estudiante', $request->input('codigo_estudiante'))
-            ->where('id_bimestre', $request->input('bimestre'))->first();
-        }
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
 
-        return view('asistencias.index',compact('bimestres','estudiante','asistencia'));
+        switch (true) {
+            case $user->hasRole('Admin'):
+                if ($request->filled('codigo_estudiante') && $request->filled('bimestre')) {
+                    $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))->first();
+                    $asistencia = Asistencia::where('codigo_estudiante', $request->input('codigo_estudiante'))
+                    ->where('id_bimestre', $request->input('bimestre'))->first();
+                }
+                return view('asistencias.index', compact('bimestres', 'estudiante', 'asistencia'));
+                break;
+            default:
+                $bimestre_activo = Bimestre::where('esActivo',1)->first();
+                $estudiante = Estudiante_Seccion::where('user_id',$user->id)->first();
+                $asistencia = Asistencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
+                    ->where('id_bimestre', $bimestre_activo->id)->first();
+                return view('asistencias.index', compact('estudiante', 'asistencia'));
+                break;
+        }      
+        
     }
 
     public function edit(string $codigo_estudiante, string $id_bimestre)
