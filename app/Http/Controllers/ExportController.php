@@ -6,13 +6,16 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports\EstudiantesExport;
 use App\Models\Estudiante;
+use App\Models\Estudiante_Seccion;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\View;
 
 class ExportController extends Controller
 {
-    public function export(){
+    public function export()
+    {
         return Excel::download(new EstudiantesExport, 'estudiantes.xlsx');
     }
 
@@ -59,15 +62,9 @@ class ExportController extends Controller
     {
         // Obtener los datos del estudiante
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
-
-        $seccion = DB::table('estudiante_secciones')
-            ->join('secciones', 'estudiante_secciones.id_seccion', '=', 'secciones.id_seccion')
-            ->join('grados', 'secciones.id_grado', '=', 'grados.id_grado')
-            ->join('niveles', 'grados.id_nivel', '=', 'niveles.id_nivel')
-            ->where('estudiante_secciones.codigo_estudiante', $codigo_estudiante)
-            ->where('estudiante_secciones.año_escolar', 2024) // Ajusta el año escolar según corresponda
-            ->select('niveles.detalle as nivel', 'grados.detalle as grado', 'secciones.detalle as seccion', 'estudiante_secciones.año_escolar as año_escolar')
-            ->first();
+        $estudiante_seccion = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
+            ->where('año_escolar', Carbon::now()->year)
+            ->firstOrFail();
 
         // Convertir la imagen a base64
         $path = public_path('img/logo.png');
@@ -78,7 +75,7 @@ class ExportController extends Controller
         // Generar el HTML de la vista Blade
         $htmlContent = View::make('exportar.exBoletaNotas', [
             'estudiante' => $estudiante,
-            'seccion' => $seccion,
+            'estudiante_seccion' => $estudiante_seccion,
             'base64' => $base64
         ])->render();
 
@@ -106,5 +103,4 @@ class ExportController extends Controller
             'libreta_notas.pdf'
         );
     }
-
 }
