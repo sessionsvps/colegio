@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfirmacionMatricula;
 use App\Mail\CredencialesEstudiante;
 use App\Models\Asistencia;
 use App\Models\Boleta_de_nota;
@@ -314,6 +315,14 @@ class EstudianteController extends BaseController
                 }
             }
         }
+
+        $user = User::findOrFail($estudiante->codigo_estudiante);
+
+        // Asignar el rol al usuario
+        $role = Role::findOrFail(4);
+        $user->assignRole($role);
+        // Enviar correo de confirmacion de matricula
+        Mail::to($estudiante->email)->send(new ConfirmacionMatricula);
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
 
