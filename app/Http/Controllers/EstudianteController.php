@@ -29,7 +29,7 @@ class EstudianteController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:estudiantes.control')->only( 'index','create','store','edit','update','destroy','matricular', 'realizarMatricula');
+        $this->middleware('can:estudiantes.control')->only( 'index','create','store','edit','update','destroy','matricular');
         $this->middleware('can:cursos.info_docente')->only('vista_docente');
     }
 
@@ -316,13 +316,13 @@ class EstudianteController extends BaseController
             }
         }
 
-        $user = User::findOrFail($estudiante->codigo_estudiante);
+        $user = User::findOrFail($estudiante->user_id);
 
         // Asignar el rol al usuario
         $role = Role::findOrFail(4);
         $user->assignRole($role);
         // Enviar correo de confirmacion de matricula
-        Mail::to($estudiante->email)->send(new ConfirmacionMatricula);
+        Mail::to($estudiante->email)->send(new ConfirmacionMatricula());
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
 
