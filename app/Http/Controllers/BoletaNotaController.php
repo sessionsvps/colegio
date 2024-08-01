@@ -8,8 +8,10 @@ use App\Models\Curso_por_nivel;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Notas_por_competencia;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
 class BoletaNotaController extends BaseController
 {
@@ -17,7 +19,6 @@ class BoletaNotaController extends BaseController
     public function __construct()
     {
         $this->middleware('can:notas.index')->only('index');
-        $this->middleware('can:notas.admin')->only('index');
         $this->middleware('can:notas.create')->only('edit', 'update');
     }
 
@@ -26,25 +27,45 @@ class BoletaNotaController extends BaseController
         $estudiante = null;
         $cursos = null;
         $notas = null;
-        if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
-            $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
-            ->where('año_escolar', $request->input('año_escolar'))->first();
-            if($estudiante){
-                $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
-                ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
-                    $query->select('codigo_curso')
-                    ->from('exoneraciones')
-                    ->where('codigo_estudiante', $estudiante->codigo_estudiante)
-                    ->where('año_escolar', $estudiante->año_escolar);
-                })
-                ->get();
-                $notas = Notas_por_competencia::where('codigo_estudiante',$estudiante->codigo_estudiante)
-                    ->where('año_escolar',$estudiante->año_escolar)
-                    ->where('exoneracion', 0)->get();
-            }
-        }
 
-        return view('boleta_notas.index', compact('estudiante', 'cursos','notas'));
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
+
+        switch (true) {
+            case $user->hasRole('Admin'):
+                if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
+                    $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
+                    ->where('año_escolar', $request->input('año_escolar'))->first();
+                    if ($estudiante) {
+                        $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
+                        ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
+                            $query->select('codigo_curso')
+                                ->from('exoneraciones')
+                                ->where('codigo_estudiante', $estudiante->codigo_estudiante)
+                                ->where('año_escolar', $estudiante->año_escolar);
+                        })->get();
+                        $notas = Notas_por_competencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
+                            ->where('año_escolar', $estudiante->año_escolar)
+                            ->where('exoneracion', 0)->get();
+                    }
+                }
+                return view('boleta_notas.index', compact('estudiante', 'cursos', 'notas'));
+                break;
+            default:
+                $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
+                $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
+                    ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
+                        $query->select('codigo_curso')
+                            ->from('exoneraciones')
+                            ->where('codigo_estudiante', $estudiante->codigo_estudiante)
+                            ->where('año_escolar', $estudiante->año_escolar);
+                    })->get();
+                $notas = Notas_por_competencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
+                    ->where('año_escolar', $estudiante->año_escolar)
+                    ->where('exoneracion', 0)->get();
+                return view('boleta_notas.index', compact('estudiante', 'cursos', 'notas'));
+                break;
+        }      
     }
 
     public function edit(string $codigo_estudiante, string $codigo_curso, string $año_escolar)
