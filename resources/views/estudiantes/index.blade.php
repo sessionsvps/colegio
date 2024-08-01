@@ -144,31 +144,13 @@
     document.addEventListener('DOMContentLoaded', function () {
         var reporteSelect = document.getElementById('reporte');
         var generateReportButton = document.getElementById('reportButton');
-        // var optionsAdded = false;
-
-        // reporteSelect.addEventListener('focus', function () {
-        //     if (!optionsAdded) {
-        //         var excelOption = document.createElement('option');
-        //         excelOption.value = '1';
-        //         excelOption.text = 'EXCEL';
-
-        //         var pdfOption = document.createElement('option');
-        //         pdfOption.value = '0';
-        //         pdfOption.text = 'PDF';
-
-        //         reporteSelect.add(excelOption);
-        //         reporteSelect.add(pdfOption);
-
-        //         optionsAdded = true;
-        //     }
-        // });
 
         reporteSelect.addEventListener('change', function () {
             var selectedValue = this.value;
             if (selectedValue == '1') { // EXCEL
                 generateReportButton.href = "{{ route('export') }}";
             } else if (selectedValue == '0') { // PDF
-                generateReportButton.href = "{{ route('exportPdf') }}";
+                generateReportButton.href = "{{ route('exportPdfEstu') }}";
             }
         });
     });

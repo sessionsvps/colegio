@@ -41,5 +41,6 @@ Route::middleware([
     Route::get('/asistencias/{codigo_estudiante}/{id_bimestre}/edit', [AsistenciaController::class, 'edit'])->name('asistencias.edit');
     Route::put('/asistencias/{codigo_estudiante}/{id_bimestre}', [AsistenciaController::class, 'update'])->name('asistencias.update');
     Route::get('/export',[ExportController::class,'export'])->name('export');
-    Route::get('/export-pdf', [ExportController::class, 'exportPdf'])->name('exportPdf');
+    Route::get('/export-pdf', [ExportController::class, 'exportPdfEstu'])->name('exportPdfEstu');
+    Route::get('/export-pdf-notas/{codigo_estudiante}', [ExportController::class, 'exportPdfNotas'])->name('exportPdfNotas');
 });
