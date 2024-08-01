@@ -38,11 +38,11 @@
                             </path>
                         </svg>
                     </button>
-                    {{-- <a href="https://flowbite.com" class="flex ms-2 md:me-24">
-                        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" />
+                    <a href="{{ url('') }}" class="flex ms-2 md:me-24">
+                        <img src="https://universidadsideralcarrion.com/storage/img/icons/usc.png" class="h-8 me-3" alt="FlowBite Logo" />
                         <span
-                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Flowbite</span>
-                    </a> --}}
+                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Sideral Carrión</span>
+                    </a>
                 </div>
                 <div class="flex items-center">
                     <span class="hidden md:block">{{ Auth::user()->full_name }}</span>
@@ -95,9 +95,9 @@
         class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-gray-100 border-r border-gray-300 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidebar">
         <div class="h-full px-3 pb-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
-            <div class="flex items-center justify-center py-4">
+            {{-- <div class="flex items-center justify-center py-4">
                 <img src="https://universidadsideralcarrion.com/storage/img/icons/usc.png" alt="Logo" class="h-32 w-auto">
-            </div>
+            </div> --}}
             <ul class="space-y-2 font-medium">
                 @can('users.control')
                     <li>
