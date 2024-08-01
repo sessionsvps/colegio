@@ -34,7 +34,7 @@
                                 {{ $estudiante->estudiante->primer_nombre . ' ' . $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' . $estudiante->estudiante->apellido_materno }}
                             </td>
                             <td class="py-2 px-4 border-b border-gray-200">
-                                <a {{-- href="{{ route('notas.registrar', ['codigo_estudiante' => $estudiante->codigo_estudiante, 'codigo_curso' => $curso->codigo_curso]) }}" --}}
+                                <a href="{{ route('boleta_notas.edit', ['codigo_estudiante' => $estudiante->codigo_estudiante, 'codigo_curso' => $curso->codigo_curso,'año_escolar' => $estudiante->año_escolar]) }}"
                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                                     Registrar Notas
                                 </a>

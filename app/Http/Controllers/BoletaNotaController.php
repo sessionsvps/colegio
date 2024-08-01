@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bimestre;
+use App\Models\Curso;
 use App\Models\Curso_por_nivel;
+use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Notas_por_competencia;
 use Illuminate\Http\Request;
@@ -44,28 +47,43 @@ class BoletaNotaController extends BaseController
         return view('boleta_notas.index', compact('estudiante', 'cursos','notas'));
     }
 
-    public function create()
+    public function edit(string $codigo_estudiante, string $codigo_curso, string $año_escolar)
     {
-        //
+        $estudiante = Estudiante_Seccion::where('codigo_estudiante',$codigo_estudiante)->first();
+        $curso = Curso::where('codigo_curso',$codigo_curso)->first();
+        $notas = Notas_por_competencia::where('codigo_estudiante',$codigo_estudiante)
+            ->where('codigo_curso',$codigo_curso)->where('año_escolar',$año_escolar)->get();
+        $bimestres = Bimestre::all();
+        $competencias = $curso->competencias;
+        return view('boleta_notas.edit', compact('estudiante', 'curso', 'notas','bimestres','competencias'));
     }
 
-    public function store(Request $request)
+    public function update(Request $request, string $codigo_estudiante, string $codigo_curso, string $año_escolar)
     {
-        //
+        $estudiante = Estudiante_Seccion::where('codigo_estudiante',$codigo_estudiante)->first();
+        $notas = $request->input('notas', []);
+
+        foreach ($notas as $orden => $bimestres) {
+            foreach ($bimestres as $bimestre_id => $nivel_logro) {
+                if ($nivel_logro === '') {
+                    Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
+                    ->where('codigo_curso', $codigo_curso)
+                    ->where('año_escolar', $año_escolar)
+                    ->where('orden', $orden)
+                    ->where('id_bimestre', $bimestre_id)
+                    ->update(['nivel_logro' => null]);
+                } else {
+                    Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
+                    ->where('codigo_curso', $codigo_curso)
+                    ->where('año_escolar', $año_escolar)
+                    ->where('orden', $orden)
+                    ->where('id_bimestre', $bimestre_id)
+                    ->update(['nivel_logro' => $nivel_logro]);
+                }
+            }
+        }
+
+        return redirect()->route('estudiantes.filtrar-por-aula', ['codigo_curso' => $codigo_curso, 'nivel' => $estudiante->id_nivel, 'grado' => $estudiante->id_grado, 'seccion' => $estudiante->id_seccion]);
     }
 
-    public function edit(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    public function destroy(string $id)
-    {
-        //
-    }
 }

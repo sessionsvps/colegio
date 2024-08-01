@@ -43,6 +43,8 @@ Route::middleware([
     Route::get('cursos/{id}/info-docente', [CursoController::class, 'info_docente'])->name('cursos.info-docente');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
     Route::resource('boleta_notas', BoletaNotaController::class)->except('show');
+    Route::get('/notas/{codigo_estudiante}/{codigo_curso}/{año_escolar}/edit', [BoletaNotaController::class, 'edit'])->name('boleta_notas.edit');
+    Route::put('/notas/{codigo_estudiante}/{codigo_curso}/{año_escolar}', [BoletaNotaController::class, 'update'])->name('boleta_notas.update');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
     Route::resource('exoneraciones', ExoneracionController::class)->except('show');
     Route::get('/exoneraciones/{codigo_estudiante}/{año_escolar}/edit', [ExoneracionController::class, 'edit'])->name('exoneraciones.edit');
