@@ -16,7 +16,7 @@ class ExoneracionController extends BaseController
     public function __construct()
     {
         $this->middleware('can:exoneraciones.index')->only('index');
-        $this->middleware('can:exoneraciones.create')->only('index', 'edit', 'update');
+        $this->middleware('can:exoneraciones.create')->only('edit', 'update');
     }
     public function index(Request $request)
     {
