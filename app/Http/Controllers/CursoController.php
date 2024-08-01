@@ -36,11 +36,11 @@ class CursoController extends BaseController
             case $user->hasRole('Admin'):
                 $filtranivel = $request->input('nivel_educativo');
                 if ($filtranivel == null || $filtranivel == 0) {
-                    $cursos = Curso::where('esActivo','=',1)->paginate(10);
+                    $cursos = Curso::where('esActivo','=',1)->get();
                 } else {
                     $cursos = Curso::where('esActivo','=', 1)->whereHas('niveles', function($query) use ($filtranivel) {
                         $query->where('curso_por_niveles.id_nivel','=',$filtranivel);
-                    })->paginate(10)->appends(['nivel_educativo' => $filtranivel]);
+                    })->paginate(20)->appends(['nivel_educativo' => $filtranivel]);
                 }
                 return view('cursos.index',compact('cursos', 'niveles', 'filtranivel', 'user'));   
             break;
