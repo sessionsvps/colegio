@@ -83,6 +83,8 @@ class CursoController extends BaseController
                 }
                 return view('cursos.index', compact('cursos','user','catedras'));
             break;
+            default:
+            break;
         }      
     }
 
@@ -181,15 +183,8 @@ class CursoController extends BaseController
 
                 return view('cursos.info', compact('curso', 'competencias', 'catedras_filtradas', 'docentes', 'niveles', 'grados_primaria', 'grados_secundaria'));
                 break;
-            case $user->hasRole('Estudiante'):
+            case $user->hasRole('Estudiante_Matriculado'):
                 return view('cursos.info', compact('curso', 'competencias','docentes'));
-                break;
-            case $user->hasRole('Docente'):
-
-                //Mostrar cursos que dicta el docente
-
-                break;
-            default:
                 break;
         }      
         
