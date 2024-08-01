@@ -25,7 +25,7 @@
 </head>
 <body>
     <img src="{{ $base64 }}" alt="Logo" style="height: 50px;">
-    <h1>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1>{{ $seccion->año_escolar }}</h1></h1>
+    <h1>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1>{{ $estudiante_seccion->año_escolar }}</h1></h1>
     <table>
         <tr>
             <th>DRE</th>
@@ -35,7 +35,7 @@
         </tr>
         <tr>
             <th>NIVEL</th>
-            <th>{{ $seccion->nivel }}</th>
+            <th>{{ $estudiante_seccion->seccion->grado->nivel->detalle }}</th>
             <th>CÓDIGO MODULAR</th>
             <th>9768764645</th>
         </tr>
@@ -45,9 +45,9 @@
         </tr>
         <tr>
             <th>GRADO</th>
-            <th>{{ $seccion->grado }}</th>
+            <th>{{ $estudiante_seccion->seccion->grado->detalle }}</th>
             <th>SECCIÓN</th>
-            <th>{{ $seccion->seccion }}</th>
+            <th>{{ $estudiante_seccion->seccion->detalle }}</th>
         </tr>
         <tr>
             <th>APELLIDOS Y NOMBRES</th>
