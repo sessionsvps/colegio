@@ -27,9 +27,17 @@ class BoletaNotaController extends BaseController
             $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
             ->where('año_escolar', $request->input('año_escolar'))->first();
             if($estudiante){
-                $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->get();
+                $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
+                ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
+                    $query->select('codigo_curso')
+                    ->from('exoneraciones')
+                    ->where('codigo_estudiante', $estudiante->codigo_estudiante)
+                    ->where('año_escolar', $estudiante->año_escolar);
+                })
+                ->get();
                 $notas = Notas_por_competencia::where('codigo_estudiante',$estudiante->codigo_estudiante)
-                    ->where('año_escolar',$estudiante->año_escolar)->get();
+                    ->where('año_escolar',$estudiante->año_escolar)
+                    ->where('exoneracion', 0)->get();
             }
         }
 

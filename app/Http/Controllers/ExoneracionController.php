@@ -6,6 +6,7 @@ use App\Models\Curso;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Exoneracion;
+use App\Models\Notas_por_competencia;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -68,6 +69,10 @@ class ExoneracionController extends BaseController
                     'codigo_curso' => $curso_codigo,
                     'año_escolar' => $año_escolar
                 ]);
+                Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
+                    ->where('codigo_curso', $curso_codigo)
+                    ->where('año_escolar', $año_escolar)
+                    ->update(['exoneracion' => 1]);
             }
         }
 

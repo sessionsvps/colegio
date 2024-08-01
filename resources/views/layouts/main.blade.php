@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!--ICONO-->
+    <link rel="icon" href="https://universidadsideralcarrion.com/storage/img/icons/usc.png" type="image/x-icon">
+
     <!-- Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 
@@ -16,7 +19,7 @@
     <link rel="stylesheet" href="{{asset('css/alertify.min.css')}}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-    <title>{{ config('app.name', 'Dashboard') }}</title>
+    <title>Colegio Sideral Carrión</title>
 </head>
 
 <body>
