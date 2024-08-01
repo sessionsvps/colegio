@@ -10,7 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 
 class BoletaNotaController extends BaseController
 {
-
+    
     public function __construct()
     {
         $this->middleware('can:notas.index')->only('index');
@@ -34,5 +34,30 @@ class BoletaNotaController extends BaseController
         }
 
         return view('boleta_notas.index', compact('estudiante', 'cursos','notas'));
+    }
+
+    public function create()
+    {
+        //
+    }
+
+    public function store(Request $request)
+    {
+        //
+    }
+
+    public function edit(string $id)
+    {
+        //
+    }
+
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    public function destroy(string $id)
+    {
+        //
     }
 }

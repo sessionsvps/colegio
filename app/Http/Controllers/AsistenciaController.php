@@ -13,8 +13,8 @@ class AsistenciaController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:asistencia.index')->only('index');
-        $this->middleware('can:asistencia.create')->only('index','edit','update');
+        $this->middleware('can:asistencias.index')->only('index');
+        $this->middleware('can:asistencias.create')->only('index','edit','update');
     }
 
     public function index(Request $request)
