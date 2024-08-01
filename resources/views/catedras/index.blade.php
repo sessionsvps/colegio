@@ -18,87 +18,137 @@
     @endif
     <div>
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold">Mantenimiento de Cátedras 
+            <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Mantenimiento de Cátedras 
                 @if(isset($aula))
                     {{ $aula->grado->detalle }} {{ $aula->detalle }} <span> de </span> {{ $aula->grado->nivel->detalle }}
                 @endif</h2>
         </div>
 
         <form method="GET" action="{{ route('catedras.index') }}">
-            <div class="bg-gray-50 rounded px-8 py-1 mb-4">
-                <div class="flex flex-wrap -mx-3 mb-3">
-                    <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="nivel">
-                            Nivel
-                        </label>
-                        <select
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="nivel" name="nivel" onchange="updateGrados()" required>
-                            <option value="" selected disabled>Seleccione un nivel</option>
-                            @foreach($niveles as $nivel)
-                            <option value="{{ $nivel->id_nivel }} " {{ request('nivel')== $nivel->id_nivel ? 'selected' : '' }} >
-                                {{ $nivel->detalle }}
-                            </option>
-                            @endforeach
-                        </select>
-                        @error('nivel')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="w-full md:w-1/2 lg:w-1/3 px-3 mb-6 lg:mb-0">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="grado">
-                            Grado
-                        </label>
-                        <select
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="grado" name="grado" required>
-                            @if(!isset($filtra_nivel))
-                                <option value="" selected disabled>Seleccione un grado</option>
-                            @else
-                                @if($filtra_nivel == 1)
-                                    @foreach($grados_primaria as $grado_p)
-                                        <option value="{{ $grado_p->id_grado }}" {{ request('grado') == $grado_p->id_grado ? 'selected' : '' }}>
-                                            {{ $grado_p->detalle }}
-                                        </option>
-                                    @endforeach
-                                @elseif($filtra_nivel == 2)
-                                    @foreach($grados_secundaria as $grado_s)
-                                        <option value="{{ $grado_s->id_grado }}" {{ request('grado') == $grado_s->id_grado ? 'selected' : '' }}>
-                                            {{ $grado_s->detalle }}
-                                        </option>
-                                    @endforeach
-                                @endif
-                            @endif
-                        </select>
-                        @error('grado')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="w-full md:w-1/2 lg:w-1/3 px-3">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="seccion">
-                            Sección
-                        </label>
-                        <select
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            id="seccion" name="seccion" required>
-                            <option value="" selected disabled>Seleccione una sección</option>
-                            <option value="1" {{ request('seccion')== 1 ? 'selected' : '' }}>A</option>
-                            <option value="2" {{ request('seccion')== 2 ? 'selected' : '' }}>B</option>
-                            <option value="3" {{ request('seccion')== 3 ? 'selected' : '' }}>C</option>
-                            <option value="4" {{ request('seccion')== 4 ? 'selected' : '' }}>D</option>
-                        </select>
-                        @error('seccion')
-                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                        @enderror
-                    </div>
+            <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
+                <div class="mr-0">
+                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Nivel</label>
+                    <select id="nivel" name="nivel" onchange="updateGrados()" required
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="" selected disabled>Seleccione un nivel</option>
+                        @foreach($niveles as $nivel)
+                        <option value="{{ $nivel->id_nivel }} " {{ request('nivel')==$nivel->id_nivel ? 'selected' : '' }} >
+                            {{ $nivel->detalle }}
+                        </option>
+                        @endforeach
+                    </select>
                 </div>
-                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Filtrar
-                </button>
+                <div class="mr-0 md:ml-5">
+                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Grado</label>
+                    <select id="grado" name="grado" required
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        @if(!isset($filtra_nivel))
+                        <option value="" selected disabled>Seleccione un grado</option>
+                        @else
+                        @if($filtra_nivel == 1)
+                        @foreach($grados_primaria as $grado_p)
+                        <option value="{{ $grado_p->id_grado }}" {{ request('grado')==$grado_p->id_grado ? 'selected' : '' }}>
+                            {{ $grado_p->detalle }}
+                        </option>
+                        @endforeach
+                        @elseif($filtra_nivel == 2)
+                        @foreach($grados_secundaria as $grado_s)
+                        <option value="{{ $grado_s->id_grado }}" {{ request('grado')==$grado_s->id_grado ? 'selected' : '' }}>
+                            {{ $grado_s->detalle }}
+                        </option>
+                        @endforeach
+                        @endif
+                        @endif
+                    </select>
+                </div>
+                <div class="mr-0 lg:ml-5">
+                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Sección</label>
+                    <select id="seccion" name="seccion" required
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="" selected disabled>Seleccione una sección</option>
+                        <option value="1" {{ request('seccion')==1 ? 'selected' : '' }}>A</option>
+                        <option value="2" {{ request('seccion')==2 ? 'selected' : '' }}>B</option>
+                        <option value="3" {{ request('seccion')==3 ? 'selected' : '' }}>C</option>
+                        <option value="4" {{ request('seccion')==4 ? 'selected' : '' }}>D</option>
+                    </select>
+                </div>
+                <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
+                    <button type="submit"
+                        class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                        Buscar
+                    </button>
+                </div>
             </div>
         </form>
 
-        <table class="min-w-full bg-white">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
+                <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Código
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Descripción
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Docente
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($cursos as $curso)
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $curso->codigo_curso }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ $curso->descripcion}}
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($curso->catedras->isNotEmpty())
+                            @foreach($curso->catedras as $catedra)
+                            @if($catedra->docente)
+                            {{ $catedra->docente->apellido_paterno}} {{ $catedra->docente->apellido_materno}}, {{ $catedra->docente->primer_nombre}}
+                            @else
+                            <span class="font-bold italic">Sin asignar</span>
+                            @endif
+                            @endforeach
+                            @else
+                            <span class="italic text-red-700">Sin asignar</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            
+                            <div class="flex justify-center">
+                                @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
+                                <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Modificar</a>
+                                <button type="button"
+                                    onclick="confirmDelete('{{ $curso->codigo_curso }}', '{{ $aula->grado->nivel->id_nivel }}', '{{ $aula->grado->id_grado }}', '{{ $aula->id_seccion }}')"
+                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                                @else
+                                <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                    class="font-medium text-green-600 dark:text-green-500 hover:underline">Asignar</a>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center">
+                            No hay registros
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- <table class="min-w-full bg-white">
             <thead>
                 <tr>
                     <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
@@ -150,7 +200,7 @@
                     @endforeach
                     @endif
             </tbody>
-        </table>
+        </table> --}}
         <div class="mt-10">
             {{ $cursos->links() }}
         </div>
