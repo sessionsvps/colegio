@@ -17,34 +17,36 @@
     </div>
     @endif
     <p class="font-bold text-xl md:text-2xl lg:text-3xl">Exoneraciones</p>
-    <form action="{{ route('exoneraciones.index') }}" method="GET">
-        <div class="mt-5 md:mt-10 grid grid-cols-1 lg:grid-cols-3">
-            <div class="mr-5">
-                <label for="codigo_estudiante" class="block text-sm font-medium text-gray-700">Código de estudiante</label>
-                <input type="text" name="codigo_estudiante" id="codigo_estudiante"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                    required maxlength="4" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+    @can('exoneraciones.create')
+        <form action="{{ route('exoneraciones.index') }}" method="GET">
+            <div class="mt-5 md:mt-10 grid grid-cols-1 lg:grid-cols-3">
+                <div class="mr-5">
+                    <label for="codigo_estudiante" class="block text-sm font-medium text-gray-700">Código de estudiante</label>
+                    <input type="text" name="codigo_estudiante" id="codigo_estudiante"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        required maxlength="4" pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                </div>
+                <div class="lg:mr-5">
+                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Año Escolar</label>
+                    <select id="año_escolar" name="año_escolar"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="2024" {{ request('año_escolar')=='2024' ? 'selected' : '' }}>
+                            2024
+                        </option>
+                        <option value="2023" {{ request('año_escolar')=='2023' ? 'selected' : '' }}>
+                            2023
+                        </option>
+                    </select>
+                </div>
+                <div class="mt-5 md:mt-0 col-span-3 lg:col-span-1" id="botonBuscar">
+                    <button type="submit"
+                        class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                        Buscar
+                    </button>
+                </div>
             </div>
-            <div class="lg:mr-5">
-                <label for="año_escolar" class="block text-sm font-medium text-gray-700">Año Escolar</label>
-                <select id="año_escolar" name="año_escolar"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="2024" {{ request('año_escolar')=='2024' ? 'selected' : '' }}>
-                        2024
-                    </option>
-                    <option value="2023" {{ request('año_escolar')=='2023' ? 'selected' : '' }}>
-                        2023
-                    </option>
-                </select>
-            </div>
-            <div class="mt-5 md:mt-0 col-span-3 lg:col-span-1" id="botonBuscar">
-                <button type="submit"
-                    class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                    Buscar
-                </button>
-            </div>
-        </div>
-    </form>
+        </form>
+    @endcan
     
     @if($estudiante)
     <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
@@ -69,15 +71,17 @@
             </div>
         </div>
         <div class=" bg-gray-50 shadow-md rounded-lg p-6 flex flex-col justify-center items-center">
-            @if ($estudiante->año_escolar == 2024)
-            <div class="flex w-full justify-end mb-4">
-                <a href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white
-                                    bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    Editar
-                </a>
-            </div>
-            @endif
+            @can('exoneraciones.create')
+                @if ($estudiante->año_escolar == 2024)
+                <div class="flex w-full justify-end mb-4">
+                    <a href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white
+                                                    bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Editar
+                    </a>
+                </div>
+                @endif
+            @endcan
             <ul class="space-y-4 w-full">
                 @forelse ($exoneraciones as $exoneracion)
                 <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">

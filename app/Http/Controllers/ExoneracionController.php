@@ -7,9 +7,10 @@ use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Exoneracion;
 use App\Models\Notas_por_competencia;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-
+use Illuminate\Support\Facades\Auth;
 
 class ExoneracionController extends BaseController
 {
@@ -24,21 +25,37 @@ class ExoneracionController extends BaseController
         $estudiante = null;
         $exoneraciones = collect();
 
-        if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
-            $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
-                ->where('año_escolar', $request->input('año_escolar'))->first();
-            if ($estudiante) {
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
+
+        switch (true) {
+            case $user->hasRole('Admin'):
+                if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
+                    $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
+                    ->where('año_escolar', $request->input('año_escolar'))->first();
+                    if ($estudiante) {
+                        $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->get();
+                        $codigoCursos = $cursos->pluck('codigo_curso');
+                        $exoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)
+                            ->where('año_escolar', $estudiante->año_escolar)
+                            ->whereIn('codigo_curso', $codigoCursos)
+                            ->get();
+                    }
+                }
+                return view('exoneraciones.index', compact('estudiante', 'exoneraciones'));
+                break;
+            default:
+                $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
                 $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->get();
                 $codigoCursos = $cursos->pluck('codigo_curso');
-
                 $exoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)
                     ->where('año_escolar', $estudiante->año_escolar)
                     ->whereIn('codigo_curso', $codigoCursos)
                     ->get();
-            }
-        }
+                return view('exoneraciones.index', compact('estudiante', 'exoneraciones'));
+                break;
+        }      
 
-        return view('exoneraciones.index', compact('estudiante','exoneraciones'));
     }
 
     public function edit(string $codigo_estudiante, string $año_escolar)
