@@ -57,7 +57,6 @@
             <p>Se han generado sus credenciales de acceso:</p>
             <p><strong>Correo:</strong> {{ $email }}</p>
             <p><strong>Contraseña:</strong> {{ $password }}</p>
-            <p>Por favor, cambie su contraseña después de iniciar sesión por primera vez.</p>
             <p>Saludos,</p>
             <p>El Equipo de Sideral Carrión</p>
         </div>
