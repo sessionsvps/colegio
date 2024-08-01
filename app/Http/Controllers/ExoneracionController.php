@@ -7,10 +7,17 @@ use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Exoneracion;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class ExoneracionController extends Controller
+
+class ExoneracionController extends BaseController
 {
 
+    public function __construct()
+    {
+        $this->middleware('can:exoneraciones.index')->only('index');
+        $this->middleware('can:exoneraciones.create')->only('index', 'edit', 'update');
+    }
     public function index(Request $request)
     {
         $estudiante = null;

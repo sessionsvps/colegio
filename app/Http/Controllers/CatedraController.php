@@ -12,12 +12,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controller as BaseController;
 
-class CatedraController extends Controller
+class CatedraController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:docentes.control')->only('index', 'create', 'store', 'edit', 'update', 'destroy','cancelar');
+    }
+
     public function index(Request $request)
     {
         $auth = Auth::user()->id;
@@ -32,10 +36,10 @@ class CatedraController extends Controller
         })
         ->with(['catedras' => function($query) use ($filtra_nivel, $filtra_grado, $filtra_seccion) {
             $query->where('id_nivel', $filtra_nivel)
-                  ->where('id_grado', $filtra_grado)
-                  ->where('id_seccion', $filtra_seccion)
-                  ->where('año_escolar',Carbon::now()->year)
-                  ->with('docente');
+                ->where('id_grado', $filtra_grado)
+                ->where('id_seccion', $filtra_seccion)
+                ->where('año_escolar',Carbon::now()->year)
+                ->with('docente');
         }])
         ->paginate(10)
         ->appends([
@@ -51,9 +55,9 @@ class CatedraController extends Controller
 
         if($filtra_nivel!=null) {
             $aula = Seccion::where('id_nivel',$filtra_nivel)
-                           ->where('id_grado',$filtra_grado)
-                           ->where('id_seccion',$filtra_seccion)
-                           ->first();
+                ->where('id_grado',$filtra_grado)
+                ->where('id_seccion',$filtra_seccion)
+                ->first();
             return view('catedras.index',compact('cursos', 'user', 'niveles', 'grados_primaria', 'grados_secundaria' , 'aula', 'filtra_nivel'));
         }
         else
@@ -63,14 +67,6 @@ class CatedraController extends Controller
         
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-       
-    // }
-    
     public function create(string $codigo_curso, string $nivel, string $grado, string $seccion)
     {
         $curso = Curso::findOrFail($codigo_curso);
@@ -78,16 +74,13 @@ class CatedraController extends Controller
             $query->where('esActivo', 1);
         })->get();
         $aula = Seccion::where('id_nivel',$nivel)
-                           ->where('id_grado',$grado)
-                           ->where('id_seccion',$seccion)
-                           ->first();
+            ->where('id_grado',$grado)
+            ->where('id_seccion',$seccion)
+            ->first();
         $año = Carbon::now()->year;
         return view('catedras.create', compact('curso', 'nivel', 'grado', 'seccion', 'año', 'aula', 'docentes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -97,9 +90,6 @@ class CatedraController extends Controller
             'id_grado' => 'required',
             'id_seccion' => 'required',
             'año_escolar' =>'required'
-        ], 
-        [
-
         ]);
 
         $codigo_docente = $request->codigo_docente;
@@ -132,17 +122,6 @@ class CatedraController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $codigo_curso, string $nivel, string $grado, string $seccion)
     {
         $curso = Curso::findOrFail($codigo_curso);
@@ -150,21 +129,18 @@ class CatedraController extends Controller
             $query->where('esActivo', 1);
         })->get();
         $aula = Seccion::where('id_nivel',$nivel)
-                           ->where('id_grado',$grado)
-                           ->where('id_seccion',$seccion)
-                           ->first();
+            ->where('id_grado',$grado)
+            ->where('id_seccion',$seccion)
+            ->first();
         $año = Carbon::now()->year;
         $catedra = Catedra::where('codigo_curso', $codigo_curso)
-                          ->where('id_nivel', $nivel)
-                          ->where('id_grado', $grado)
-                          ->where('id_seccion', $seccion)
-                          ->firstOrFail();
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->firstOrFail();
         return view('catedras.edit', compact('curso', 'nivel', 'grado', 'seccion', 'año', 'aula', 'catedra', 'docentes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $codigo_curso, $nivel, $grado, $seccion)
     {
         $request->validate([
@@ -197,17 +173,14 @@ class CatedraController extends Controller
         ])->with('success', 'Docente modificado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($codigo_curso, $nivel, $grado, $seccion)
     {
         // Catedra en cuestion
         $catedra = Catedra::where('codigo_curso', $codigo_curso)
-                          ->where('id_nivel', $nivel)
-                          ->where('id_grado', $grado)
-                          ->where('id_seccion', $seccion)
-                          ->firstOrFail();           
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->firstOrFail();           
         $catedra->delete();
         // Redirigir a index con un request
         return redirect()->route('catedras.index', [

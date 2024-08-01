@@ -28,8 +28,8 @@ class EstudianteController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:estudiantes.index')->only('index');
-        $this->middleware('can:estudiantes.control')->only('create','store','edit','update','destroy');
+        $this->middleware('can:estudiantes.control')->only( 'index','create','store','edit','update','destroy','matricular', 'realizarMatricula');
+        $this->middleware('can:cursos.info_docente')->only('vista_docente');
     }
 
     public function index()
@@ -44,21 +44,21 @@ class EstudianteController extends BaseController
     {
         // dd($codigo_curso, $nivel, $grado, $seccion);
         $curso = Curso::where('codigo_curso', $codigo_curso)
-                      ->where('esActivo',1)
-                      ->first();
+            ->where('esActivo',1)
+            ->first();
 
         $q_seccion = Seccion::where('id_nivel', $nivel)
-                          ->where('id_grado', $grado)
-                          ->where('id_seccion', $seccion)
-                          ->first();
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->first();
         $estudiantes = Estudiante_Seccion::where('año_escolar', Carbon::now()->year)
-                                                ->where('id_nivel', $nivel)
-                                                ->where('id_grado', $grado)
-                                                ->where('id_seccion', $seccion)
-                                                ->whereDoesntHave('exoneraciones', function($query) use ($codigo_curso) {
-                                                    $query->where('codigo_curso', $codigo_curso);
-                                                })
-                                                ->get();
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->whereDoesntHave('exoneraciones', function($query) use ($codigo_curso) {
+                $query->where('codigo_curso', $codigo_curso);
+            })
+            ->get();
         // dd($estudiantes);
         return view('estudiantes.lista', compact('curso', 'estudiantes', 'q_seccion'));
     }

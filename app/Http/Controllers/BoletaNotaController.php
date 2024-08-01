@@ -6,9 +6,18 @@ use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Notas_por_competencia;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class BoletaNotaController extends Controller
+class BoletaNotaController extends BaseController
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:notas.index')->only('index');
+        $this->middleware('can:notas.admin')->only('index');
+        $this->middleware('can:notas.create')->only('index', 'edit', 'update');
+    }
+
     public function index(Request $request)
     {
         $estudiante = null;

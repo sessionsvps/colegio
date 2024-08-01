@@ -19,8 +19,7 @@ class DocenteController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:docentes.index')->only('index');
-        $this->middleware('can:docentes.control')->only('create', 'store', 'edit', 'update', 'destroy');
+        $this->middleware('can:docentes.control')->only('index','create', 'store', 'edit', 'update', 'destroy');
     }
 
     public function index()

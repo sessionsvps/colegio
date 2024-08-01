@@ -8,9 +8,15 @@ use App\Exports\EstudiantesExport;
 use App\Models\Estudiante;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\View;
+use Illuminate\Routing\Controller as BaseController;
 
-class ExportController extends Controller
+class ExportController extends BaseController
 {
+
+    public function __construct()
+    {
+        $this->middleware('can:estudiantes.control')->only('export', 'exportPdf');
+    }
     public function export(){
         return Excel::download(new EstudiantesExport, 'estudiantes.xlsx');
     }

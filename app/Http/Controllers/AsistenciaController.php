@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Asistencia;
 use App\Models\Bimestre;
-use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class AsistenciaController extends Controller
+class AsistenciaController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:asistencia.index')->only('index');
+        $this->middleware('can:asistencia.create')->only('index','edit','update');
+    }
+
     public function index(Request $request)
     {   
         $bimestres = Bimestre::all();

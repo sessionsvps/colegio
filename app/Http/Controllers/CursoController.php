@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Catedra;
 use App\Models\Curso;
 use App\Models\Docente;
-use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
@@ -15,16 +14,19 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Collection;
+use Illuminate\Routing\Controller as BaseController;
 
-use function PHPUnit\Framework\isEmpty;
-
-class CursoController extends Controller
+class CursoController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:cursos.index')->only('index');
+        $this->middleware('can:cursos.info')->only('info');
+        $this->middleware('can:cursos.info_docente')->only('info_docente');
+    }
+
     public function index(?Request $request)
     {
         $auth = Auth::user()->id;
@@ -67,19 +69,19 @@ class CursoController extends Controller
 
                 // Coleccion de catedras del docente del año actual
                 $catedras = Catedra::where('año_escolar', Carbon::now()->year)
-                                   ->where('codigo_docente', $docente->codigo_docente)->get();
+                    ->where('codigo_docente', $docente->codigo_docente)->get();
                 $cursos = new Collection();
                 $codigo_cursos = [];
                 foreach($catedras as $catedra){
                     $q_curso = Curso::where('codigo_curso', $catedra->codigo_curso)
-                                  ->where('esActivo', 1)
-                                  ->firstOrFail();
+                        ->where('esActivo', 1)
+                        ->firstOrFail();
                     if($q_curso && !in_array($q_curso->codigo_curso, $codigo_cursos)) {
                         $codigo_cursos[] = $q_curso->codigo_curso;
                         $cursos->push($q_curso);    
                     }
                 }
-                return view('cursos.index', compact('cursos','user', 'catedras'));
+                return view('cursos.index', compact('cursos','user','catedras'));
             break;
         }      
     }
@@ -90,49 +92,26 @@ class CursoController extends Controller
         return view('cursos.malla',compact('cursos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //
@@ -142,23 +121,23 @@ class CursoController extends Controller
         $auth = Auth::user()->id;
         $user_id = User::findOrFail($auth)->id;
         $curso = Curso::where('codigo_curso', $codigo_curso)
-                      ->where('esActivo',1)
-                      ->first() ;
+            ->where('esActivo',1)
+            ->first() ;
         $docente = Docente::whereHas('user', function($query) use($user_id) {
             $query->where('id', $user_id)
-                  ->where('esActivo',1);
+                ->where('esActivo',1);
         })->firstOrFail();
         
         $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
-                           ->where('codigo_curso', $curso->codigo_curso)
-                           ->get();
+            ->where('codigo_curso', $curso->codigo_curso)
+            ->get();
 
         $aulas = new Collection();
         foreach($catedras as $catedra) {
             $aula = Seccion::where('id_nivel', $catedra->id_nivel)
-                           ->where('id_grado', $catedra->id_grado)
-                           ->where('id_seccion', $catedra->id_seccion)
-                           ->first();
+                ->where('id_grado', $catedra->id_grado)
+                ->where('id_seccion', $catedra->id_seccion)
+                ->first();
             $aulas->push($aula);
         }
         return view('cursos.info-docente', compact('aulas', 'curso'));

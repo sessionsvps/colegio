@@ -9,7 +9,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\ExoneracionController;
 use App\Http\Controllers\ExportController;
-use App\Http\Controllers\NotasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,7 +34,7 @@ Route::middleware([
     Route::put('catedras/update/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'update'])->name('catedras.custom-update');
     Route::delete('catedras/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'destroy'])->name('catedras.custom-delete');
     Route::get('catedras/cancel/{nivel}/{grado}/{seccion}', [CatedraController::class, 'cancelar'])->name('catedras.cancelar');
-    Route::resource('catedras', CatedraController::class);
+    Route::resource('catedras', CatedraController::class)->except('show');
     
     Route::resource('docentes', DocenteController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
@@ -43,7 +42,6 @@ Route::middleware([
     Route::get('cursos/{id}/info', [CursoController::class, 'info'])->name('cursos.info');
     Route::get('cursos/{id}/info-docente', [CursoController::class, 'info_docente'])->name('cursos.info-docente');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
-    Route::resource('notas', NotasController::class)->except('show');
     Route::resource('boleta_notas', BoletaNotaController::class)->except('show');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
     Route::resource('exoneraciones', ExoneracionController::class)->except('show');
