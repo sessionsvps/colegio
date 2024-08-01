@@ -15,7 +15,7 @@ class BoletaNotaController extends BaseController
     {
         $this->middleware('can:notas.index')->only('index');
         $this->middleware('can:notas.admin')->only('index');
-        $this->middleware('can:notas.create')->only('index', 'edit', 'update');
+        $this->middleware('can:notas.create')->only('edit', 'update');
     }
 
     public function index(Request $request)
