@@ -171,7 +171,7 @@
                         @php
                         $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_curso', $curso->codigo_curso)->where('orden',$competencia->orden)->first();
                         @endphp
-                        <div class="text-center text-gray-700 border border-gray-300 rounded-lg p-2 shadow {{ $nota ? ($nota->nivel_logro == 'A' || $nota->nivel_logro == 'B' ? 'bg-green-100' : ($nota->nivel_logro == 'C' ? 'bg-red-100' : 'bg-white')) : 'bg-white' }}">
+                        <div class="text-center text-gray-700 border border-gray-300 rounded-lg p-2 shadow uppercase {{ $nota ? ($nota->nivel_logro == 'A' || $nota->nivel_logro == 'B' || $nota->nivel_logro == 'AD' ?  'bg-green-100' : ($nota->nivel_logro == 'C' ? 'bg-red-100' : 'bg-white')) : 'bg-white' }}">
                             {{ $nota ? $nota->nivel_logro : '' }}
                         </div>
                         @endfor

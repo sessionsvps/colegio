@@ -44,7 +44,7 @@ class CursoController extends BaseController
                 }
                 return view('cursos.index',compact('cursos', 'niveles', 'filtranivel', 'user'));   
             break;
-            case $user->hasRole('Estudiante'):
+            case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id',$user->id)->first();
                 $cursos = DB::table('cursos')
                 ->join('curso_por_niveles', 'cursos.codigo_curso', '=', 'curso_por_niveles.codigo_curso')

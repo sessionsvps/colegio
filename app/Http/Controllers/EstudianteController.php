@@ -319,6 +319,9 @@ class EstudianteController extends BaseController
         $user = User::findOrFail($estudiante->user_id);
 
         // Asignar el rol al usuario
+        $role = Role::findOrFail(3);
+        $user->removeRole($role);
+        
         $role = Role::findOrFail(4);
         $user->assignRole($role);
         // Enviar correo de confirmacion de matricula
