@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports\EstudiantesExport;
+use App\Models\Curso_por_nivel;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
+use App\Models\Notas_por_competencia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -65,6 +67,9 @@ class ExportController extends Controller
         $estudiante_seccion = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
             ->where('año_escolar', Carbon::now()->year)
             ->firstOrFail();
+        $cursos = Curso_por_nivel::where('id_nivel', $estudiante_seccion->seccion->grado->nivel->id_nivel)->get();
+        $notas = Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
+                                    ->where('año_escolar', Carbon::now()->year)->get();
 
         // Convertir la imagen a base64
         $path = public_path('img/logo.png');
@@ -76,6 +81,8 @@ class ExportController extends Controller
         $htmlContent = View::make('exportar.exBoletaNotas', [
             'estudiante' => $estudiante,
             'estudiante_seccion' => $estudiante_seccion,
+            'cursos'=> $cursos,
+            'notas'=>$notas,
             'base64' => $base64
         ])->render();
 
