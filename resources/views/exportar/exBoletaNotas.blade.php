@@ -21,6 +21,14 @@
         th {
             background-color: #f2f2f2;
         }
+
+        .notas{
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            width: 80%;
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +68,43 @@
             <th>{{ $estudiante->dni }}</th>
         </tr>
     </table>
-    <table>
+
+    <table class="notas">
+        <tr class="header">
+            <th rowspan="2">ÁREA CURRICULAR</th>
+            <th rowspan="2">COMPETENCIAS</th>
+            <th colspan="4">CALIFICATIVO POR PERIODO</th>
+            <th rowspan="2">Calificación final del área</th>
+        </tr>
+        <tr class="header">
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+        </tr>
+        <tr>
+            <td rowspan="3">Desarrollo Personal, Ciudadanía y Cívica</td>
+            <td>Construye su identidad.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td rowspan="3"></td>
+        </tr>
+        <tr>
+            <td>Convive y participa democráticamente en la búsqueda del bien común.</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr class="header">
+            <td>CALIFICATIVO DE ÁREA</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
         {{-- @foreach ( $cursos as $curso )
         @php
         $competencias = $curso->curso->competencias
