@@ -15,8 +15,8 @@ class AsistenciaController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:asistencias.index')->only('index');
-        $this->middleware('can:asistencias.create')->only('edit','update');
+        $this->middleware('can:Ver Asistencias')->only('index');
+        $this->middleware('can:Editar Asistencias')->only('edit','update');
     }
 
     public function index(Request $request)
@@ -30,6 +30,8 @@ class AsistenciaController extends BaseController
 
         switch (true) {
             case $user->hasRole('Admin'):
+            case $user->hasRole('Secretaria'):
+            case $user->hasRole('Director'):
                 if ($request->filled('codigo_estudiante') && $request->filled('bimestre')) {
                     $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))->first();
                     $asistencia = Asistencia::where('codigo_estudiante', $request->input('codigo_estudiante'))
@@ -37,12 +39,14 @@ class AsistenciaController extends BaseController
                 }
                 return view('asistencias.index', compact('bimestres', 'estudiante', 'asistencia'));
                 break;
-            default:
+            case $user->hasRole('Estudiante_Matriculado'):
                 $bimestre_activo = Bimestre::where('esActivo',1)->first();
                 $estudiante = Estudiante_Seccion::where('user_id',$user->id)->first();
                 $asistencia = Asistencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
                     ->where('id_bimestre', $bimestre_activo->id)->first();
                 return view('asistencias.index', compact('estudiante', 'asistencia'));
+                break;
+            default:
                 break;
         }      
         

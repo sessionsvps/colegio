@@ -12,7 +12,9 @@ class UserController extends BaseController
     
     public function __construct()
     {
-        $this->middleware('can:users.control');
+        $this->middleware('can:Ver Usuarios')->only('index');
+        $this->middleware('can:Editar Usuarios')->only('edit','update');
+        $this->middleware('can:Elimianr Usuarios')->only('destroy');
     }
 
     public function index()

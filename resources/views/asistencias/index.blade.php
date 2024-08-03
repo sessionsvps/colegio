@@ -17,7 +17,7 @@
     </div>
     @endif
     <p class="font-bold text-xl md:text-2xl lg:text-3xl">Inasistencias y Tardanzas</p>
-    @can('asistencias.create')
+    @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
         <form action="{{ route('asistencias.index') }}" method="GET">
             <div class="mt-5 md:mt-10 grid grid-cols-1 lg:grid-cols-3">
                 <div class="mr-5">
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </form>
-    @endcan
+    @endif
     
     @if($estudiante && $asistencia)
     <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
@@ -71,7 +71,7 @@
         </div>
         <div class=" bg-gray-50 shadow-md rounded-lg p-6">
             <div class="flex justify-end mb-4">
-                @can('asistencias.create')
+                @can('Editar Asistencias')
                     @if ($asistencia->bimestre->esActivo)
                     <a
                         href="{{route('asistencias.edit',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre]) }}">

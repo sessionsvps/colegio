@@ -1,14 +1,17 @@
 <?php
 
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\AulaController;
 use App\Http\Controllers\CatedraController;
 use App\Http\Controllers\BoletaNotaController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\ExoneracionController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\SecretariaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,16 +38,18 @@ Route::middleware([
     Route::delete('catedras/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'destroy'])->name('catedras.custom-delete');
     Route::get('catedras/cancel/{nivel}/{grado}/{seccion}', [CatedraController::class, 'cancelar'])->name('catedras.cancelar');
     Route::resource('catedras', CatedraController::class)->except('show');
-    
+    Route::resource('director', DirectorController::class)->except('show');
+    Route::resource('secretarias', SecretariaController::class)->except('show');
     Route::resource('docentes', DocenteController::class)->except('show');
+    Route::resource('aulas', AulaController::class)->except('show');
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
     Route::get('cursos/{id}/info', [CursoController::class, 'info'])->name('cursos.info');
     Route::get('cursos/{id}/info-docente', [CursoController::class, 'info_docente'])->name('cursos.info-docente');
     Route::get('/malla',[CursoController::class,'mallaCurricular'])->name('cursos.malla');
     Route::resource('boleta_notas', BoletaNotaController::class)->except('show');
-    Route::get('/notas/{codigo_estudiante}/{codigo_curso}/{año_escolar}/edit', [BoletaNotaController::class, 'edit'])->name('boleta_notas.edit');
-    Route::put('/notas/{codigo_estudiante}/{codigo_curso}/{año_escolar}', [BoletaNotaController::class, 'update'])->name('boleta_notas.update');
+    Route::get('/notas/{codigo_curso}/{nivel}/{grado}/{seccion}/edit', [BoletaNotaController::class, 'edit'])->name('boleta_notas.edit');
+    Route::put('/notas/{codigo_curso}/{nivel}/{grado}/{seccion}', [BoletaNotaController::class, 'update'])->name('boleta_notas.update');
     Route::resource('asistencias', AsistenciaController::class)->except('show');
     Route::resource('exoneraciones', ExoneracionController::class)->except('show');
     Route::get('/exoneraciones/{codigo_estudiante}/{año_escolar}/edit', [ExoneracionController::class, 'edit'])->name('exoneraciones.edit');

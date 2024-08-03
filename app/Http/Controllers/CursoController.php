@@ -22,18 +22,21 @@ class CursoController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:cursos.index')->only('index');
-        $this->middleware('can:cursos.info')->only('info');
-        $this->middleware('can:cursos.info_docente')->only('info_docente');
+        $this->middleware('can:Ver Cursos')->only('index','info');
+        $this->middleware('can:Registrar Cursos')->only('create', 'store');
+        $this->middleware('can:Editar Cursos')->only('edit', 'update');
+        $this->middleware('can:Eliminar Cursos')->only('destroy');
     }
 
-    public function index(?Request $request)
+    public function index(Request $request)
     {
         $auth = Auth::user()->id;
         $user = User::findOrFail($auth);
         $niveles = Nivel::all();
         switch(true) {
             case $user->hasRole('Admin'):
+            case $user->hasRole('Secretaria'):
+            case $user->hasRole('Director'):
                 $filtranivel = $request->input('nivel_educativo');
                 if ($filtranivel == null || $filtranivel == 0) {
                     $cursos = Curso::where('esActivo','=',1)->get();
@@ -94,67 +97,19 @@ class CursoController extends BaseController
         return view('cursos.malla',compact('cursos'));
     }
 
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function info_docente(string $codigo_curso) {
-        $auth = Auth::user()->id;
-        $user_id = User::findOrFail($auth)->id;
-        $curso = Curso::where('codigo_curso', $codigo_curso)
-            ->where('esActivo',1)
-            ->first() ;
-        $docente = Docente::whereHas('user', function($query) use($user_id) {
-            $query->where('id', $user_id)
-                ->where('esActivo',1);
-        })->firstOrFail();
-        
-        $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
-            ->where('codigo_curso', $curso->codigo_curso)
-            ->get();
-
-        $aulas = new Collection();
-        foreach($catedras as $catedra) {
-            $aula = Seccion::where('id_nivel', $catedra->id_nivel)
-                ->where('id_grado', $catedra->id_grado)
-                ->where('id_seccion', $catedra->id_seccion)
-                ->first();
-            $aulas->push($aula);
-        }
-        return view('cursos.info-docente', compact('aulas', 'curso'));
-    }
-
     public function info(string $codigo_curso, Request $request)
     {
         $auth = Auth::user()->id;
         $user = User::findOrFail($auth);
+        $user_id = $user->id;
         $curso = Curso::where('codigo_curso', $codigo_curso)->firstOrFail();
         $competencias = $curso->competencias;
         $catedras = Catedra::where('codigo_curso', $codigo_curso)->get();
         $docentes = Docente::whereIn('codigo_docente', $catedras->pluck('codigo_docente'))->get();
         switch (true) {
             case $user->hasRole('Admin'):
+            case $user->hasRole('Director'):
+            case $user->hasRole('Secretaria'):
                 $query = Catedra::where('codigo_curso', $codigo_curso);
 
                 // Obtener niveles, grados y secciones relacionados con las cátedras del curso
@@ -185,6 +140,24 @@ class CursoController extends BaseController
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
                 return view('cursos.info', compact('curso', 'competencias','docentes'));
+                break;
+            case $user->hasRole('Docente'):
+                $docente = Docente::whereHas('user', function ($query) use ($user_id) {
+                    $query->where('id', $user_id)
+                    ->where('esActivo', 1);
+                })->firstOrFail();
+                $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
+                ->where('codigo_curso', $curso->codigo_curso)
+                ->get();
+                $aulas = new Collection();
+                foreach ($catedras as $catedra) {
+                    $aula = Seccion::where('id_nivel', $catedra->id_nivel)
+                        ->where('id_grado', $catedra->id_grado)
+                        ->where('id_seccion', $catedra->id_seccion)
+                        ->first();
+                    $aulas->push($aula);
+                }
+                return view('cursos.info', compact('aulas', 'curso','competencias'));
                 break;
         }      
         

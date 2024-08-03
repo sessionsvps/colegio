@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             CompetenciaSeeder::class,
             BimestreSeeder::class,
             InstitucionSeeder::class,
+            DirectorSeeder::class,
+            SecretariaSeeder::class,
         ]);
     }
 }

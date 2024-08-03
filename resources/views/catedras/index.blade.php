@@ -94,9 +94,11 @@
                         <th scope="col" class="px-6 py-3">
                             Docente
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Acciones
-                        </th>
+                        @can('Editar Catedras')
+                            <th scope="col" class="px-6 py-3">
+                                Acciones
+                            </th>
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
@@ -112,7 +114,8 @@
                             @if($curso->catedras->isNotEmpty())
                             @foreach($curso->catedras as $catedra)
                             @if($catedra->docente)
-                            {{ $catedra->docente->apellido_paterno}} {{ $catedra->docente->apellido_materno}}, {{ $catedra->docente->primer_nombre}}
+                            {{ $catedra->docente->apellido_paterno}} {{ $catedra->docente->apellido_materno}}, {{
+                            $catedra->docente->primer_nombre}}
                             @else
                             <span class="font-bold italic">Sin asignar</span>
                             @endif
@@ -121,21 +124,28 @@
                             <span class="italic text-red-700">Sin asignar</span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            
-                            <div class="flex justify-center">
-                                @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
-                                <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Modificar</a>
-                                <button type="button"
-                                    onclick="confirmDelete('{{ $curso->codigo_curso }}', '{{ $aula->grado->nivel->id_nivel }}', '{{ $aula->grado->id_grado }}', '{{ $aula->id_seccion }}')"
-                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
-                                @else
-                                <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
-                                    class="font-medium text-green-600 dark:text-green-500 hover:underline">Asignar</a>
-                                @endif
-                            </div>
-                        </td>
+                        @can('Editar Catedras')
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-center">
+                                    @if( $curso->catedras->isNotEmpty() && $curso->catedras->first()->docente )
+                                    @can('Editar Catedras')
+                                    <a href="{{ route('catedras.custom-edit', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Modificar</a>
+                                    @endcan
+                                    @can('Eliminar Catedras')
+                                    <button type="button"
+                                        onclick="confirmDelete('{{ $curso->codigo_curso }}', '{{ $aula->grado->nivel->id_nivel }}', '{{ $aula->grado->id_grado }}', '{{ $aula->id_seccion }}')"
+                                        class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                                    @endcan
+                                    @else
+                                    @can('Registrar Catedras')
+                                    <a href="{{ route('catedras.custom-create', [$curso->codigo_curso, $aula->grado->nivel->id_nivel, $aula->grado->id_grado, $aula->id_seccion]) }}"
+                                        class="font-medium text-green-600 dark:text-green-500 hover:underline">Asignar</a>
+                                    @endcan
+                                    @endif
+                                </div>
+                            </td>
+                        @endcan
                     </tr>
                     @empty
                     <tr>

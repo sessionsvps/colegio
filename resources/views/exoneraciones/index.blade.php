@@ -17,7 +17,7 @@
     </div>
     @endif
     <p class="font-bold text-xl md:text-2xl lg:text-3xl">Exoneraciones</p>
-    @can('exoneraciones.create')
+    @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
         <form action="{{ route('exoneraciones.index') }}" method="GET">
             <div class="mt-5 md:mt-10 grid grid-cols-1 lg:grid-cols-3">
                 <div class="mr-5">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </form>
-    @endcan
+    @endif
     
     @if($estudiante)
     <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class=" bg-gray-50 shadow-md rounded-lg p-6 flex flex-col justify-center items-center">
-            @can('exoneraciones.create')
+            @can('Editar Exoneraciones')
                 @if ($estudiante->año_escolar == 2024)
                 <div class="flex w-full justify-end mb-4">
                     <a href="{{route('exoneraciones.edit',['codigo_estudiante' => $estudiante->codigo_estudiante, 'año_escolar' => $estudiante->año_escolar]) }}"

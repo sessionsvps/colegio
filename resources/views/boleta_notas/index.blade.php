@@ -2,7 +2,7 @@
 
 @section('contenido')
     <p class="font-bold text-xl md:text-2xl lg:text-3xl">Boleta de Notas</p>
-    @can('notas.admin')
+    @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
         <form action="{{ route('boleta_notas.index') }}" method="GET">
             <div class="mt-5 md:mt-10 grid grid-cols-1 lg:grid-cols-3">
                 <div class="mr-5">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </form>
-    @endcan
+    @endif
     
     @if($estudiante)
         <div class="mt-10 md:mt-20 flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
@@ -53,104 +53,6 @@
                     ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
             </div>
         </div>
-        {{-- <div class="mt-5 md:mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
-                <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Código
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Curso
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Competencias
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            I BIMESTRE
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            II BIMESTRE
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            III BIMESTRE
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            IV BIMESTRE
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($cursos as $curso)
-                    @php
-                    $competencias = $curso->curso->competencias
-                    @endphp
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            {{ $curso->codigo_curso }}
-                        </th>
-                        <td class="px-6 py-4">
-                            {{$curso->curso->descripcion}}
-                        </td>
-                        <td class="px-6 py-4">
-                            @forelse ($competencias as $competencia)
-                            <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm flex items-center">
-                                <svg class="w-5 h-5 text-indigo-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                                </svg>
-                                <span class="text-gray-800 text-start">{{ $competencia->descripcion }}</span>
-                            </div>
-                            @empty
-                            <div class="bg-red-100 p-2 rounded-lg shadow-sm">
-                                No hay competencias
-                            </div>
-                            @endforelse
-                        </td>
-                        <td class="px-6 py-4">
-                            @foreach ($notas->where('id_bimestre', 1)->where('codigo_curso',$curso->codigo_curso) as $nota)
-                            <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm flex items-center justify-center">
-                                <span
-                                    class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
-                                    {{ $nota->nivel_logro }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </td>
-                        <td class="px-6 py-4">
-                            @foreach ($notas->where('id_bimestre', 2)->where('codigo_curso',$curso->codigo_curso) as $nota)
-                            <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
-                                <span
-                                    class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
-                                    {{ $nota->nivel_logro }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </td>
-                        <td class="px-6 py-4">
-                            @foreach ($notas->where('id_bimestre', 3)->where('codigo_curso',$curso->codigo_curso) as $nota)
-                            <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
-                                <span
-                                    class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
-                                    {{ $nota->nivel_logro }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </td>
-                        <td class="px-6 py-4">
-                            @foreach ($notas->where('id_bimestre', 4)->where('codigo_curso',$curso->codigo_curso) as $nota)
-                            <div class="bg-gray-100 p-2 rounded-lg mb-2 shadow-sm">
-                                <span
-                                    class="text-gray-800 font-semibold {{ $nota->nivel_logro == 'A' ? 'text-green-500' : ($nota->nivel_logro == 'B' ? 'text-blue-800' : 'text-red-500') }}">
-                                    {{ $nota->nivel_logro }}
-                                </span>
-                            </div>
-                            @endforeach
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div> --}}
         @foreach ( $cursos as $curso )
         @php
         $competencias = $curso->curso->competencias

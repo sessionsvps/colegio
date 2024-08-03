@@ -17,8 +17,8 @@ class ExoneracionController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:exoneraciones.index')->only('index');
-        $this->middleware('can:exoneraciones.create')->only('edit', 'update');
+        $this->middleware('can:Ver Exoneraciones')->only('index');
+        $this->middleware('can:Editar Exoneraciones')->only('edit', 'update');
     }
     public function index(Request $request)
     {
@@ -30,6 +30,8 @@ class ExoneracionController extends BaseController
 
         switch (true) {
             case $user->hasRole('Admin'):
+            case $user->hasRole('Secretaria'):
+            case $user->hasRole('Director'):
                 if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
                     $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
                     ->where('año_escolar', $request->input('año_escolar'))->first();
@@ -44,7 +46,7 @@ class ExoneracionController extends BaseController
                 }
                 return view('exoneraciones.index', compact('estudiante', 'exoneraciones'));
                 break;
-            default:
+            case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
                 $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->get();
                 $codigoCursos = $cursos->pluck('codigo_curso');
@@ -53,6 +55,8 @@ class ExoneracionController extends BaseController
                     ->whereIn('codigo_curso', $codigoCursos)
                     ->get();
                 return view('exoneraciones.index', compact('estudiante', 'exoneraciones'));
+                break;
+            default:
                 break;
         }      
 

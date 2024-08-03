@@ -17,12 +17,14 @@
     </div>
     @endif
     <div class="flex justify-between items-center mb-10">
-        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Docentes</h2>
-        @can('Registrar Docentes')
-        <a href="{{ route('docentes.create') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Añadir
-        </a>
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Director</h2>
+        @can('Registrar Director')
+        @if (!$director)
+            <a href="{{ route('director.create') }}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Añadir
+            </a>
+        @endif
         @endcan
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -47,46 +49,43 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($docentes as $docente)
+                @if ($director)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $docente->codigo_docente }}
+                        {{ $director->codigo_director }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $docente->primer_nombre }} {{ $docente->otros_nombres }} {{ $docente->apellido_paterno }} {{
-                        $docente->apellido_materno }}
+                        {{ $director->primer_nombre }} {{ $director->otros_nombres }} {{ $director->apellido_paterno }} {{
+                        $director->apellido_materno }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $docente->dni }}
+                        {{ $director->dni }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $docente->email }}
+                        {{ $director->email }}
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-center">
-                            @can('Editar Docentes')
-                                <a href="{{ route('docentes.edit', $docente->codigo_docente) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                            @can('Editar Director')
+                            <a href="{{ route('director.edit', $director->codigo_director) }}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
                             @endcan
-                            @can('Eliminar Docentes')
-                                <button type="button" onclick="confirmDelete('{{ $docente->codigo_docente }}')"
-                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                            @can('Eliminar Director')
+                            <button type="button" onclick="confirmDelete('{{ $director->codigo_director }}')"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
                             @endcan
                         </div>
                     </td>
                 </tr>
-                @empty
+                @else
                 <tr>
-                    <td colspan="4" class="px-6 py-4 text-center">
-                        No hay registros
+                    <td colspan="5" class="px-6 py-4 text-center">
+                        No hay registro
                     </td>
                 </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
-    </div>
-    <div class="mt-10">
-        {{ $docentes->links() }}
     </div>
 @endsection
 
@@ -108,11 +107,11 @@
 
     <script>
         function confirmDelete(id){
-                alertify.confirm("¿Seguro que quieres eliminar al docente?",
+                alertify.confirm("¿Seguro que quieres eliminar al director?",
                 function(){
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/docentes/' + id ;
+                    form.action = '/director/' + id ;
                     form.innerHTML = '@csrf @method("DELETE")';
                     document.body.appendChild(form);
                     form.submit();

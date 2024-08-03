@@ -5,17 +5,15 @@ namespace App\Models;
 use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Thiagoprz\CompositeKey\HasCompositeKey;
 
 class Seccion extends Model
 {
-    use HasFactory;
-    use Compoships;
+    use HasFactory,Compoships;
 
     protected $table = 'secciones';
     protected $primaryKey = ['id_seccion','id_grado', 'id_nivel'];
     public $incrementing = false;
-
-    use HasFactory;
 
     protected $fillable = [];
 

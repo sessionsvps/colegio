@@ -51,10 +51,14 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-center">
-                            <a href="{{ route('users.edit', $user->id) }}"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                            <button type="button" onclick="confirmDelete('{{ $user->id }}')"
-                                class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                            @can('Editar Usuarios')
+                                <a href="{{ route('users.edit', $user->id) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                            @endcan
+                            @can('Eliminar Usuarios')
+                                <button type="button" onclick="confirmDelete('{{ $user->id }}')"
+                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                            @endcan
                         </div>
                     </td>
                 </tr>

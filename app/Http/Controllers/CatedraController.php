@@ -19,7 +19,10 @@ class CatedraController extends BaseController
 
     public function __construct()
     {
-        $this->middleware('can:docentes.control')->only('index', 'create', 'store', 'edit', 'update', 'destroy','cancelar');
+        $this->middleware('can:Ver Catedras')->only('index');
+        $this->middleware('can:Registrar Catedras')->only('create', 'store');
+        $this->middleware('can:Editar Catedras')->only('edit', 'update');
+        $this->middleware('can:Eliminar Catedras')->only('destroy');
     }
 
     public function index(Request $request)

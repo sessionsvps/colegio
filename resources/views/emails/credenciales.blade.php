@@ -53,10 +53,13 @@
         <img src="{{ $message->embed(public_path('img/sideral-logo.jpg')) }}" alt="Logo" class="logo">
         <h1 class="title">Sideral Carrión</h1>
         <div class="content">
-            <p>Estimado/a Docente,</p>
+            <p><strong>¡Bienvenido/a a la familia Sideral Carrión</strong></p>
             <p>Se han generado sus credenciales de acceso:</p>
             <p><strong>Correo:</strong> {{ $email }}</p>
             <p><strong>Contraseña:</strong> {{ $password }}</p>
+            @if ($esEstudiante)
+                <p>Por favor, espere que su matrícula se complete para poder ingresar</p>
+            @endif
             <p>Saludos,</p>
             <p>El Equipo de Sideral Carrión</p>
         </div>

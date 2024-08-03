@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ConfirmacionMatricula;
+use App\Mail\Credenciales;
 use App\Mail\CredencialesEstudiante;
 use App\Models\Asistencia;
 use App\Models\Boleta_de_nota;
@@ -23,14 +24,19 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Mail;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 
 class EstudianteController extends BaseController
 {
 
     public function __construct()
     {
-        $this->middleware('can:estudiantes.control')->only( 'index','create','store','edit','update','destroy','matricular');
-        $this->middleware('can:cursos.info_docente')->only('vista_docente');
+        $this->middleware('can:Ver Estudiantes')->only('index');
+        $this->middleware('can:Registrar Estudiantes')->only('create','store');
+        $this->middleware('can:Editar Estudiantes')->only('edit','update');
+        $this->middleware('can:Eliminar Estudiantes')->only('destroy');
+        $this->middleware('can:Registrar Matriculas')->only('matricular','realizarMatricula');
+        $this->middleware('can:Editar Notas')->only('vista_docente');
     }
 
     public function index()
@@ -162,7 +168,7 @@ class EstudianteController extends BaseController
         ]);
 
         // Enviar correo con credenciales generadas
-        Mail::to($request->input('email'))->send(new CredencialesEstudiante($email, $password));
+        Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
     }

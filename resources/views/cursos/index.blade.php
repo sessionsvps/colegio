@@ -19,12 +19,6 @@
     <div>
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Cursos</h2>
-            {{-- @can('docentes.control')
-                <a href="{{ route('docentes.create') }}"
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Añadir
-                </a>
-            @endcan --}}
         </div>
     
         @if($user->hasRole('Admin'))
@@ -67,16 +61,9 @@
                     </h5>
                 </div>
                 <div class="p-6 pt-0">
-                    <a
+                    <a  href="{{ route('cursos.info', $curso->codigo_curso) }}"
                         class="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
-                        type="button" 
-                        
-                        @if(!$user->hasRole('Docente'))
-                            href="{{ route('cursos.info', $curso->codigo_curso) }}"
-                        @else
-                            href="{{ route('cursos.info-docente', $curso->codigo_curso) }}"
-                        @endif
-                        >
+                        type="button">
                         Ver más
                     </a>
                 </div>
