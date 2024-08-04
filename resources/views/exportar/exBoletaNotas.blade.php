@@ -26,9 +26,14 @@
             margin-left: auto;
             margin-right: auto;
             border-collapse: collapse;
-            width: 80%;
+            width: 90%;
             padding-top: 20px;
         }
+
+        body{
+            font-size: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -82,61 +87,47 @@
             <th>3</th>
             <th>4</th>
         </tr>
-        <tr>
-            <td rowspan="3">Desarrollo Personal, Ciudadanía y Cívica</td>
-            <td>Construye su identidad.</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td rowspan="3"></td>
-        </tr>
-        <tr>
-            <td>Convive y participa democráticamente en la búsqueda del bien común.</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="header">
-            <td>CALIFICATIVO DE ÁREA</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        {{-- @foreach ( $cursos as $curso )
-        @php
-        $competencias = $curso->curso->competencias
-        @endphp
-        <div class="mt-6 bg-gray-50 shadow-md rounded-lg p-6">
-            <p class="text-lg font-bold text-indigo-600">{{$curso->curso->descripcion}} ({{$curso->codigo_curso}})</p>
-            <div class="grid grid-cols-1 gap-4 mt-4">
-                @foreach ( $competencias as $competencia )
-                <div class="grid grid-cols-2 gap-4 items-center">
-                    <div class="bg-white text-indigo-900 p-2 rounded-lg shadow-sm">
-                        <div class="font-semibold flex items-center gap-2">
-                            <svg class="w-4 h-4 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                            </svg>
-                            {{$competencia->descripcion}}
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+        @foreach ($cursos as $curso)
+            @if ($curso->codigo_curso!='8889')
+                @php
+                    $competencias = $curso->curso->competencias;
+                    $cantidadCompetencias = count($competencias);
+                    $firstcompete=$competencias->shift();
+                @endphp
+                <tr>
+                    <td rowspan="{{ $cantidadCompetencias + 1 }}">{{$curso->curso->descripcion}}</td>
+                    <td>{{ $firstcompete ? $firstcompete->descripcion : '' }}</td>
+                    @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
                         @php
-                        $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_curso', $curso->codigo_curso)->where('orden',$competencia->orden)->first();
+                            $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_curso', $curso->codigo_curso)->where('orden',$firstcompete->orden)->first();
                         @endphp
-                        <div class="text-center text-gray-700 border border-gray-300 rounded-lg p-2 shadow {{ $nota ? ($nota->nivel_logro == 'A' || $nota->nivel_logro == 'B' ? 'bg-green-100' : ($nota->nivel_logro == 'C' ? 'bg-red-100' : 'bg-white')) : 'bg-white' }}">
-                            {{ $nota ? $nota->nivel_logro : '' }}
-                        </div>
+                        <td>{{ $nota ? $nota->nivel_logro : '' }}</td>
+                    @endfor
+                    <td rowspan="{{ $cantidadCompetencias + 1 }}"></td>
+                </tr>
+                @foreach ( $competencias as $competencia )
+                    <tr>
+                        <td>{{ $competencia->descripcion }}</td>
+                        @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                            @php
+                                $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_curso', $curso->codigo_curso)->where('orden',$competencia->orden)->first();
+                            @endphp
+                            <td>{{ $nota ? $nota->nivel_logro : '' }}</td>
                         @endfor
-                    </div>
-                </div>
+                    </tr>
                 @endforeach
-            </div>
-        </div>
-        @endforeach --}}
+                <tr class="header">
+                    <td>CALIFICATIVO DE ÁREA</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            @endif
+        @endforeach
+        {{-- @php
+            dd($firstcompete);
+        @endphp --}}
     </table>
 </body>
 </html>
