@@ -77,13 +77,20 @@ class ExportController extends Controller
         $data = file_get_contents($path);
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
+        // Convertir la imagen a base64
+        $path2 = public_path('img/logoMinedu.png');
+        $type2 = pathinfo($path2, PATHINFO_EXTENSION);
+        $data2 = file_get_contents($path2);
+        $base642 = 'data:image/' . $type2 . ';base64,' . base64_encode($data2);
+
         // Generar el HTML de la vista Blade
         $htmlContent = View::make('exportar.exBoletaNotas', [
             'estudiante' => $estudiante,
             'estudiante_seccion' => $estudiante_seccion,
             'cursos'=> $cursos,
             'notas'=>$notas,
-            'base64' => $base64
+            'base64' => $base64,
+            'base642' => $base642
         ])->render();
 
         // Crear una instancia de Dompdf con opciones

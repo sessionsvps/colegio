@@ -34,11 +34,31 @@
             font-size: 10px;
         }
 
+        .tablaConclusion{
+            padding-top: 20px;
+        }
+
+        .informe{
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .imagenes{
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
     </style>
 </head>
 <body>
-    <img src="{{ $base64 }}" alt="Logo" style="height: 50px;">
-    <h1>INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1>{{ $estudiante_seccion->año_escolar }}</h1></h1>
+    <div>
+        <h1 class="informe">INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1 class="informe">{{ $estudiante_seccion->año_escolar }}</h1></h1>
+    </div>
+    <div class="imagenes">
+        <img src="{{ $base642 }}" alt="Logo Minedu" style="width: 200px;">
+        <img src="{{ $base64 }}" alt="Logo Sideral" style="height: 50px;">
+    </div>
     <table>
         <tr>
             <th>DRE</th>
@@ -129,5 +149,77 @@
             dd($firstcompete);
         @endphp --}}
     </table>
+
+    <table class="tablaConclusion">
+        <tr>
+            <th>Periodo</th>
+            <th>Conclusión descriptiva por periodo</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <div>
+        <h1>Resumen de asistencia del estudiante</h1>
+        <table>
+            <thead>
+                <tr class="header">
+                    <th rowspan="2">Periodo</th>
+                    <th colspan="2">Inasistencias</th>
+                    <th colspan="2">Tardanzas</th>
+                </tr>
+                <tr class="header">
+                    <th>Justificadas</th>
+                    <th>Injustificadas</th>
+                    <th>Justificadas</th>
+                    <th>Injustificadas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
