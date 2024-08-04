@@ -16,8 +16,7 @@
                 <input type="hidden" name="id_nivel" value="{{ $nivel }}">
                 <input type="hidden" name="id_grado" value="{{ $grado }}">
                 <input type="hidden" name="id_seccion" value="{{ $seccion }}">
-                <input type="hidden" name="año_escolar" value="2024"> {{-- Ajusta el año escolar según sea necesario --}}
-
+                <input type="text" id="año_escolar" name="año_escolar" class="hidden" value="{{ request('año_escolar')}}" readonly>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="curso">
                         Curso
@@ -83,4 +82,19 @@
 @endsection
 
 @section('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                        const añoSelect = document.getElementById('año_actual');
+                        const añoInput = document.getElementById('año_escolar');
+                
+                        añoSelect.addEventListener('change', function() {
+                            añoInput.value = añoSelect.value;
+                        });
+                
+                        // Set initial value of the input
+                        añoInput.value = añoSelect.value;
+                    });
+    </script>
+
 @endsection

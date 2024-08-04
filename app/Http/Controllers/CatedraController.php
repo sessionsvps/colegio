@@ -32,16 +32,17 @@ class CatedraController extends BaseController
         $filtra_nivel = $request->input('nivel');
         $filtra_grado = $request->input('grado');
         $filtra_seccion = $request->input('seccion');
+        $año_escolar = $request->input('año_escolar');
 
         $cursos = Curso::where('esActivo', 1)
         ->whereHas('niveles', function($query) use ($filtra_nivel) {
             $query->where('curso_por_niveles.id_nivel', $filtra_nivel);
         })
-        ->with(['catedras' => function($query) use ($filtra_nivel, $filtra_grado, $filtra_seccion) {
+        ->with(['catedras' => function($query) use ($filtra_nivel, $filtra_grado, $filtra_seccion,$año_escolar) {
             $query->where('id_nivel', $filtra_nivel)
                 ->where('id_grado', $filtra_grado)
                 ->where('id_seccion', $filtra_seccion)
-                ->where('año_escolar',Carbon::now()->year)
+                ->where('año_escolar',$año_escolar)
                 ->with('docente');
         }])
         ->paginate(10)

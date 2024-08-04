@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Catedra;
 use App\Models\Curso;
 use App\Models\Docente;
+use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
@@ -97,48 +98,31 @@ class CursoController extends BaseController
         return view('cursos.malla',compact('cursos'));
     }
 
-    public function info(string $codigo_curso, Request $request)
+    public function info(Request $request, string $codigo_curso, string $año_escolar)
     {
         $auth = Auth::user()->id;
         $user = User::findOrFail($auth);
         $user_id = $user->id;
         $curso = Curso::where('codigo_curso', $codigo_curso)->firstOrFail();
         $competencias = $curso->competencias;
-        $catedras = Catedra::where('codigo_curso', $codigo_curso)->get();
-        $docentes = Docente::whereIn('codigo_docente', $catedras->pluck('codigo_docente'))->get();
         switch (true) {
             case $user->hasRole('Admin'):
             case $user->hasRole('Director'):
             case $user->hasRole('Secretaria'):
-                $query = Catedra::where('codigo_curso', $codigo_curso);
-
-                // Obtener niveles, grados y secciones relacionados con las cátedras del curso
-                $niveles = Nivel::all();
-                $grados_primaria = Grado::where('id_nivel', 1)->get();
-                $grados_secundaria = Grado::where('id_nivel', 2)->get();
-
-                // Filtrar cátedras según los parámetros del request
-                if ($request->filled('nivel')) {
-                    $query->where('id_nivel', $request->nivel);
-                }
-
-                if ($request->filled('grado')) {
-                    $query->where('id_grado', $request->grado);
-                }
-
-                if ($request->filled('seccion')) {
-                    $query->where('id_seccion', $request->seccion);
-                }
-
-                if ($request->filled('docente')) {
-                    $query->where('codigo_docente', $request->docente);
-                }
-
-                $catedras_filtradas = $query->get();
-
-                return view('cursos.info', compact('curso', 'competencias', 'catedras_filtradas', 'docentes', 'niveles', 'grados_primaria', 'grados_secundaria'));
+                $catedras = Catedra::where('codigo_curso', $codigo_curso)
+                ->where('año_escolar', $año_escolar)->get();
+                $docentes = Docente::whereIn('codigo_docente', $catedras->pluck('codigo_docente'))->get();
+                return view('cursos.info', compact('curso', 'competencias','docentes'));
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
+                $estudiante = Estudiante_Seccion::where('user_id',$user_id)
+                    ->where('año_escolar',$año_escolar)->first();
+                $catedras = Catedra::where('codigo_curso', $codigo_curso)
+                    ->where('id_nivel',$estudiante->id_nivel)
+                    ->where('id_grado', $estudiante->id_grado)
+                    ->where('id_seccion', $estudiante->id_seccion)
+                    ->where('año_escolar', $año_escolar)->get();
+                $docentes = Docente::whereIn('codigo_docente', $catedras->pluck('codigo_docente'))->get();
                 return view('cursos.info', compact('curso', 'competencias','docentes'));
                 break;
             case $user->hasRole('Docente'):
@@ -148,7 +132,7 @@ class CursoController extends BaseController
                 })->firstOrFail();
                 $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
                 ->where('codigo_curso', $curso->codigo_curso)
-                ->get();
+                ->where('año_escolar',$año_escolar)->get();
                 $aulas = new Collection();
                 foreach ($catedras as $catedra) {
                     $aula = Seccion::where('id_nivel', $catedra->id_nivel)
@@ -159,6 +143,8 @@ class CursoController extends BaseController
                 }
                 return view('cursos.info', compact('aulas', 'curso','competencias'));
                 break;
+            default:
+            break;
         }      
         
     }

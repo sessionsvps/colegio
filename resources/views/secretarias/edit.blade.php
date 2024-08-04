@@ -138,7 +138,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="fecha_ingreso" name="fecha_ingreso" type="date" placeholder="Fecha de Ingreso"
-                        value="{{ old('fecha_ingreso', $secretaria->fecha_ingreso) }}">
+                        disabled value="{{ old('fecha_ingreso', $secretaria->fecha_ingreso) }}">
                     @error('fecha_ingreso')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Catedra;
+use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
@@ -53,65 +55,19 @@ class AulaController extends BaseController
         }      
     }
 
-    // public function info(string $codigo_curso, Request $request)
-    // {
-    //     $auth = Auth::user()->id;
-    //     $user = User::findOrFail($auth);
-    //     $user_id = $user->id;
-    //     switch (true) {
-    //         case $user->hasRole('Admin'):
-    //         case $user->hasRole('Director'):
-    //         case $user->hasRole('Secretaria'):
-    //             $query = Catedra::where('codigo_curso', $codigo_curso);
-
-    //             // Obtener niveles, grados y secciones relacionados con las cátedras del curso
-    //             $niveles = Nivel::all();
-    //             $grados_primaria = Grado::where('id_nivel', 1)->get();
-    //             $grados_secundaria = Grado::where('id_nivel', 2)->get();
-
-    //             // Filtrar cátedras según los parámetros del request
-    //             if ($request->filled('nivel')) {
-    //                 $query->where('id_nivel', $request->nivel);
-    //             }
-
-    //             if ($request->filled('grado')) {
-    //                 $query->where('id_grado', $request->grado);
-    //             }
-
-    //             if ($request->filled('seccion')) {
-    //                 $query->where('id_seccion', $request->seccion);
-    //             }
-
-    //             if ($request->filled('docente')) {
-    //                 $query->where('codigo_docente', $request->docente);
-    //             }
-
-    //             $catedras_filtradas = $query->get();
-
-    //             return view('cursos.info', compact('curso', 'competencias', 'catedras_filtradas', 'docentes', 'niveles', 'grados_primaria', 'grados_secundaria'));
-    //             break;
-    //         case $user->hasRole('Estudiante_Matriculado'):
-    //             return view('cursos.info', compact('curso', 'competencias', 'docentes'));
-    //             break;
-    //         case $user->hasRole('Docente'):
-    //             $docente = Docente::whereHas('user', function ($query) use ($user_id) {
-    //                 $query->where('id', $user_id)
-    //                     ->where('esActivo', 1);
-    //             })->firstOrFail();
-    //             $catedras = Catedra::where('codigo_docente', $docente->codigo_docente)
-    //                 ->where('codigo_curso', $curso->codigo_curso)
-    //                 ->get();
-    //             $aulas = new Collection();
-    //             foreach ($catedras as $catedra) {
-    //                 $aula = Seccion::where('id_nivel', $catedra->id_nivel)
-    //                     ->where('id_grado', $catedra->id_grado)
-    //                     ->where('id_seccion', $catedra->id_seccion)
-    //                     ->first();
-    //                 $aulas->push($aula);
-    //             }
-    //             return view('cursos.info', compact('aulas', 'curso', 'competencias'));
-    //             break;
-    //     }
-    // }
+    public function info(Request $request, string $año_escolar, string $nivel, string $grado, string $seccion)
+    {
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
+        $user_id = $user->id;
+        $aula = Seccion::where('id_nivel',$nivel)
+            ->where('id_grado',$grado)
+            ->where('id_seccion',$seccion)->first();
+        $estudiantes = Estudiante_Seccion::where('año_escolar', $año_escolar)
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)->get();
+        return view('aulas.info', compact('aula', 'estudiantes', 'año_escolar'));
+    }
 
 }

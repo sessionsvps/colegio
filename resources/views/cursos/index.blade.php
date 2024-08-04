@@ -21,7 +21,7 @@
             <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Cursos</h2>
         </div>
     
-        @if($user->hasRole('Admin'))
+        @if($user->hasRole('Admin') || $user->hasRole('Secretaria') || $user->hasRole('Director'))
             <form method="GET" action="{{ route('cursos.index') }}" class="mb-6">
                 <div class="mb-4">
                     <label for="nivel_educativo" class="block text-sm font-medium text-gray-700">Nivel Educativo:</label>
@@ -61,8 +61,8 @@
                     </h5>
                 </div>
                 <div class="p-6 pt-0">
-                    <a  href="{{ route('cursos.info', $curso->codigo_curso) }}"
-                        class="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
+                    <a  href="{{ route('cursos.info', ['id' => $curso->codigo_curso, 'año_escolar' => 'TEMP']) }}"
+                        class="boton-ver-mas align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
                         type="button">
                         Ver más
                     </a>
@@ -70,35 +70,6 @@
             </div>
             @endforeach
         </div>
-
-        {{-- <table class="min-w-full bg-white">
-            <thead>
-                <tr>
-                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Código</th>
-                    <th
-                        class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Descripción</th>
-                    <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                        Año de actualización</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (count($cursos)<=0) <tr>
-                    <td class="text-center py-2 px-4 border-b border-gray-200" colspan="3">No hay registros</td>
-                    </tr>
-                    @else
-                    @foreach ( $cursos as $curso )
-                    <tr>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $curso->codigo_curso }}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $curso->descripcion}}</td>
-                        <td class="py-2 px-4 border-b border-gray-200">{{ $curso->año_actualizacion }}</td>
-                    </tr>
-                    @endforeach
-                    @endif
-            </tbody>
-        </table> --}}
-        
         
     </div>
 @endsection
@@ -117,6 +88,23 @@
                         }
                     }, 3000); // 3 segundos antes de empezar a desvanecer
                 });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var añoEscolar = document.getElementById("año_actual").value;
+            var botonesVerMas = document.querySelectorAll(".boton-ver-mas");
+            
+            botonesVerMas.forEach(function(boton) {
+                boton.addEventListener("click", function(event) {
+                    var añoEscolar = document.getElementById("año_actual").value;
+                    event.preventDefault();
+                    var href = boton.getAttribute("href");
+                    href = href.replace('TEMP', añoEscolar);
+                    window.location.href = href;
+                });
+            });
+        });
     </script>
 
     <script>

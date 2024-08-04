@@ -27,7 +27,7 @@
         <form method="GET" action="{{ route('catedras.index') }}">
             <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
                 <div class="mr-0">
-                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Nivel</label>
+                    <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
                     <select id="nivel" name="nivel" onchange="updateGrados()" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         <option value="" selected disabled>Seleccione un nivel</option>
@@ -39,7 +39,7 @@
                     </select>
                 </div>
                 <div class="mr-0 md:ml-5">
-                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Grado</label>
+                    <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
                     <select id="grado" name="grado" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         @if(!isset($filtra_nivel))
@@ -62,7 +62,7 @@
                     </select>
                 </div>
                 <div class="mr-0 lg:ml-5">
-                    <label for="año_escolar" class="block text-sm font-medium text-gray-700">Sección</label>
+                    <label for="seccion" class="block text-sm font-medium text-gray-700">Sección</label>
                     <select id="seccion" name="seccion" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         <option value="" selected disabled>Seleccione una sección</option>
@@ -79,6 +79,7 @@
                     </button>
                 </div>
             </div>
+            <input type="text" id="año_escolar" name="año_escolar" class="hidden" value="{{ request('año_escolar')}}" readonly>
         </form>
 
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -293,5 +294,18 @@
                 });
             }
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                    const añoSelect = document.getElementById('año_actual');
+                    const añoInput = document.getElementById('año_escolar');
+            
+                    añoSelect.addEventListener('change', function() {
+                        añoInput.value = añoSelect.value;
+                    });
+            
+                    // Set initial value of the input
+                    añoInput.value = añoSelect.value;
+                });
     </script>
 @endsection

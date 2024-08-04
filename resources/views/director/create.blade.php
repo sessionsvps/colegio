@@ -337,31 +337,25 @@
             e.target.value = value.replace(/[^0-9]/g, '').slice(0, 9);
         });
     </script>
-{{-- <script>
-    function updateCursos() {
-        var nivel = document.getElementById('nivel').value;
-        var cursos = @json(['primaria' => $cursos_primaria, 'secundaria' => $cursos_secundaria]);
 
-        var cursoSelect = document.getElementById('curso');
-        cursoSelect.innerHTML = '<option value="">Seleccione un curso</option>'; // Reset options
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                const añoSelect = document.getElementById('año_actual');
+                const fechaIngreso = document.getElementById('fecha_ingreso');
+        
+                function updateFechaIngresoLimits() {
+                    const selectedYear = añoSelect.value;
+                    fechaIngreso.min = `${selectedYear}-01-01`;
+                    fechaIngreso.max = `${selectedYear}-12-31`;
+                    añoInput.value = selectedYear;
+                }
+        
+                añoSelect.addEventListener('change', updateFechaIngresoLimits);
+        
+                // Set initial value of the input and limits
+                updateFechaIngresoLimits();
+            });
+    </script>
 
-        if (nivel == 1) {
-            cursos.primaria.forEach(function(curso) {
-                var option = document.createElement('option');
-                option.value = curso.codigo_curso;
-                option.text = curso.descripcion;
-                cursoSelect.appendChild(option);
-            });
-        } else if (nivel == 2) {
-            cursos.secundaria.forEach(function(curso) {
-                var option = document.createElement('option');
-                option.value = curso.codigo_curso;
-                option.text = curso.descripcion;
-                cursoSelect.appendChild(option);
-            });
-        }
-    }
-    
-</script> --}}
     <script src="{{asset('js/verificar_dni.js')}}"></script>
 @endsection

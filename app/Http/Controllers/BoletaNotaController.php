@@ -6,6 +6,8 @@ use App\Models\Bimestre;
 use App\Models\Curso;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
+use App\Models\Grado;
+use App\Models\Nivel;
 use App\Models\Notas_por_competencia;
 use App\Models\Seccion;
 use App\Models\User;
@@ -13,13 +15,14 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BoletaNotaController extends BaseController
 {
     
     public function __construct()
     {
-        $this->middleware('can:Ver Notas')->only('index');
+        $this->middleware('can:Ver Notas')->only('index','info');
         $this->middleware('can:Editar Notas')->only('edit', 'update');
     }
 
@@ -36,23 +39,56 @@ class BoletaNotaController extends BaseController
             case $user->hasRole('Admin'):
             case $user->hasRole('Secretaria'):
             case $user->hasRole('Director'):
-                if ($request->filled('codigo_estudiante') && $request->filled('año_escolar')) {
-                    $estudiante = Estudiante_Seccion::where('codigo_estudiante', $request->input('codigo_estudiante'))
-                    ->where('año_escolar', $request->input('año_escolar'))->first();
-                    if ($estudiante) {
-                        $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
-                        ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
-                            $query->select('codigo_curso')
-                                ->from('exoneraciones')
-                                ->where('codigo_estudiante', $estudiante->codigo_estudiante)
-                                ->where('año_escolar', $estudiante->año_escolar);
-                        })->get();
-                        $notas = Notas_por_competencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
-                            ->where('año_escolar', $estudiante->año_escolar)
-                            ->where('exoneracion', 0)->get();
+
+                $niveles = Nivel::all();
+                $grados_primaria = Grado::where('id_nivel', 1)->get();
+                $grados_secundaria = Grado::where('id_nivel', 2)->get();
+                $query = Estudiante_Seccion::whereHas('estudiante.user', function ($query) {
+                    $query->where('esActivo', 1);
+                });
+
+                if ($request->filled('año_escolar')){
+                    $query->where('año_escolar', $request->año_escolar);
+                }
+                if ($request->filled('nivel')) {
+                    $query->where('id_nivel', $request->nivel);
+                }
+                if ($request->filled('grado')) {
+                    $query->where('id_grado', $request->grado);
+                }
+                if ($request->filled('seccion')) {
+                    $query->where('id_seccion', $request->seccion);
+                }
+
+                if ($request->filled('buscar_por')) {
+                    $buscarPor = $request->input('buscar_por');
+                    $buscarValor = $request->input($buscarPor);
+
+                    if ($buscarPor === 'codigo') {
+                        $query->whereHas('estudiante', function ($query) use ($buscarValor) {
+                            $query->where('codigo_estudiante', $buscarValor);
+                        });
+                    } elseif ($buscarPor === 'nombre') {
+                        $query->whereHas('estudiante', function ($query) use ($buscarValor) {
+                            $query->where(function ($query) use ($buscarValor) {
+                                $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                                    ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                            });
+                        });
+                    } elseif ($buscarPor === 'dni') {
+                        $query->whereHas('estudiante', function ($query) use ($buscarValor) {
+                            $query->where('dni', $buscarValor);
+                        });
+                    } elseif ($buscarPor === 'correo') {
+                        $query->whereHas('estudiante.user', function ($query) use ($buscarValor) {
+                            $query->where('email', 'like', '%' . $buscarValor . '%');
+                        });
                     }
                 }
-                return view('boleta_notas.index', compact('estudiante', 'cursos', 'notas'));
+
+                $estudiantes = $query->paginate(10);
+
+                return view('boleta_notas.index', compact('estudiantes', 'niveles', 'grados_primaria', 'grados_secundaria'));
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
@@ -71,6 +107,21 @@ class BoletaNotaController extends BaseController
             default:
                 break;
         }      
+    }
+
+    public function info(string $codigo_estudiante){
+        $estudiante = Estudiante_Seccion::where('codigo_estudiante',$codigo_estudiante)->first();
+        $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
+            ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
+                $query->select('codigo_curso')
+                ->from('exoneraciones')
+                ->where('codigo_estudiante', $estudiante->codigo_estudiante)
+                    ->where('año_escolar', $estudiante->año_escolar);
+            })->get();
+        $notas = Notas_por_competencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
+            ->where('año_escolar', $estudiante->año_escolar)
+            ->where('exoneracion', 0)->get();
+        return view('boleta_notas.info', compact('estudiante', 'cursos', 'notas'));
     }
 
     public function edit(string $codigo_curso,string $nivel,string $grado,string $seccion)
@@ -124,7 +175,6 @@ class BoletaNotaController extends BaseController
                     'orden' => $nota_data['orden']
                 ])->update([
                     'nivel_logro' => $nota_data['nivel_logro'],
-                    'exoneracion' => false // Ajusta según tu lógica de negocio
                 ]);
             }
         }

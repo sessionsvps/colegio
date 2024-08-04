@@ -19,6 +19,37 @@
     <div class="flex justify-between items-center mb-10">
         <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Usuarios</h2>
     </div>
+    
+    
+
+    <form method="GET" action="{{ route('users.index') }}">
+        <div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+                <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
+                <select id="rol" name="rol"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="" {{ request('rol')=='' ? 'selected' : '' }}>Todos</option>
+                    <option value="Admin" {{ request('rol')=='Admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="Docente" {{ request('rol')=='Docente' ? 'selected' : '' }}>Docente</option>
+                    <option value="Estudiante_Matriculado" {{ request('rol')=='Estudiante_Matriculado' ? 'selected' : '' }}>Estudiante</option>
+                    <option value="Director" {{ request('rol')=='Director' ? 'selected' : '' }}>Director</option>
+                    <option value="Secretaria" {{ request('rol')=='Secretaria' ? 'selected' : '' }}>Secretaria</option>
+                </select>
+            </div>
+            <div>
+                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                <input type="text" name="nombre" id="nombre"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" maxlength="120" value="{{request('nombre')}}">
+            </div>
+            <div class="col-span-2 lg:col-span-1 lg:mt-6" id="botonBuscar">
+                <button type="submit"
+                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </form>
+
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
             <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
@@ -72,9 +103,11 @@
             </tbody>
         </table>
     </div>
+    
     <div class="mt-10">
         {{ $users->links() }}
     </div>
+
 @endsection
     
 @section('scripts')

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Models\Estado;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use phpDocumentor\Reflection\PseudoTypes\False_;
 
@@ -25,11 +26,33 @@ class DocenteController extends BaseController
         $this->middleware('can:Eliminar Docentes')->only('destroy');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $docentes = Docente::whereHas('user', function ($query) {
+        $query = Docente::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->paginate(10);
+        });
+
+        if ($request->filled('buscar_por')) {
+            $buscarPor = $request->input('buscar_por');
+            $buscarValor = $request->input($buscarPor);
+
+            if ($buscarPor === 'codigo') {
+                $query->where('codigo_docente', $buscarValor);
+            } elseif ($buscarPor === 'nombre') {
+                $query->where(function ($query) use ($buscarValor) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                });
+            } elseif ($buscarPor === 'dni') {
+                $query->where('dni', $buscarValor);
+            } elseif ($buscarPor === 'correo') {
+                $query->whereHas('user', function ($query) use ($buscarValor) {
+                    $query->where('email', 'like', '%' . $buscarValor . '%');
+                });
+            }
+        }
+
+        $docentes = $query->paginate(10);
         return view('docentes.index', compact('docentes'));
     }
 

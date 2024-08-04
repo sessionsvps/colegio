@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 
@@ -39,11 +40,46 @@ class EstudianteController extends BaseController
         $this->middleware('can:Editar Notas')->only('vista_docente');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $estudiantes = Estudiante::whereHas('user', function ($query) {
+        $query = Estudiante::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->paginate(10);
+        });
+
+        if ($request->filled('filtrar_por')){
+            $filtrarPor = $request->input('filtrar_por');
+            if ($filtrarPor == 'matriculado'){
+                $query->whereNotNull('nro_matricula')->get();
+            }else if ($filtrarPor == 'no_matriculado'){
+                $query->where('nro_matricula',null)->get();
+            }
+        }
+
+        if ($request->filled('año_ingreso')) {
+            $query->where('año_ingreso', $request->input('año_ingreso'))->get();
+        }
+
+        if ($request->filled('buscar_por')) {
+            $buscarPor = $request->input('buscar_por');
+            $buscarValor = $request->input($buscarPor);
+
+            if ($buscarPor === 'codigo') {
+                $query->where('codigo_estudiante', $buscarValor);
+            } elseif ($buscarPor === 'nombre') {
+                $query->where(function ($query) use ($buscarValor) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                });
+            } elseif ($buscarPor === 'dni') {
+                $query->where('dni', $buscarValor);
+            } elseif ($buscarPor === 'correo') {
+                $query->whereHas('user', function ($query) use ($buscarValor) {
+                    $query->where('email', 'like', '%' . $buscarValor . '%');
+                });
+            }
+        }
+
+        $estudiantes = $query->paginate(10);
         return view('estudiantes.index', compact('estudiantes'));
     }
 

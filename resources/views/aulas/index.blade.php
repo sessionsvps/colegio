@@ -68,6 +68,8 @@
             </form>
         @endif
 
+        <input class="hidden" type="text" id="año_escolar" name="año_escolar" value="{{ request('año_escolar')}}" readonly>
+
         @if(Auth::user()->hasRole('Estudiante_Matriculado'))
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <div class="relative flex flex-col mt-3 text-gray-700 bg-gray-50 shadow-md bg-clip-border rounded-xl">
@@ -81,7 +83,8 @@
                         </h5>
                     </div>
                     <div class="p-6 pt-0">
-                        <a href="#"
+                        <a  id="aula-info-link"
+                            href="{{ route('aulas.info', ['año_escolar' => 'TEMP', 'nivel' => $aula->id_nivel, 'grado' => $aula->id_grado, 'seccion' => $aula->id_seccion]) }}"
                             class="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
                             type="button">
                             Ver Estudiantes
@@ -103,7 +106,8 @@
                         </h5>
                     </div>
                     <div class="p-6 pt-0">
-                        <a href="#"
+                        <a  id="aula-info-link-{{ $aula->id_seccion }}"
+                            href="{{ route('aulas.info', ['año_escolar' => 'TEMP', 'nivel' => $aula->id_nivel, 'grado' => $aula->id_grado, 'seccion' => $aula->id_seccion]) }}"
                             class="align-middle select-none font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 px-6 rounded-lg bg-gray-900 text-white shadow-md shadow-gray-900/10 hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none"
                             type="button">
                             Ver Estudiantes
@@ -187,6 +191,35 @@
                         }
                     }, 3000); // 3 segundos antes de empezar a desvanecer
                 });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var links = document.querySelectorAll("[id^='aula-info-link']");
+            links.forEach(function(link) {
+                link.addEventListener("click", function(event) {
+                    var añoEscolar = document.getElementById("año_actual").value;
+                    event.preventDefault();
+                    var href = link.getAttribute("href");
+                    href = href.replace('TEMP', añoEscolar);
+                    window.location.href = href;
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const añoSelect = document.getElementById('año_actual');
+            const añoInput = document.getElementById('año_escolar');
+    
+            añoSelect.addEventListener('change', function() {
+                añoInput.value = añoSelect.value;
+            });
+    
+            // Set initial value of the input
+            añoInput.value = añoSelect.value;
+        });
     </script>
 
     <script>

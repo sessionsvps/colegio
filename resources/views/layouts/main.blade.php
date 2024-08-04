@@ -29,7 +29,7 @@
                 <div class="flex items-center justify-start rtl:justify-end">
                     <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar"
                         aria-controls="logo-sidebar" type="button"
-                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                        class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                         <span class="sr-only">Open sidebar</span>
                         <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
@@ -39,51 +39,62 @@
                         </svg>
                     </button>
                     <a href="{{ url('') }}" class="flex ms-2 md:me-24">
-                        <img src="https://universidadsideralcarrion.com/storage/img/icons/usc.png" class="h-8 me-3" alt="FlowBite Logo" />
+                        <img src="https://universidadsideralcarrion.com/storage/img/icons/usc.png" class="h-12 me-3" alt="FlowBite Logo" />
                         <span
-                            class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Sideral Carrión</span>
+                            class="hidden md:block self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Sideral Carrión</span>
                     </a>
                 </div>
-                <div class="flex items-center">
-                    <span class="hidden md:block">{{ Auth::user()->full_name }}</span>
-                    <div class="flex items-center ms-3">
-                        <div>
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <label for="año_actual" class="sr-only">Año</label>
+                        <select name="año_actual" id="año_actual"
+                            class="block w-full py-2 pl-3 pr-10 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md bg-white dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600">
+                            <option value="2024">2024</option>
+                            @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                            @endif
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="hidden md:block text-gray-800 dark:text-gray-300">{{ Auth::user()->full_name }}</span>
+                        <div class="relative flex items-center">
                             <button type="button"
                                 class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                                 aria-expanded="false" data-dropdown-toggle="dropdown-user">
                                 <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full"
-                                    src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
+                                <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-2.jpg"
                                     alt="user photo">
                             </button>
-                        </div>
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                            id="dropdown-user">
-                            <div class="px-4 py-3" role="none">
-                                <p class="md:hidden text-sm text-gray-900 dark:text-white" role="none">
-                                    {{ Auth::user()->full_name }}
-                                </p>
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    {{ Auth::user()->email }}
-                                </p>
+                            <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                                id="dropdown-user">
+                                <div class="px-4 py-3" role="none">
+                                    <p class="md:hidden text-sm text-gray-900 dark:text-white" role="none">
+                                        {{ Auth::user()->full_name }}
+                                    </p>
+                                    <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                                        {{ Auth::user()->email }}
+                                    </p>
+                                </div>
+                                <ul class="py-1 text-center" role="none">
+                                    <li>
+                                        <a href="{{ route('profile.show') }}"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                            role="menuitem">Perfil</a>
+                                    </li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit"
+                                                class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                role="menuitem">
+                                                Salir
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul class="py-1 text-center" role="none">
-                                <li>
-                                    <a href="{{ route('profile.show') }}"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Perfil</a>
-                                </li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                            role="menuitem">
-                                            Salir
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -92,7 +103,7 @@
     </nav>
 
     <aside id="logo-sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-gray-100 border-r border-gray-300 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-gray-100 border-r border-gray-300 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidebar">
         <div class="h-full px-3 pb-4 overflow-y-auto bg-gray-100 dark:bg-gray-800">
             {{-- <div class="flex items-center justify-center py-4">
@@ -298,11 +309,34 @@
         </div>
     </aside>
 
-    <div class="p-4 sm:ml-64">
+    <div class="p-4 md:ml-64">
         <div class="px-4 mt-20 container mx-auto">
             @yield('contenido')
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const añoSelect = document.getElementById('año_actual');
+    
+            function updateSelectedYear() {
+                const selectedYear = añoSelect.value;
+                localStorage.setItem('selectedYear', selectedYear);
+            }
+    
+            function loadSelectedYear() {
+                const savedYear = localStorage.getItem('selectedYear');
+                if (savedYear) {
+                    añoSelect.value = savedYear;
+                }
+            }
+    
+            añoSelect.addEventListener('change', updateSelectedYear);
+    
+            // Load the selected year from localStorage on page load
+            loadSelectedYear();
+        });
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script src="{{asset('js/alertify.min.js')}}"></script>

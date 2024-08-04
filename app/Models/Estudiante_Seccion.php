@@ -17,6 +17,11 @@ class Estudiante_Seccion extends Model
     public $timestamps = false;
     protected $guarded = [];
 
+    public function getKeyName()
+    {
+        return ['codigo_estudiante', 'año_escolar', 'user_id'];
+    }
+
     public function estudiante()
     {
         return $this->belongsTo(Estudiante::class, ['codigo_estudiante', 'user_id'], ['codigo_estudiante', 'user_id']);

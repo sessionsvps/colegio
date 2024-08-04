@@ -9,6 +9,7 @@ use App\Models\Secretaria;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
@@ -22,13 +23,36 @@ class SecretariaController extends BaseController
         $this->middleware('can:Editar Secretarias')->only('edit', 'update');
         $this->middleware('can:Eliminar Secretarias')->only('destroy');
     }
-    public function index()
+    public function index(Request $request)
     {
-        $secretarias = Secretaria::whereHas('user', function ($query) {
+        $query = Secretaria::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->paginate(10);
+        });
+
+        if ($request->filled('buscar_por')) {
+            $buscarPor = $request->input('buscar_por');
+            $buscarValor = $request->input($buscarPor);
+
+            if ($buscarPor === 'codigo') {
+                $query->where('codigo_secretaria', $buscarValor);
+            } elseif ($buscarPor === 'nombre') {
+                $query->where(function ($query) use ($buscarValor) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                });
+            } elseif ($buscarPor === 'dni') {
+                $query->where('dni', $buscarValor);
+            } elseif ($buscarPor === 'correo') {
+                $query->whereHas('user', function ($query) use ($buscarValor) {
+                    $query->where('email', 'like', '%' . $buscarValor . '%');
+                });
+            }
+        }
+
+        $secretarias = $query->paginate(10);
         return view('secretarias.index', compact('secretarias'));
     }
+
 
     public function create()
     {

@@ -27,7 +27,7 @@
 @endif
 
 <form method="POST"
-    action="{{ route('asistencias.update',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre]) }}">
+    action="{{ route('asistencias.update',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre, 'año_escolar' => $asistencia->año_escolar]) }}">
     @csrf
     @method('PUT')
 
