@@ -145,9 +145,6 @@
                 </tr>
             @endif
         @endforeach
-        {{-- @php
-            dd($firstcompete);
-        @endphp --}}
     </table>
 
     <table class="tablaConclusion">
@@ -190,35 +187,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                    @php
+                        $asistenciaBimestre = $asistencias->where('id_bimestre', $bimestre)->first();
+                    @endphp
+                    <tr>
+                        <td>{{ $bimestre }}</td>
+                        <td>{{ $asistenciaBimestre ? $asistenciaBimestre->inasistencias_justificadas : 0 }}</td>
+                        <td>{{ $asistenciaBimestre ? $asistenciaBimestre->inasistencias_injustificadas : 0 }}</td>
+                        <td>{{ $asistenciaBimestre ? $asistenciaBimestre->tardanzas_justificadas : 0 }}</td>
+                        <td>{{ $asistenciaBimestre ? $asistenciaBimestre->tardanzas_injustificadas : 0 }}</td>
+                    </tr>
+                @endfor
             </tbody>
+            {{-- @php
+                dd($asistenciaBimestre);
+            @endphp --}}
         </table>
     </div>
 </body>

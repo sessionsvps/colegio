@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports\EstudiantesExport;
+use App\Models\Asistencia;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
@@ -70,6 +71,8 @@ class ExportController extends Controller
         $cursos = Curso_por_nivel::where('id_nivel', $estudiante_seccion->seccion->grado->nivel->id_nivel)->get();
         $notas = Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
                                     ->where('año_escolar', Carbon::now()->year)->get();
+        $asistencias = Asistencia::where('codigo_estudiante', $codigo_estudiante)
+                                ->where('año_escolar', Carbon::now()->year)->get();
 
         // Convertir la imagen a base64
         $path = public_path('img/logo.png');
@@ -89,6 +92,7 @@ class ExportController extends Controller
             'estudiante_seccion' => $estudiante_seccion,
             'cursos'=> $cursos,
             'notas'=>$notas,
+            'asistencias'=>$asistencias,
             'base64' => $base64,
             'base642' => $base642
         ])->render();
