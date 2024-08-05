@@ -76,18 +76,35 @@ class ExportController extends Controller
 
         // Calcular promedios por curso y bimestre
         foreach ($cursos as $curso) {
+            $promediosBimestre = [];
             for ($bimestre = 1; $bimestre <= 4; $bimestre++) {
+                $c = 0;
                 $notasBimestre = $notas->where('id_bimestre', $bimestre)->where('codigo_curso', $curso->codigo_curso);
                 foreach ($notasBimestre as $verifica) {
-                    //dd($verifica->nivel_logro);
                     if ($verifica->nivel_logro == null) {
                         $curso->{'promedio_bimestre_' . $bimestre} = "";
                         break;
                     } else {
-                        $curso->{'promedio_bimestre_' . $bimestre} = $this->convertirPromedio($this->promedioNotas($notasBimestre));
+                        $c++;
                     }
                 }
+
+                $compe = $curso->curso->competencias;
+                $cantCompe = count($compe);
+                if($c==$cantCompe){
+                    $curso->{'promedio_bimestre_' . $bimestre} = $this->convertirPromedio($this->promedioNotas($notasBimestre));
+                    $promediosBimestre[] = $this->promedioNotas($notasBimestre);
+                }
             }
+
+            // Calcular el promedio general del "Calificativo de Área" para el curso
+            if (count($promediosBimestre)==4) {
+                $promedioGeneral = array_sum($promediosBimestre) / count($promediosBimestre);
+                $curso->promedio_general = $this->convertirPromedio($promedioGeneral);
+            } else {
+                $curso->promedio_general = "";
+            }
+            //dd(count($promediosBimestre));
         }
 
         // Convertir la imagen a base64

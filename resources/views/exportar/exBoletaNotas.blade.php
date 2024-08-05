@@ -80,7 +80,7 @@
         <h1 class="informe">INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1 class="informe">{{ $estudiante_seccion->año_escolar }}</h1></h1>
     </div>
     <div class="imagenes">
-        <img src="{{ $base642 }}" alt="Logo Minedu" style="width: 190px;">
+        <img src="{{ $base642 }}" alt="Logo Minedu" style="width: 170px;">
         <img src="{{ $base64 }}" alt="Logo Sideral" style="height: 50px;">
     </div>
     <table>
@@ -147,7 +147,7 @@
                         @endphp
                         <td>{{ $nota ? $nota->nivel_logro : '' }}</td>
                     @endfor
-                    <td rowspan="{{ $cantidadCompetencias + 1 }}"></td>
+                    <td rowspan="{{ $cantidadCompetencias + 1 }}">{{ $curso->promedio_general }}</td>
                 </tr>
                 @foreach ( $competencias as $competencia )
                     <tr>
