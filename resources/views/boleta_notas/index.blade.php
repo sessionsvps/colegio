@@ -219,6 +219,7 @@
                 }
             });
         });
+    </script>
     @if (!Auth::user()->hasRole('Estudiante_Matriculado'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
