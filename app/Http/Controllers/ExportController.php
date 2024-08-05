@@ -74,6 +74,22 @@ class ExportController extends Controller
         $asistencias = Asistencia::where('codigo_estudiante', $codigo_estudiante)
                                 ->where('año_escolar', Carbon::now()->year)->get();
 
+        // Calcular promedios por curso y bimestre
+        foreach ($cursos as $curso) {
+            for ($bimestre = 1; $bimestre <= 4; $bimestre++) {
+                $notasBimestre = $notas->where('id_bimestre', $bimestre)->where('codigo_curso', $curso->codigo_curso);
+                foreach ($notasBimestre as $verifica) {
+                    //dd($verifica->nivel_logro);
+                    if ($verifica->nivel_logro == null) {
+                        $curso->{'promedio_bimestre_' . $bimestre} = "";
+                        break;
+                    } else {
+                        $curso->{'promedio_bimestre_' . $bimestre} = $this->convertirPromedio($this->promedioNotas($notasBimestre));
+                    }
+                }
+            }
+        }
+
         // Convertir la imagen a base64
         $path = public_path('img/logo.png');
         $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -121,4 +137,50 @@ class ExportController extends Controller
             'libreta_notas.pdf'
         );
     }
+
+    function convertirNota($nota)
+    {
+        switch ($nota) {
+            case 'AD':
+                return 20;
+            case 'A':
+                return 15;
+            case 'B':
+                return 10;
+            case 'C':
+                return 5;
+            default:
+                return 0; // Valor por defecto para notas desconocidas
+        }
+    }
+
+    function promedioNotas($notas)
+    {
+        $total = 0;
+        $cantidad = count($notas);
+
+        if ($cantidad == 0) {
+            return 0; // Evitar división por cero
+        }
+
+        foreach ($notas as $nota) {
+            $total += $this->convertirNota($nota->nivel_logro);
+        }
+
+        return $total / $cantidad;
+    }
+
+    function convertirPromedio($promedio)
+    {
+        if ($promedio >= 17.5) {
+            return 'AD';
+        } elseif ($promedio >= 12.5) {
+            return 'A';
+        } elseif ($promedio >= 9.5) {
+            return 'B';
+        } else {
+            return 'C';
+        }
+    }
+
 }

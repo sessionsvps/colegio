@@ -43,10 +43,34 @@
             font-size: 15px;
         }
 
+        .resumenTitle{
+            text-align: center;
+            font-size: 15px;
+        }
+
         .imagenes{
             display: flex;
             justify-content: space-between;
             padding: 20px;
+        }
+
+        .lineaIzq{
+            width: 150px;
+            margin-left: 0;
+        }
+
+        .firmaDocente{
+            margin-left: 8;
+        }
+
+        .lineaDer{
+            width: 150px;
+            margin-right: 0;
+        }
+
+        .firmaDirector{
+            float: right;
+            padding-right: 2;
         }
 
     </style>
@@ -56,7 +80,7 @@
         <h1 class="informe">INFORME DE PROGRESO DEL APRENDIZAJE DEL ESTUDIANTE - <h1 class="informe">{{ $estudiante_seccion->año_escolar }}</h1></h1>
     </div>
     <div class="imagenes">
-        <img src="{{ $base642 }}" alt="Logo Minedu" style="width: 200px;">
+        <img src="{{ $base642 }}" alt="Logo Minedu" style="width: 190px;">
         <img src="{{ $base64 }}" alt="Logo Sideral" style="height: 50px;">
     </div>
     <table>
@@ -138,10 +162,9 @@
                 @endforeach
                 <tr class="header">
                     <td>CALIFICATIVO DE ÁREA</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                        <td>{{ $curso->{'promedio_bimestre_'.$bimestre} }}</td>
+                    @endfor
                 </tr>
             @endif
         @endforeach
@@ -171,7 +194,7 @@
     </table>
 
     <div>
-        <h1>Resumen de asistencia del estudiante</h1>
+        <h1 class="resumenTitle">Resumen de asistencia del estudiante</h1>
         <table>
             <thead>
                 <tr class="header">
@@ -200,10 +223,23 @@
                     </tr>
                 @endfor
             </tbody>
-            {{-- @php
-                dd($asistenciaBimestre);
-            @endphp --}}
         </table>
+    </div>
+
+    <div>
+        <div class="firmas">
+            <hr class="lineaIzq">
+            <p class="firmaDocente">Firma y sello del Docente</p>
+        </div>
+        <div class="firmaDirector">
+            <hr class="lineaDer">
+            <div>
+                <p>Firma y sello del Director</p>
+            </div>
+        </div>
+        {{-- @php
+            dd($asistenciaBimestre);
+        @endphp --}}
     </div>
 </body>
 </html>
