@@ -48,6 +48,11 @@ class Estudiante extends Model
         )->withPivot('año_escolar');
     }
 
+    public function estudiantes_seccion()
+    {
+        return $this->hasMany(Estudiante_Seccion::class, ['codigo_estudiante', 'user_id'], ['codigo_estudiante', 'user_id']);
+    }
+
     // Relación muchos a muchos con Curso
     public function cursos()
     {

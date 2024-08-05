@@ -9,17 +9,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CredencialesDocente extends Mailable
+class Credenciales extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $email;
     public $password;
+    public $esEstudiante;
 
-    public function __construct($email, $password)
+    public function __construct($email, $password, $esEstudiante)
     {
         $this->email = $email;
         $this->password = $password;
+        $this->esEstudiante = $esEstudiante;
     }
 
     public function envelope(): Envelope
@@ -35,10 +37,11 @@ class CredencialesDocente extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.credenciales_docente',
+            view: 'emails.credenciales',
             with: [
                 'email' => $this->email,
                 'password' => $this->password,
+                'esEstudiante' => $this->esEstudiante,
             ]
         );
     }

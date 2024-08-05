@@ -20,4 +20,14 @@ class Estado extends Model
     {
         return $this->hasMany(Docente::class);
     }
+
+    public function secretarias()
+    {
+        return $this->hasMany(Secretaria::class);
+    }
+
+    public function director()
+    {
+        return $this->hasOne(Director::class);
+    }
 }

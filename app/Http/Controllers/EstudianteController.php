@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfirmacionMatricula;
+use App\Mail\Credenciales;
 use App\Mail\CredencialesEstudiante;
 use App\Models\Asistencia;
 use App\Models\Boleta_de_nota;
@@ -14,28 +16,94 @@ use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
 use App\Models\Nivel;
 use App\Models\Notas_por_competencia;
+use App\Models\Seccion;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use phpDocumentor\Reflection\PseudoTypes\True_;
 
 class EstudianteController extends BaseController
 {
 
     public function __construct()
     {
-        $this->middleware('can:estudiantes.index')->only('index');
-        $this->middleware('can:estudiantes.control')->only('create','store','edit','update','destroy');
+        $this->middleware('can:Ver Estudiantes')->only('index');
+        $this->middleware('can:Registrar Estudiantes')->only('create','store');
+        $this->middleware('can:Editar Estudiantes')->only('edit','update');
+        $this->middleware('can:Eliminar Estudiantes')->only('destroy');
+        $this->middleware('can:Registrar Matriculas')->only('matricular','realizarMatricula');
+        $this->middleware('can:Editar Notas')->only('vista_docente');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $estudiantes = Estudiante::whereHas('user', function ($query) {
+        $query = Estudiante::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        })->paginate(10);
+        });
+
+        if ($request->filled('filtrar_por')){
+            $filtrarPor = $request->input('filtrar_por');
+            if ($filtrarPor == 'matriculado'){
+                $query->whereNotNull('nro_matricula')->get();
+            }else if ($filtrarPor == 'no_matriculado'){
+                $query->where('nro_matricula',null)->get();
+            }
+        }
+
+        if ($request->filled('año_ingreso')) {
+            $query->where('año_ingreso', $request->input('año_ingreso'))->get();
+        }
+
+        if ($request->filled('buscar_por')) {
+            $buscarPor = $request->input('buscar_por');
+            $buscarValor = $request->input($buscarPor);
+
+            if ($buscarPor === 'codigo') {
+                $query->where('codigo_estudiante', $buscarValor);
+            } elseif ($buscarPor === 'nombre') {
+                $query->where(function ($query) use ($buscarValor) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                });
+            } elseif ($buscarPor === 'dni') {
+                $query->where('dni', $buscarValor);
+            } elseif ($buscarPor === 'correo') {
+                $query->whereHas('user', function ($query) use ($buscarValor) {
+                    $query->where('email', 'like', '%' . $buscarValor . '%');
+                });
+            }
+        }
+
+        $estudiantes = $query->paginate(10);
         return view('estudiantes.index', compact('estudiantes'));
+    }
+
+    public function vista_docente($codigo_curso, $nivel, $grado, $seccion) 
+    {
+        // dd($codigo_curso, $nivel, $grado, $seccion);
+        $curso = Curso::where('codigo_curso', $codigo_curso)
+            ->where('esActivo',1)
+            ->first();
+
+        $q_seccion = Seccion::where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->first();
+        $estudiantes = Estudiante_Seccion::where('año_escolar', Carbon::now()->year)
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->whereDoesntHave('exoneraciones', function($query) use ($codigo_curso) {
+                $query->where('codigo_curso', $codigo_curso);
+            })
+            ->get();
+        // dd($estudiantes);
+        return view('estudiantes.lista', compact('curso', 'estudiantes', 'q_seccion'));
     }
 
     public function create()
@@ -136,7 +204,7 @@ class EstudianteController extends BaseController
         ]);
 
         // Enviar correo con credenciales generadas
-        Mail::to($request->input('email'))->send(new CredencialesEstudiante($email, $password));
+        Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
     }
@@ -289,6 +357,17 @@ class EstudianteController extends BaseController
                 }
             }
         }
+
+        $user = User::findOrFail($estudiante->user_id);
+
+        // Asignar el rol al usuario
+        $role = Role::findOrFail(3);
+        $user->removeRole($role);
+        
+        $role = Role::findOrFail(4);
+        $user->assignRole($role);
+        // Enviar correo de confirmacion de matricula
+        Mail::to($estudiante->email)->send(new ConfirmacionMatricula());
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
 

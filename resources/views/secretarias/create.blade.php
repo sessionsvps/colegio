@@ -3,34 +3,37 @@
 @section('contenido')
 <!-- Formulario para agregar nuevo alumno -->
 <div>
-    <a href="{{ route('estudiantes.index') }}"
+
+    <a href="{{ route('secretarias.index') }}"
         class="bg-red-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 inline-block">
         Volver
     </a>
+
     @if ($errors->any())
-    <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor" viewBox="0 0 20 20">
-            <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-        </svg>
-        <span class="sr-only">Error</span>
-        <div>
-            <span class="font-medium">Por favor, asegúrate de que estos requisitos se cumplan:</span>
-            <ul class="mt-1.5 list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+        <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+            role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <span class="sr-only">Error</span>
+            <div>
+                <span class="font-medium">Por favor, asegúrate de que estos requisitos se cumplan:</span>
+                <ul class="mt-1.5 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
-    </div>
     @endif
 
-    <form method="POST" action="{{ route('estudiantes.store') }}">
+    <form method="POST" action="{{ route('secretarias.store') }}">
         @csrf
-        <!-- Datos del Estudiante -->
+        <!-- Datos de la Secretaria -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 class="text-lg font-bold mb-4">Datos del Estudiante</h2>
+            <h2 class="text-lg font-bold mb-4">Datos de la Secretaria</h2>
             <!-- DNI y Verificar -->
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -44,7 +47,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0 flex items-end">
+                <div class="w-full md:w-1/2 px-3 flex items-end">
                     <button
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="button" id="boton_verificar">
@@ -108,7 +111,7 @@
                     @enderror
                 </div>
             </div>
-    
+
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
@@ -135,9 +138,9 @@
                     @enderror
                 </div>
             </div>
-    
+        
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                         Correo
                     </label>
@@ -148,7 +151,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular">
                         Teléfono Celular
                     </label>
@@ -160,46 +163,42 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="año_ingreso">
-                        Año de Ingreso
+            </div>
+        
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="id_estado">
+                        Estado Civil
+                    </label>
+                    <select
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="id_estado" name="id_estado">
+                        @foreach($estados as $estado)
+                        <option value="{{ $estado->id_estado }}" {{ old('id_estado')==$estado->id_estado ? 'selected' : '' }}>
+                            {{ $estado->detalle }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('id_estado')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_ingreso">
+                        Fecha de Ingreso
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="año_ingreso" name="año_ingreso" type="number" placeholder="Año de Ingreso"
-                        disabled value="{{ old('año_ingreso') }}">
-                    @error('año_ingreso')
+                        id="fecha_ingreso" name="fecha_ingreso" type="date" placeholder="Fecha de Ingreso"
+                        value="{{ old('fecha_ingreso') }}">
+                    @error('fecha_ingreso')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
-    
+        
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="colegio_procedencia">
-                        Colegio de Procedencia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="colegio_procedencia" name="colegio_procedencia" type="text" placeholder="Colegio de Procedencia"
-                        value="{{ old('colegio_procedencia') }}">
-                    @error('colegio_procedencia')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="lengua_materna">
-                        Lengua Materna
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="lengua_materna" name="lengua_materna" type="text" placeholder="Lengua Materna"
-                        value="{{ old('lengua_materna') }}">
-                    @error('lengua_materna')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-0">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
                         Nacionalidad
                     </label>
@@ -211,10 +210,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-    
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
                         Departamento
                     </label>
@@ -226,7 +222,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia">
                         Provincia
                     </label>
@@ -237,7 +233,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3">
+                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito">
                         Distrito
                     </label>
@@ -266,7 +262,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 md:mb-0">
+                <div class="w-full md:w-1/3 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_fijo">
                         Teléfono Fijo
                     </label>
@@ -279,8 +275,8 @@
                     @enderror
                 </div>
             </div>
-
             <div class="flex flex-wrap -mx-3 mb-6">
+                
                 <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento_d">
                         Departamento
@@ -337,51 +333,29 @@
             e.target.value = value.replace(/[^0-9]/g, '').slice(0, 8);
         });
         document.getElementById('telefono_celular').addEventListener('input', function (e) {
-        var value = e.target.value;
-        e.target.value = value.replace(/[^0-9]/g, '').slice(0, 9);
+            var value = e.target.value;
+            e.target.value = value.replace(/[^0-9]/g, '').slice(0, 9);
         });
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const añoSelect = document.getElementById('año_actual');
-            const añoIngreso = document.getElementById('año_ingreso');
+            const fechaIngreso = document.getElementById('fecha_ingreso');
     
-            function updateAñoIngreso() {
-                añoIngreso.value = añoSelect.value;
+            function updateFechaIngresoLimits() {
+                const selectedYear = añoSelect.value;
+                fechaIngreso.min = `${selectedYear}-01-01`;
+                fechaIngreso.max = `${selectedYear}-12-31`;
+                añoInput.value = selectedYear;
             }
     
-            añoSelect.addEventListener('change', updateAñoIngreso);
+            añoSelect.addEventListener('change', updateFechaIngresoLimits);
     
-            // Set initial value of the input
-            updateAñoIngreso();
+            // Set initial value of the input and limits
+            updateFechaIngresoLimits();
         });
     </script>
 
-    <script>
-        function updateGrados() {
-            var nivel = document.getElementById('nivel').value;
-            var grados = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
-            
-            var gradoSelect = document.getElementById('grado');
-            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset options
-            
-            if (nivel == 1) {
-                grados.primaria.forEach(function(grado) {
-                    var option = document.createElement('option');
-                    option.value = grado.id_grado;
-                    option.text = grado.detalle;
-                    gradoSelect.appendChild(option);
-                });
-            } else if (nivel == 2) {
-                grados.secundaria.forEach(function(grado) {
-                    var option = document.createElement('option');
-                    option.value = grado.id_grado;
-                    option.text = grado.detalle;
-                    gradoSelect.appendChild(option);
-                });
-            }
-        }
-    </script>
     <script src="{{asset('js/verificar_dni.js')}}"></script>
 @endsection

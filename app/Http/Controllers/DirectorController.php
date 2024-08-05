@@ -3,75 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Credenciales;
-use App\Models\Docente;
-use App\Models\User;
+use App\Models\Director;
 use App\Models\Domicilio;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 use App\Models\Estado;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use phpDocumentor\Reflection\PseudoTypes\False_;
+use Spatie\Permission\Models\Role;
 
-class DocenteController extends BaseController
+class DirectorController extends BaseController
 {
-
     public function __construct()
     {
-        $this->middleware('can:Ver Docentes')->only('index');
-        $this->middleware('can:Registrar Docentes')->only('create','store');
-        $this->middleware('can:Editar Docentes')->only('edit','update');
-        $this->middleware('can:Eliminar Docentes')->only('destroy');
+        $this->middleware('can:Ver Director')->only('index');
+        $this->middleware('can:Registrar Director')->only('create', 'store');
+        $this->middleware('can:Editar Director')->only('edit', 'update');
+        $this->middleware('can:Eliminar Director')->only('destroy');
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $query = Docente::whereHas('user', function ($query) {
+        $director =Director::whereHas('user', function ($query) {
             $query->where('esActivo', 1);
-        });
-
-        if ($request->filled('buscar_por')) {
-            $buscarPor = $request->input('buscar_por');
-            $buscarValor = $request->input($buscarPor);
-
-            if ($buscarPor === 'codigo') {
-                $query->where('codigo_docente', $buscarValor);
-            } elseif ($buscarPor === 'nombre') {
-                $query->where(function ($query) use ($buscarValor) {
-                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
-                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
-                });
-            } elseif ($buscarPor === 'dni') {
-                $query->where('dni', $buscarValor);
-            } elseif ($buscarPor === 'correo') {
-                $query->whereHas('user', function ($query) use ($buscarValor) {
-                    $query->where('email', 'like', '%' . $buscarValor . '%');
-                });
-            }
-        }
-
-        $docentes = $query->paginate(10);
-        return view('docentes.index', compact('docentes'));
+        })->first();
+        return view('director.index', compact('director'));
     }
 
     public function create()
     {
         $estados = Estado::all();
-        return view('docentes.create', compact('estados'));
+        return view('director.create', compact('estados'));
     }
 
     public function store(Request $request)
     {
-
         $request->validate([
             'primer_nombre' => 'required|string|max:30',
             'otros_nombres' => 'nullable|string|max:30',
             'apellido_paterno' => 'required|string|max:30',
             'apellido_materno' => 'required|string|max:30',
-            'dni' => 'required|string|size:8|unique:docentes,dni',
-            'email' => 'required|string|email|max:50|unique:docentes,email',
+            'dni' => 'required|string|size:8|unique:director,dni',
+            'email' => 'required|string|email|max:50|unique:director,email',
             'sexo' => 'required|boolean',
             'telefono_celular' => 'nullable|string|size:9',
             'id_estado' => 'required|integer|exists:estados,id_estado',
@@ -88,10 +62,10 @@ class DocenteController extends BaseController
             'distrito_d' => 'required|string|max:30',
         ]);
 
-        // Generar un código docente aleatorio de 4 dígitos
+        // Generar un código aleatorio de 5 dígitos
         do {
-            $codigoDocente = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-        } while (Docente::where('codigo_docente', $codigoDocente)->exists());
+            $codigoDirector = str_pad(rand(0, 9999), 5, '0', STR_PAD_LEFT);
+        } while (Director::where('codigo_director', $codigoDirector)->exists());
 
         // Generar el correo electrónico basado
         $primerNombre = $request->input('primer_nombre');
@@ -109,7 +83,7 @@ class DocenteController extends BaseController
         ]);
 
         // Asignar el rol al usuario
-        $role = Role::findOrFail(2);
+        $role = Role::findOrFail(6);
         $user->assignRole($role);
 
         // Crear el domicilio
@@ -122,9 +96,9 @@ class DocenteController extends BaseController
             'distrito' => $request->input('distrito_d'),
         ]);
 
-        // Crear el docente
-        $docente = Docente::create([
-            'codigo_docente' => $codigoDocente,
+        // Crear el director
+        $director = Director::create([
+            'codigo_director' => $codigoDirector,
             'user_id' => $user->id,
             'primer_nombre' => $request->input('primer_nombre'),
             'otros_nombres' => $request->input('otros_nombres'),
@@ -140,35 +114,34 @@ class DocenteController extends BaseController
             'departamento' => $request->input('departamento'),
             'provincia' => $request->input('provincia'),
             'distrito' => $request->input('distrito'),
-            'esTutor' => False,
             'fecha_ingreso' => $request->input('fecha_ingreso'),
         ]);
 
         // Enviar correo con credenciales generadas
-        Mail::to($request->input('email'))->send(new Credenciales($email, $password,false));
+        Mail::to($request->input('email'))->send(new Credenciales($email, $password, false));
 
-        return redirect()->route('docentes.index')->with('success', 'Docente registrado exitosamente.');
+        return redirect()->route('director.index')->with('success', 'Director registrada exitosamente.');
     }
 
-    public function edit(string $codigo_docente)
+    public function edit(string $codigo_director)
     {
-        $docente = Docente::where('codigo_docente', $codigo_docente)->firstOrFail();
+        $director = Director::where('codigo_director', $codigo_director)->firstOrFail();
         $estados = Estado::all();
-        return view('docentes.edit', compact('docente', 'estados'));
+        return view('director.edit', compact('director', 'estados'));
     }
 
-    public function update(Request $request, string $codigo_docente)
+    public function update(Request $request, string $codigo_director)
     {
-        $docente = Docente::where('codigo_docente', $codigo_docente)->firstOrFail();
-        $domicilio = Domicilio::findOrFail($docente->user_id);
+        $director = Director::where('codigo_director', $codigo_director)->firstOrFail();
+        $domicilio = Domicilio::findOrFail($director->user_id);
 
         $request->validate([
             'primer_nombre' => 'required|string|max:30',
             'otros_nombres' => 'nullable|string|max:30',
             'apellido_paterno' => 'required|string|max:30',
             'apellido_materno' => 'required|string|max:30',
-            'dni' => 'required|string|size:8|unique:docentes,dni,' . $docente->codigo_docente . ',codigo_docente',
-            'email' => 'required|string|email|max:50|unique:docentes,email,' . $docente->codigo_docente . ',codigo_docente',
+            'dni' => 'required|string|size:8|unique:director,dni,' . $director->codigo_director . ',codigo_director',
+            'email' => 'required|string|email|max:50|unique:director,email,' . $director->codigo_director . ',codigo_director',
             'telefono_celular' => 'nullable|string|size:9',
             'sexo' => 'required|boolean',
             'id_estado' => 'required|integer|exists:estados,id_estado',
@@ -185,8 +158,8 @@ class DocenteController extends BaseController
             'distrito_d' => 'required|string|max:30',
         ]);
 
-        // Actualizar datos del docente
-        $docente->update([
+        // Actualizar datos del director
+        $director->update([
             'primer_nombre' => $request->primer_nombre,
             'otros_nombres' => $request->otros_nombres,
             'apellido_paterno' => $request->apellido_paterno,
@@ -213,15 +186,15 @@ class DocenteController extends BaseController
             'distrito' => $request->distrito_d
         ]);
 
-        return redirect()->route('docentes.index')->with('success', 'Docente actualizado exitosamente.');
+        return redirect()->route('director.index')->with('success', 'Director actualizado exitosamente.');
     }
 
-    public function destroy(string $codigo_docente)
+    public function destroy(string $codigo_director)
     {
-        $docente = Docente::where('codigo_docente', $codigo_docente)->firstOrFail();
-        $user = User::findOrFail($docente->user_id);
+        $director = Director::where('codigo_director', $codigo_director)->firstOrFail();
+        $user = User::findOrFail($director->user_id);
         $user->esActivo = 0;
         $user->save();
-        return redirect()->route('docentes.index')->with('success', 'Docente eliminado exitosamente.');
+        return redirect()->route('director.index')->with('success', 'Director eliminado exitosamente.');
     }
 }

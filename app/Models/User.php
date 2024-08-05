@@ -77,6 +77,18 @@ class User extends Authenticatable
         return $this->hasOne(Estudiante::class);
     }
 
+    //Relación uno a uno con estudiante
+    public function secretaria()
+    {
+        return $this->hasOne(Secretaria::class);
+    }
+
+    //Relación uno a uno con estudiante
+    public function director()
+    {
+        return $this->hasOne(Director::class);
+    }
+
     //Relación uno a uno con domicilio
     public function domicilio()
     {
@@ -86,12 +98,17 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         if ($this->docente) {
-            return $this->docente->primer_nombre . ' ' . $this->docente->apellido_paterno;
+            return trim($this->docente->primer_nombre . ' ' . $this->docente->otros_nombres . ' ' . $this->docente->apellido_paterno . ' ' . $this->docente->apellido_materno);
         } elseif ($this->estudiante) {
-            return $this->estudiante->primer_nombre . ' ' . $this->estudiante->apellido_paterno;
+            return trim($this->estudiante->primer_nombre . ' ' . $this->estudiante->otros_nombres . ' ' . $this->estudiante->apellido_paterno . ' ' . $this->estudiante->apellido_materno);
+        } elseif ($this->director) {
+            return trim($this->director->primer_nombre . ' ' . $this->director->otros_nombres . ' ' . $this->director->apellido_paterno . ' ' . $this->director->apellido_materno);
+        } elseif ($this->secretaria) {
+            return trim($this->secretaria->primer_nombre . ' ' . $this->secretaria->otros_nombres . ' ' . $this->secretaria->apellido_paterno . ' ' . $this->secretaria->apellido_materno);
         } else {
             return 'Admin';
         }
     }
+
 
 }

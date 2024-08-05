@@ -6,18 +6,40 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends BaseController
 {
     
     public function __construct()
     {
-        $this->middleware('can:users.control');
+        $this->middleware('can:Ver Usuarios')->only('index');
+        $this->middleware('can:Editar Usuarios')->only('edit','update');
+        $this->middleware('can:Eliminar Usuarios')->only('destroy');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::where('esActivo','=', 1)->paginate(10);
+        $query = User::where('esActivo', 1);
+        if ($request->filled('rol')) {
+            $query->role($request->input('rol'));
+        }
+        if ($request->filled('nombre')) {
+            $name = $request->input('nombre');
+            $query->where(function ($query) use ($name) {
+                $query->whereHas('docente', function ($query) use ($name) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%')->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%');
+                })->orWhereHas('estudiante', function ($query) use ($name) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%')->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%');
+                })->orWhereHas('director', function ($query) use ($name) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%')->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%');
+                })->orWhereHas('secretaria', function ($query) use ($name) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%')->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $name . '%');
+                });
+        });
+        }
+        
+        $users = $query->paginate(10);
         return view('users.index', compact('users'));
     }
 

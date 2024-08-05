@@ -54,10 +54,8 @@
         <h1 class="title">Sideral Carrión</h1>
         <div class="content">
             <p>Estimado/a Estudiante,</p>
-            <p>Se han generado sus credenciales de acceso:</p>
-            <p><strong>Correo:</strong> {{ $email }}</p>
-            <p><strong>Contraseña:</strong> {{ $password }}</p>
-            <p>Por favor, cambie su contraseña después de iniciar sesión por primera vez.</p>
+            <p>Se ha completado tu matricula con exito</p>
+            <p>Ya puedes iniciar sesión en el sistema</p>
             <p>Saludos,</p>
             <p>El Equipo de Sideral Carrión</p>
         </div>

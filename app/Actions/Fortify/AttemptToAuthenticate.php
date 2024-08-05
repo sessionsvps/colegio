@@ -10,8 +10,9 @@ class AttemptToAuthenticate extends BaseAttemptToAuthenticate
     public function handle($request, $next)
     {
         $user = \App\Models\User::where('email', $request->email)->first();
+        // dd($user->getRoleNames());
 
-        if ($user && $user->esActivo == 0) {
+        if ($user->hasRole('Estudiante_Registrado') || $user->esActivo == 0) {
             throw ValidationException::withMessages([
                 'email' => [trans('auth.failed')],
             ]);

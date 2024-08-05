@@ -17,48 +17,28 @@
     </div>
     @endif
     <div class="flex justify-between items-center mb-10">
-        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Usuarios</h2>
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Director</h2>
+        @can('Registrar Director')
+        @if (!$director)
+            <a href="{{ route('director.create') }}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Añadir
+            </a>
+        @endif
+        @endcan
     </div>
-    
-    
-
-    <form method="GET" action="{{ route('users.index') }}">
-        <div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div>
-                <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
-                <select id="rol" name="rol"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" {{ request('rol')=='' ? 'selected' : '' }}>Todos</option>
-                    <option value="Admin" {{ request('rol')=='Admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="Docente" {{ request('rol')=='Docente' ? 'selected' : '' }}>Docente</option>
-                    <option value="Estudiante_Matriculado" {{ request('rol')=='Estudiante_Matriculado' ? 'selected' : '' }}>Estudiante</option>
-                    <option value="Director" {{ request('rol')=='Director' ? 'selected' : '' }}>Director</option>
-                    <option value="Secretaria" {{ request('rol')=='Secretaria' ? 'selected' : '' }}>Secretaria</option>
-                </select>
-            </div>
-            <div>
-                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                <input type="text" name="nombre" id="nombre"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" maxlength="120" value="{{request('nombre')}}">
-            </div>
-            <div class="col-span-2 lg:col-span-1 lg:mt-6" id="botonBuscar">
-                <button type="submit"
-                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                    Buscar
-                </button>
-            </div>
-        </div>
-    </form>
-
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
             <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        ID
+                        Código
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Nombre
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        DNI
                     </th>
                     <th scope="col" class="px-6 py-3">
                         Correo
@@ -69,47 +49,46 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse ($users as $user)
+                @if ($director)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $user->id }}
+                        {{ $director->codigo_director }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $user->full_name }}
+                        {{ $director->primer_nombre }} {{ $director->otros_nombres }} {{ $director->apellido_paterno }} {{
+                        $director->apellido_materno }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user->email }}
+                        {{ $director->dni }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $director->email }}
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-center">
-                            @can('Editar Usuarios')
-                                <a href="{{ route('users.edit', $user->id) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                            @can('Editar Director')
+                            <a href="{{ route('director.edit', $director->codigo_director) }}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
                             @endcan
-                            @can('Eliminar Usuarios')
-                                <button type="button" onclick="confirmDelete('{{ $user->id }}')"
-                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                            @can('Eliminar Director')
+                            <button type="button" onclick="confirmDelete('{{ $director->codigo_director }}')"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
                             @endcan
                         </div>
                     </td>
                 </tr>
-                @empty
+                @else
                 <tr>
-                    <td colspan="4" class="px-6 py-4 text-center">
-                        No hay registros
+                    <td colspan="5" class="px-6 py-4 text-center">
+                        No hay registro
                     </td>
                 </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
     </div>
-    
-    <div class="mt-10">
-        {{ $users->links() }}
-    </div>
-
 @endsection
-    
+
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -128,11 +107,11 @@
 
     <script>
         function confirmDelete(id){
-                alertify.confirm("¿Seguro que quieres eliminar al usuario?",
+                alertify.confirm("¿Seguro que quieres eliminar al director?",
                 function(){
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/users/' + id;
+                    form.action = '/director/' + id ;
                     form.innerHTML = '@csrf @method("DELETE")';
                     document.body.appendChild(form);
                     form.submit();

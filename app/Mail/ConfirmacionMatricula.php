@@ -9,34 +9,35 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CredencialesEstudiante extends Mailable
+class ConfirmacionMatricula extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $email;
-    public $password;
-
-    public function __construct($email, $password)
+    /**
+     * Create a new message instance.
+     */
+    public function __construct()
     {
-        $this->email = $email;
-        $this->password = $password;
+        //
     }
 
+    /**
+     * Get the message envelope.
+     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'CREDENCIALES DE ACCESO',
+            subject: 'CONFIRMACIÓN DE MATRICULAR',
         );
     }
 
+    /**
+     * Get the message content definition.
+     */
     public function content(): Content
     {
         return new Content(
-            view: 'emails.credenciales_estudiante',
-            with: [
-                'email' => $this->email,
-                'password' => $this->password,
-            ]
+            view: 'emails.confirmacion_matricula',
         );
     }
 

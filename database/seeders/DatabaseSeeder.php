@@ -14,13 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        $this->call(RoleSeeder::class);
-
-        User::factory()->create()->assignRole('Admin');
-
         $this->call([
+            RoleSeeder::class,
             EstadoSeeder::class,
             CursoSeeder::class,
             NivelSeeder::class,
@@ -32,6 +27,10 @@ class DatabaseSeeder extends Seeder
             CompetenciaSeeder::class,
             BimestreSeeder::class,
             InstitucionSeeder::class,
+            DirectorSeeder::class,
+            SecretariaSeeder::class,
         ]);
+
+        User::factory()->create()->assignRole('Admin');
     }
 }
