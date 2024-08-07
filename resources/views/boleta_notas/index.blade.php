@@ -121,7 +121,7 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-center">
                                 @can('Ver Notas')
-                                <a href="{{ route('boleta_notas.info', $estudiante->codigo_estudiante) }}"
+                                <a href="{{ route('boleta_notas.info', ['codigo_estudiante'=>$estudiante->codigo_estudiante,'año_escolar'=>$estudiante->año_escolar]) }}"
                                     class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Ver Notas</a>
                                 @endcan
                             </div>

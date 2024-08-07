@@ -109,8 +109,9 @@ class BoletaNotaController extends BaseController
         }      
     }
 
-    public function info(string $codigo_estudiante){
-        $estudiante = Estudiante_Seccion::where('codigo_estudiante',$codigo_estudiante)->first();
+    public function info(string $codigo_estudiante, string $año_escolar){
+        $estudiante = Estudiante_Seccion::where('codigo_estudiante',$codigo_estudiante)
+            ->where('año_escolar',$año_escolar)->first();
         $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
             ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
                 $query->select('codigo_curso')
