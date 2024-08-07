@@ -43,13 +43,13 @@ class BoletaNotaController extends BaseController
                 $niveles = Nivel::all();
                 $grados_primaria = Grado::where('id_nivel', 1)->get();
                 $grados_secundaria = Grado::where('id_nivel', 2)->get();
-                $query = Estudiante_Seccion::whereHas('estudiante.user', function ($query) {
-                    $query->where('esActivo', 1);
+                $query = Estudiante_Seccion::whereHas('estudiante.user', function ($query) use ($request) {
+                    $query->where('esActivo', 1)->where('año_escolar', $request->año_escolar);
                 });
 
-                if ($request->filled('año_escolar')){
-                    $query->where('año_escolar', $request->año_escolar);
-                }
+                // if ($request->filled('año_escolar')){
+                //     $query->where();
+                // }
                 if ($request->filled('nivel')) {
                     $query->where('id_nivel', $request->nivel);
                 }

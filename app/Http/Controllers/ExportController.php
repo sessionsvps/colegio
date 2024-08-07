@@ -61,18 +61,25 @@ class ExportController extends Controller
         );
     }
 
-    public function exportPdfNotas(string $codigo_estudiante)
+    public function exportPdfNotas(string $codigo_estudiante, string $año_escolar)
     {
         // Obtener los datos del estudiante
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
         $estudiante_seccion = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
-            ->where('año_escolar', Carbon::now()->year)
+            ->where('año_escolar', $año_escolar)
             ->firstOrFail();
-        $cursos = Curso_por_nivel::where('id_nivel', $estudiante_seccion->seccion->grado->nivel->id_nivel)->get();
-        $notas = Notas_por_competencia::where('codigo_estudiante', $codigo_estudiante)
-                                    ->where('año_escolar', Carbon::now()->year)->get();
+        $cursos = Curso_por_nivel::where('id_nivel', $estudiante_seccion->id_nivel)
+            ->whereNotIn('codigo_curso', function ($query) use ($estudiante_seccion) {
+                $query->select('codigo_curso')
+                ->from('exoneraciones')
+                ->where('codigo_estudiante', $estudiante_seccion->codigo_estudiante)
+                    ->where('año_escolar', $estudiante_seccion->año_escolar);
+            })->get();
+        $notas = Notas_por_competencia::where('codigo_estudiante', $estudiante->codigo_estudiante)
+            ->where('año_escolar', $año_escolar)
+            ->where('exoneracion', 0)->get();
         $asistencias = Asistencia::where('codigo_estudiante', $codigo_estudiante)
-                                ->where('año_escolar', Carbon::now()->year)->get();
+                                ->where('año_escolar', $año_escolar)->get();
 
         // Calcular promedios por curso y bimestre
         foreach ($cursos as $curso) {

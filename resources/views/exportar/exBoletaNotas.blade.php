@@ -98,7 +98,7 @@
         </tr>
         <tr>
             <th>INSTITUCIÓN EDUCATIVA</th>
-            <th colspan="3">Sideral Carrión Jaramillo</th>
+            <th colspan="3">Sideral Carrión</th>
         </tr>
         <tr>
             <th>GRADO</th>
