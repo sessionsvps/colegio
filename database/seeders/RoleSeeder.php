@@ -46,13 +46,13 @@ class RoleSeeder extends Seeder
         // Docentes
         Permission::create(['name' => 'Ver Docentes'])->syncRoles([$role1,$role5,$role6]);
         Permission::create(['name' => 'Registrar Docentes'])->syncRoles([$role6]);
-        Permission::create(['name' => 'Editar Docentes'])->syncRoles([$role1,$role6,$role2]);
+        Permission::create(['name' => 'Editar Docentes'])->syncRoles([$role1,$role6]);
         Permission::create(['name' => 'Eliminar Docentes'])->syncRoles([$role1,$role6]);
 
         // Estudiantes
         Permission::create(['name' => 'Ver Estudiantes'])->syncRoles([$role1, $role5, $role6]);
         Permission::create(['name' => 'Registrar Estudiantes'])->syncRoles([$role6]);
-        Permission::create(['name' => 'Editar Estudiantes'])->syncRoles([$role1, $role6, $role4]);
+        Permission::create(['name' => 'Editar Estudiantes'])->syncRoles([$role1, $role6]);
         Permission::create(['name' => 'Eliminar Estudiantes'])->syncRoles([$role1, $role6]);
 
         // Matriculas
@@ -69,13 +69,13 @@ class RoleSeeder extends Seeder
         // Director
         Permission::create(['name' => 'Ver Director'])->syncRoles([$role1]);
         Permission::create(['name' => 'Registrar Director'])->syncRoles([$role1]);
-        Permission::create(['name' => 'Editar Director'])->syncRoles([$role1,$role5]);
+        Permission::create(['name' => 'Editar Director'])->syncRoles([$role1]);
         Permission::create(['name' => 'Eliminar Director'])->syncRoles([$role1]);
 
         // Secretarias
         Permission::create(['name' => 'Ver Secretarias'])->syncRoles([$role1, $role5]);
         Permission::create(['name' => 'Registrar Secretarias'])->syncRoles([$role1]);
-        Permission::create(['name' => 'Editar Secretarias'])->syncRoles([$role1,$role6]);
+        Permission::create(['name' => 'Editar Secretarias'])->syncRoles([$role1]);
         Permission::create(['name' => 'Eliminar Secretarias'])->syncRoles([$role1]);
 
         // Asistencias
@@ -107,8 +107,6 @@ class RoleSeeder extends Seeder
 
         // Reportes
         Permission::create(['name' => 'Generar reporte de Estudiantes'])->syncRoles([$role1, $role2, $role4, $role5, $role6]);
-        Permission::create(['name' => 'Generar reporte de Docentes'])->syncRoles([$role1, $role5, $role6]);
-        Permission::create(['name' => 'Generar reporte de Cursos'])->syncRoles([$role1, $role2, $role4, $role5, $role6]);
         Permission::create(['name' => 'Generar reporte de Notas'])->syncRoles([$role1, $role2, $role4, $role5, $role6]);
 
     }
