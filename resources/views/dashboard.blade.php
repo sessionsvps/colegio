@@ -5,12 +5,43 @@
     <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 </head>
 
 @section('contenido')
     <p>DASHBOARD</p>
     @if(Auth::user()->hasRole('Estudiante_Matriculado'))
+        <div class="flex space-x-20 pt-10">
+            <div class="max-w-sm bg-teal-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadCursos }}</div>
+                    <div class="text-lg">Cursos</div>
+                </div>
+                <div class="bg-teal-600 p-3 text-center cursor-pointer hover:bg-teal-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
 
+            <div class="max-w-sm bg-yellow-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $aula->grado->detalle }} {{$aula->detalle}} de {{$aula->grado->nivel->detalle}}</div>
+                    <div class="text-lg">Aula</div>
+                </div>
+                <div class="bg-yellow-600 p-3 text-center cursor-pointer hover:bg-yellow-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+
+            <div class="max-w-sm bg-red-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadExoneraciones }}</div>
+                    <div class="text-lg">Exoneraciones</div>
+                </div>
+                <div class="bg-red-600 p-3 text-center cursor-pointer hover:bg-red-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+        </div>
     @elseif (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin'))
         <div class="flex flex-col mt-8 px-14">
             <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -27,7 +58,27 @@
             </div>
         </div>
     @elseif (Auth::user()->hasRole('Docente'))
+        <div class="flex space-x-20 pt-10">
+            <div class="max-w-sm bg-teal-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadCatedras }}</div>
+                    <div class="text-lg">Cátedras</div>
+                </div>
+                <div class="bg-teal-600 p-3 text-center cursor-pointer hover:bg-teal-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
 
+            <div class="max-w-sm bg-yellow-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadAulas }}</div>
+                    <div class="text-lg">Aulas</div>
+                </div>
+                <div class="bg-yellow-600 p-3 text-center cursor-pointer hover:bg-yellow-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+        </div>
     @endif
 @endsection
 
