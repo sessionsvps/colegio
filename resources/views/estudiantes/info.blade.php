@@ -64,7 +64,7 @@
         <div>
             <p class="text-gray-700 mt-1"><span class="font-semibold">Año Escolar:</span> {{ $matricula->año_escolar }}</p>
             <p class="text-gray-700 mt-1"><span class="font-semibold">Aula:</span> {{ $matricula->seccion->grado->detalle . ' ' . $matricula->seccion->detalle . ' de ' . $matricula->seccion->grado->nivel->detalle }}</p>
-            <a href="javascript:void(0);" onclick="confirmDelete('{{ $matricula->codigo_estudiante }}', '{{ $matricula->id_nivel }}', '{{ $matricula->id_grado }}', '{{ $matricula->id_seccion }}', '{{ $matricula->año_escolar }}')" class="font-medium text-red-600 dark:text-red-500 hover:underline">Eliminar</a>
+            {{-- <a href="javascript:void(0);" onclick="confirmDelete('{{ $matricula->codigo_estudiante }}', '{{ $matricula->id_nivel }}', '{{ $matricula->id_grado }}', '{{ $matricula->id_seccion }}', '{{ $matricula->año_escolar }}')" class="font-medium text-red-600 dark:text-red-500 hover:underline">Eliminar</a> --}}
         </div>
     </div>
     @endforeach

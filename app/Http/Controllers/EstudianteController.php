@@ -325,9 +325,7 @@ class EstudianteController extends BaseController
 
     public function infoMatriculas($codigo_estudiante) {
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->first();
-        $matriculas = $estudiante->estudiantes_seccion->filter(function ($matricula) {
-            return $matricula->esActivo == 1;
-        });
+        $matriculas = $estudiante->estudiantes_seccion;
         return view('estudiantes.info', compact('estudiante', 'matriculas'));
     }
 
@@ -373,7 +371,6 @@ class EstudianteController extends BaseController
             'id_nivel' => $request->input('nivel'),
             'id_grado' => $request->input('grado'),
             'id_seccion' => $request->input('seccion'),
-            'esActivo' => 1,
         ]);
 
         $boleta_nota = Boleta_de_nota::create([
@@ -431,19 +428,19 @@ class EstudianteController extends BaseController
     }
 
     public function eliminarMatricula($codigo_estudiante, $nivel, $grado, $seccion, $año) {
-        $matricula = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
-                                       ->where('id_nivel', $nivel)
-                                       ->where('id_grado', $grado)
-                                       ->where('id_seccion', $seccion)
-                                       ->where('año_escolar', $año)
-                                       ->first();
-        if ($matricula) {
-            $matricula->esActivo = 0;
-            $matricula->save();
-            return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('success', 'Matrícula eliminada exitosamente.');
-        } else {
-            return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('error', 'Matrícula no encontrada.');
-        }
+        // $matricula = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
+        //                                ->where('id_nivel', $nivel)
+        //                                ->where('id_grado', $grado)
+        //                                ->where('id_seccion', $seccion)
+        //                                ->where('año_escolar', $año)
+        //                                ->first();
+        // if ($matricula) {
+        //     $matricula->esActivo = 0;
+        //     $matricula->save();
+        //     return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('success', 'Matrícula eliminada exitosamente.');
+        // } else {
+        //     return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('error', 'Matrícula no encontrada.');
+        // }
     }
 
     public function destroy(string $codigo_estudiante)
