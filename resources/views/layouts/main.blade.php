@@ -60,9 +60,7 @@
                                 @foreach($estudiante_seccion as $matricula)
                                     <option value="{{ $matricula->año_escolar }}">{{ $matricula->año_escolar }}</option>
                                 @endforeach
-                            @endif
-                            {{-- <option value="2024">2024</option> --}}
-                            @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
+                            @elseif(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
                                 <option value="2024">2024</option>
                                 <option value="2023">2023</option>
                                 <option value="2022">2022</option>
@@ -122,9 +120,15 @@
             <div class="flex flex-col items-center justify-center py-4">
                 <img src="{{ Auth::user()->profile_photo_url }}" alt="Foto de Perfil"
                     class="shadow-lg rounded-full h-36 w-36 border-4 border-green-700">
-                <p class="mt-2 font-semibold">{{Auth::user()->full_name}}</p>
+                <p class="mt-2 text-center font-semibold">{{Auth::user()->full_name}}</p>
                 @if(Auth::user()->hasRole('Estudiante_Matriculado'))
                 {!! Auth::user()->getAula(Auth::user()->id) !!}
+                @elseif (Auth::user()->hasRole('Docente'))
+                <p>Docente</p>
+                @elseif (Auth::user()->hasRole('Director'))
+                <p>Director</p>
+                @elseif (Auth::user()->hasRole('Secretaria'))
+                <p>Secretaria</p>
                 @endif
             </div>
             <ul class="space-y-2 font-medium bg">

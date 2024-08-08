@@ -40,15 +40,17 @@ class DashboardController extends Controller
             // Contar la cantidad de exoneraciones que tiene el estudiante
             $cantidadExoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)
                 ->where('año_escolar',$estudiante->año_escolar)->count();
-
             $aula = $estudiante->seccion;
+
+            return view('dashboard', compact('cantidadCursos', 'cantidadExoneraciones', 'aula'));
+        }else if($user->hasRole('Docente')){
+            $cantidadCatedras = Catedra::where('user_id', $userId)->count();
+            // Contar la cantidad de aulas (secciones) a las que dicta el docente
+            $cantidadAulas = Catedra::where('user_id', $userId)->distinct('id_seccion')->count('id_seccion');
+            return view('dashboard', compact('cantidadCatedras', 'cantidadAulas'));
+        }else{
+            return view('dashboard');
         }
-
-        $cantidadCatedras = Catedra::where('user_id', $userId)->count();
-
-        // Contar la cantidad de aulas (secciones) a las que dicta el docente
-        $cantidadAulas = Catedra::where('user_id', $userId)->distinct('id_seccion')->count('id_seccion');
-
-        return view('dashboard', compact('cantidadCursos', 'cantidadExoneraciones', 'aula', 'cantidadCatedras', 'cantidadAulas'));
+        
     }
 }
