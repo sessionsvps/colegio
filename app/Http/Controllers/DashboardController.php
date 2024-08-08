@@ -28,18 +28,19 @@ class DashboardController extends Controller
             $cantidadAulas = 0;
 
             // Obtener el código del estudiante
-            $estudiante = Estudiante_Seccion::where('user_id', $userId)->first();
+            $estudiante = Estudiante_Seccion::where('user_id', $userId)
+                ->where('año_escolar','2024')->first();
             // Contar la cantidad de cursos que tiene el estudiante
             $cantidadCursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
             ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
                 $query->select('codigo_curso')
                 ->from('exoneraciones')
                 ->where('codigo_estudiante', $estudiante->codigo_estudiante)
-                    ->where('año_escolar', $estudiante->año_escolar);
+                    ->where('año_escolar', '2024');
             })->count();
             // Contar la cantidad de exoneraciones que tiene el estudiante
             $cantidadExoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)
-                ->where('año_escolar',$estudiante->año_escolar)->count();
+                ->where('año_escolar','2024')->count();
             $aula = $estudiante->seccion;
 
             return view('dashboard', compact('cantidadCursos', 'cantidadExoneraciones', 'aula'));

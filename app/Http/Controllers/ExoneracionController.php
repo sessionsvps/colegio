@@ -89,7 +89,8 @@ class ExoneracionController extends BaseController
                 return view('exoneraciones.index', compact('estudiantes', 'exoneraciones', 'niveles', 'grados_primaria', 'grados_secundaria'));
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
-                $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
+                $estudiante = Estudiante_Seccion::where('user_id', $user->id)
+                    ->where('año_escolar','2024')->first();
                 $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->get();
                 $codigoCursos = $cursos->pluck('codigo_curso');
                 $exoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)

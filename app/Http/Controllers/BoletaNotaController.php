@@ -91,7 +91,8 @@ class BoletaNotaController extends BaseController
                 return view('boleta_notas.index', compact('estudiantes', 'niveles', 'grados_primaria', 'grados_secundaria'));
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
-                $estudiante = Estudiante_Seccion::where('user_id', $user->id)->first();
+                $estudiante = Estudiante_Seccion::where('user_id', $user->id)
+                    ->where('año_escolar','2024')->first();
                 $cursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
                     ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
                         $query->select('codigo_curso')

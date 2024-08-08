@@ -47,7 +47,7 @@ class AulaController extends BaseController
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id',$user->id)
-                                                ->first();
+                    ->where('año_escolar','2024')->first();
                 $aula = $estudiante->seccion;
                 return view('aulas.index', compact('aula'));  
                 break;

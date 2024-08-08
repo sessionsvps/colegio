@@ -49,7 +49,8 @@ class CursoController extends BaseController
                 return view('cursos.index',compact('cursos', 'niveles', 'filtranivel', 'user'));   
             break;
             case $user->hasRole('Estudiante_Matriculado'):
-                $estudiante = Estudiante_Seccion::where('user_id',$user->id)->first();
+                $estudiante = Estudiante_Seccion::where('user_id',$user->id)
+                    ->where('año_escolar','2024')->first();
                 $cursos = DB::table('cursos')
                 ->join('curso_por_niveles', 'cursos.codigo_curso', '=', 'curso_por_niveles.codigo_curso')
                 ->leftJoin('exoneraciones', function ($join) use ($estudiante) {
@@ -141,7 +142,7 @@ class CursoController extends BaseController
                         ->first();
                     $aulas->push($aula);
                 }
-                return view('cursos.info', compact('aulas', 'curso','competencias'));
+                return view('cursos.info', compact('aulas','curso','competencias'));
                 break;
             default:
             break;
