@@ -111,5 +111,24 @@ class User extends Authenticatable
         }
     }
 
+    public function getAula(string $user_id)
+    {
+        if ($this->estudiante) {
+            $est = Estudiante_Seccion::where('user_id', $user_id)->first();
+            $aula = Seccion::where('id_nivel',$est->id_nivel)
+                ->where('id_grado',$est->id_grado)
+                ->where('id_seccion',$est->id_seccion)->first();
+            if ($est) {
+                $aulaDetalle = $aula->grado->detalle . ' ' . $aula->detalle . ' de ' . $aula->grado->nivel->detalle;
+                return "<p>{$aulaDetalle}</p>";
+            } else {
+                return '<p>No se encontró la sección del estudiante.</p>';
+            }
+        } else {
+            return '<p>El usuario no es un estudiante.</p>';
+        }
+    }
+
+
 
 }
