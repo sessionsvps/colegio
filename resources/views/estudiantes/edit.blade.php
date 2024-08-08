@@ -26,40 +26,61 @@
         </div>
     </div>
     @endif
-    <form method="POST" action="{{ route('estudiantes.update', $estudiante->codigo_estudiante) }}">
+    <form method="POST" action="{{ route('estudiantes.update', $estudiante->codigo_estudiante) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <!-- Datos del Estudiante -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-lg font-bold mb-4">Datos del Estudiante</h2>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
-                        DNI
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="dni" name="dni" type="text" placeholder="DNI" value="{{ old('dni', $estudiante->dni) }}" maxlength="8"
-                        pattern="[0-9]{8}" readonly>
-                    @error('dni')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+            
+            <div class="mb-6 grid md:grid-cols-2 gap-5 lg:grid-rows-5">
+                <div class="md:col-span-2 lg:col-span-1">
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        <div class="mb-4 md:mr-5 lg:mb-0">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="dni">
+                                DNI
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="dni" name="dni" type="text" placeholder="DNI" value="{{ old('dni', $estudiante->dni) }}" maxlength="8"
+                                pattern="[0-9]{8}">
+                            @error('dni')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
+                                Fecha de Nacimiento
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
+                                value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento) }}" readonly>
+                            @error('fecha_nacimiento')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento">
-                        Fecha de Nacimiento
+                <div class="md:col-span-2 lg:col-span-1 lg:row-span-5">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="photo">
+                        Foto de Perfil
                     </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="fecha_nacimiento" name="fecha_nacimiento" type="date" placeholder="Fecha de Nacimiento"
-                        value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento) }}" readonly>
-                    @error('fecha_nacimiento')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4"> 
+                        <img id="photoPreview" src="{{ $estudiante->user->profile_photo_url }}"
+                            class="w-48 h-52 lg:w-80 lg:h-96 rounded-lg border-2 border-dashed border-gray-300 mb-4">
+                        <label
+                            class="w-full lg:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer text-center">
+                            Seleccionar Archivo
+                            <input class="hidden" id="photo" name="photo" type="file" accept="image/*"
+                                onchange="previewImage(event)">
+                        </label>
+                        @error('photo')
+                        <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="primer_nombre">
                         Primer Nombre
                     </label>
@@ -71,7 +92,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-0">
+                <div class="lg:row-start-3">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="otros_nombres">
                         Otros Nombres
                     </label>
@@ -83,10 +104,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-    
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div class="lg:row-start-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_paterno">
                         Apellido Paterno
                     </label>
@@ -98,7 +116,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 px-3 mb-0">
+                <div class="lg:row-start-5">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_materno">
                         Apellido Materno
                     </label>
@@ -132,7 +150,7 @@
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="año_ingreso" name="año_ingreso" type="number" placeholder="Año de Ingreso"
-                        disabled value="{{ old('año_ingreso', $estudiante->año_ingreso) }}">
+                        readonly value="{{ old('año_ingreso', $estudiante->año_ingreso) }}">
                     @error('año_ingreso')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -335,5 +353,17 @@
             var value = e.target.value;
             e.target.value = value.replace(/[^0-9]/g, '').slice(0, 9);
         });
+    </script>
+
+    <script>
+        function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var output = document.getElementById('photoPreview');
+                    output.src = reader.result;
+                    output.style.display = 'block';
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
     </script>
 @endsection

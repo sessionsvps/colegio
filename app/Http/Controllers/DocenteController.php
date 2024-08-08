@@ -86,6 +86,7 @@ class DocenteController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Generar un código docente aleatorio de 4 dígitos
@@ -107,6 +108,10 @@ class DocenteController extends BaseController
             'password' => Hash::make($password),
             'esActivo' => true,
         ]);
+
+        if ($request->hasFile('photo')) {
+            $user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Asignar el rol al usuario
         $role = Role::findOrFail(2);
@@ -183,6 +188,7 @@ class DocenteController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Actualizar datos del docente
@@ -203,6 +209,10 @@ class DocenteController extends BaseController
             'provincia' => $request->provincia,
             'distrito' => $request->distrito,
         ]);
+
+        if ($request->hasFile('photo')) {
+            $docente->user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Actualizar datos del domicilio
         $domicilio->update([

@@ -29,6 +29,7 @@ class User extends Authenticatable
         'email',
         'password',
         'esActivo',
+        'profile_photo_path',
     ];
 
     /**

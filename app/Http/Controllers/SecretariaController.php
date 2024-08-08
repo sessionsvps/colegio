@@ -83,6 +83,7 @@ class SecretariaController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Generar un código aleatorio de 5 dígitos
@@ -104,6 +105,10 @@ class SecretariaController extends BaseController
             'password' => Hash::make($password),
             'esActivo' => true,
         ]);
+
+        if ($request->hasFile('photo')) {
+            $user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Asignar el rol al usuario
         $role = Role::findOrFail(6);
@@ -179,6 +184,7 @@ class SecretariaController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Actualizar datos del secretaria
@@ -199,6 +205,10 @@ class SecretariaController extends BaseController
             'provincia' => $request->provincia,
             'distrito' => $request->distrito,
         ]);
+
+        if ($request->hasFile('photo')) {
+            $secretaria->user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Actualizar datos del domicilio
         $domicilio->update([

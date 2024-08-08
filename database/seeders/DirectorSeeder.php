@@ -58,7 +58,7 @@ class DirectorSeeder extends Seeder
             'id_estado' => 1,
             'fecha_nacimiento' => '1991-11-05',
             'nacionalidad' => 'Peruano',
-            'departamento' => '$faker->state',
+            'departamento' => 'Lima',
             'provincia' => 'Lima',
             'distrito' => 'San Martin de Porres',
             'fecha_ingreso' => '2010-05-05',

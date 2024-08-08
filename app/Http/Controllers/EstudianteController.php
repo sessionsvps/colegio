@@ -143,7 +143,8 @@ class EstudianteController extends BaseController
             'telefono_fijo' => 'nullable|string|max:30',
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
-            'distrito_d' => 'required|string|max:30'
+            'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Generar un código estudiante aleatorio de 10 dígitos
@@ -163,8 +164,12 @@ class EstudianteController extends BaseController
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($password), // Hashear la contraseña
-            'esActivo' => True,
+            'esActivo' => True
         ]);
+
+        if ($request->hasFile('photo')) {
+            $user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Asignar el rol al usuario
         $role = Role::findOrFail(3);
@@ -241,7 +246,8 @@ class EstudianteController extends BaseController
             'telefono_fijo' => 'nullable|string|max:30',
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
-            'distrito_d' => 'required|string|max:30'
+            'distrito_d' => 'required|string|max:30',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
         ]);
 
         // Actualizar datos del estudiante
@@ -263,6 +269,10 @@ class EstudianteController extends BaseController
             'provincia' => $request->provincia,
             'distrito' => $request->distrito,
         ]);
+
+        if ($request->hasFile('photo')) {
+            $estudiante->user->updateProfilePhoto($request->file('photo'));
+        }
 
         // Actualizar datos del domicilio
         $domicilio->update([
