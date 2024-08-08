@@ -6,33 +6,40 @@ use App\Models\Catedra;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Exoneracion;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Obtener el ID del estudiante autenticado
         $userId = Auth::user()->id;
-
-        $cantidadCursos = 0;
-        $cantidadExoneraciones = 0;
-        $aula = '';
-        $cantidadCatedras = 0;
-        $cantidadAulas = 0;
-
-        // Obtener el código del estudiante
-        $estudiante = Estudiante_Seccion::where('user_id', $userId)->first();
+        $user = User::findOrFail($userId);
 
         //$codigo_estudiante = $estudiante->codigo_estudiante;
 
-        if ($estudiante) {
-            // Contar la cantidad de cursos que tiene el estudiante
-            $cantidadCursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)->count();
+        if ($user->hasRole('Estudiante_Matriculado')) {
+            $cantidadCursos = 0;
+            $cantidadExoneraciones = 0;
+            $aula = '';
+            $cantidadCatedras = 0;
+            $cantidadAulas = 0;
 
+            // Obtener el código del estudiante
+            $estudiante = Estudiante_Seccion::where('user_id', $userId)->first();
+            // Contar la cantidad de cursos que tiene el estudiante
+            $cantidadCursos = Curso_por_nivel::where('id_nivel', $estudiante->id_nivel)
+            ->whereNotIn('codigo_curso', function ($query) use ($estudiante) {
+                $query->select('codigo_curso')
+                ->from('exoneraciones')
+                ->where('codigo_estudiante', $estudiante->codigo_estudiante)
+                    ->where('año_escolar', $estudiante->año_escolar);
+            })->count();
             // Contar la cantidad de exoneraciones que tiene el estudiante
-            $cantidadExoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)->count();
+            $cantidadExoneraciones = Exoneracion::where('codigo_estudiante', $estudiante->codigo_estudiante)
+                ->where('año_escolar',$estudiante->año_escolar)->count();
 
             $aula = $estudiante->seccion;
         }
