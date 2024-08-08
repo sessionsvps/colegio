@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estudiante_Seccion;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class GraphEstuRestController extends Controller
 {
     public function index()
     {
+        //$estudiante = Estudiante_Seccion::where('user_id', Auth::user()->id)->first();
+
+        // Obtener el código del estudiante
+        //$estudiante = Estudiante_Seccion::where('user_id', $user_id)->first();
+
+        //$codigo_estudiante = $estudiante->codigo_estudiante;
+
         $asis = DB::table('bimestres')
         ->join('asistencias', 'bimestres.id', '=', 'asistencias.id_bimestre')
         ->select(
@@ -18,6 +28,7 @@ class GraphEstuRestController extends Controller
             DB::raw('SUM(asistencias.tardanzas_justificadas) as tardanzas_justificadas'),
             DB::raw('SUM(asistencias.tardanzas_injustificadas) as tardanzas_injustificadas')
         )
+            //->where('asistencias.codigo_estudiante', "0322")
             ->groupBy('bimestres.descripcion')
             ->get()
             ->map(function ($item) {
@@ -33,6 +44,7 @@ class GraphEstuRestController extends Controller
             'nivel_logro',
             DB::raw('COUNT(*) as total')
         )
+            //->where('codigo_estudiante', "0322")
             ->whereNotNull('nivel_logro')
             ->groupBy('nivel_logro')
             ->get()
@@ -46,7 +58,6 @@ class GraphEstuRestController extends Controller
             'asistencias' => $asis,
             'logros' => $logros
         ];
-
 
         return response()->json($response, 200);
     }
