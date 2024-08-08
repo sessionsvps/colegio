@@ -46,13 +46,24 @@ class AulaController extends BaseController
                 return view('aulas.index', compact('aulas','niveles','grados_primaria','grados_secundaria'));  
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
-                $estudiante = Estudiante_Seccion::where('user_id',$user->id)->first();
+                $estudiante = Estudiante_Seccion::where('user_id',$user->id)
+                                                ->first();
                 $aula = $estudiante->seccion;
                 return view('aulas.index', compact('aula'));  
                 break;
             default:
                 break;
         }      
+    }
+
+    public function estudianteIndex($año) {
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
+        $estudiante = Estudiante_Seccion::where('user_id',$user->id)
+                                        ->where('año_escolar', $año)
+                                        ->first();
+        $aula = $estudiante->seccion;
+        return view('aulas.index', compact('aula'));  
     }
 
     public function info(Request $request, string $año_escolar, string $nivel, string $grado, string $seccion)

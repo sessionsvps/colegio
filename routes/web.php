@@ -12,6 +12,7 @@ use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\ExoneracionController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SecretariaController;
+use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,7 +30,10 @@ Route::middleware([
 
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');
-    Route::post('/matriculado',[EstudianteController::class,'realizarMatricula'])->name('estudiantes.realizarMatricula');
+    Route::post('/matriculado/{codigo_estudiante}',[EstudianteController::class,'realizarMatricula'])->name('estudiantes.realizarMatricula');
+    Route::get('matricula/info/{codigo_estudiante}', [EstudianteController::class, 'infoMatriculas'])->name('estudiantes.info-matriculas');
+    Route::get('matricula/añadir/{codigo_estudiante}', [EstudianteController::class, 'añadeMatriculas'])->name('estudiantes.añade-matriculas');
+    Route::delete('matricula/{codigo_estudiante}/{nivel}/{grado}/{seccion}/{año}', [EstudianteController::class, 'eliminarMatricula'])->name('estudiantes.elimnar-matricula');
     Route::get('/estudiantes/{codigo_curso}/{nivel}/{grado}/{seccion}', [EstudianteController::class, 'vista_docente'])->name('estudiantes.filtrar-por-aula');
     
     Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.custom-create');
@@ -41,8 +45,11 @@ Route::middleware([
     Route::resource('director', DirectorController::class)->except('show');
     Route::resource('secretarias', SecretariaController::class)->except('show');
     Route::resource('docentes', DocenteController::class)->except('show');
+    
+    Route::get('aulas/{año}', [AulaController::class, 'estudianteIndex'])->name('aulas.estudiante');
     Route::resource('aulas', AulaController::class)->except('show');
     Route::get('aulas/{año_escolar}/{nivel}/{grado}/{seccion}/info', [AulaController::class, 'info'])->name('aulas.info');
+    
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
     Route::get('cursos/{id}/{año_escolar}/info', [CursoController::class, 'info'])->name('cursos.info');

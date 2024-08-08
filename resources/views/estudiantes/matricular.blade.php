@@ -3,10 +3,11 @@
 @section('contenido')
 <!-- Formulario para agregar nuevo alumno -->
 <div>
-    <a href="{{ route('estudiantes.index') }}"
+    {{-- <a href="{{ route('estudiantes.index') }}"
         class="bg-red-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 inline-block">
         Volver
-    </a>
+    </a> --}}
+    <h1 class="font-bold text-3xl mb-6">Matrículas</h1>
     @if ($errors->any())
     <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
         <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +27,90 @@
     </div>
     @endif
 
-    <form method="POST" action="{{ route('estudiantes.realizarMatricula') }}">
+    <form method="GET" action="{{ route('estudiantes.matricular') }}">
+        <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div>
+                <label for="buscar_por" class="block text-sm font-medium text-gray-700">Buscar Por</label>
+                <select id="buscar_por_mat" name="buscar_por_mat"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="" {{ request('buscar_por_mat')=='' ? 'selected' : '' }}>Todos</option>
+                    <option value="codigo" {{ request('buscar_por_mat')=='codigo' ? 'selected' : '' }}>Código</option>
+                    <option value="nombre" {{ request('buscar_por_mat')=='nombre' ? 'selected' : '' }}>Nombre</option>
+                    <option value="dni" {{ request('buscar_por_mat')=='dni' ? 'selected' : '' }}>DNI</option>
+                    <option value="correo" {{ request('buscar_por_mat')=='correo' ? 'selected' : '' }}>Correo</option>
+                </select>
+            </div>
+            <div id="inputContainer_mat">
+                <!-- Aquí se insertarán los inputs dinámicamente -->
+            </div>
+            <div class="col-span-2 lg:mt-6 lg:col-span-1" id="botonBuscar">
+                <button type="submit"
+                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                    Buscar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
+            <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Código
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Nombre
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        DNI
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Correo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Matrículas
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($estudiantes as $estudiante)
+                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $estudiante->codigo_estudiante }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ $estudiante->primer_nombre }} {{ $estudiante->otros_nombres }} {{
+                        $estudiante->apellido_paterno }} {{
+                        $estudiante->apellido_materno }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $estudiante->dni }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $estudiante->user->email }}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-center">
+                            <a href="{{ route('estudiantes.info-matriculas', $estudiante->codigo_estudiante) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Ver matrículas</a>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center">
+                        No hay registros
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-10">
+        {{ $estudiantes->links() }}
+    </div>
+
+    {{-- <form method="POST" action="{{ route('estudiantes.realizarMatricula') }}">
         @csrf
         <!-- Datos del Estudiante -->
         <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -58,14 +142,10 @@
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="año_escolar">
                         Año Escolar
                     </label>
-                    @php
-                        use Carbon\Carbon;
-                        $año = Carbon::now()->year;
-                    @endphp
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="año_escolar" name="año_escolar" type="number" placeholder="Año Escolar"
-                        value="{{ $año }}" readonly>
+                        id="input_año_escolar" name="año_escolar" type="number" placeholder=""
+                        value="" readonly>
                     @error('año_escolar')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
@@ -131,34 +211,64 @@
                 Agregar
             </button>
         </div>
-    </form>
+    </form> --}}
 </div>
 @endsection
 
 @section('scripts')
     <script>
-        function updateGrados() {
-            var nivel = document.getElementById('nivel').value;
-            var grados = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
-            
-            var gradoSelect = document.getElementById('grado');
-            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset options
-            
-            if (nivel == 1) {
-                grados.primaria.forEach(function(grado) {
-                    var option = document.createElement('option');
-                    option.value = grado.id_grado;
-                    option.text = grado.detalle;
-                    gradoSelect.appendChild(option);
-                });
-            } else if (nivel == 2) {
-                grados.secundaria.forEach(function(grado) {
-                    var option = document.createElement('option');
-                    option.value = grado.id_grado;
-                    option.text = grado.detalle;
-                    gradoSelect.appendChild(option);
-                });
-            }
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+                const buscarPorSelect = document.getElementById('buscar_por_mat');
+                const inputContainer = document.getElementById('inputContainer_mat');
+
+                function updateInputContainer() {
+                    inputContainer.innerHTML = ''; // Clear the container
+
+                    if (buscarPorSelect.value === 'codigo') {
+                        inputContainer.innerHTML = `
+                            <label for="codigo" class="block text-sm font-medium text-gray-700">Código</label>
+                            <input type="text" name="codigo" id="codigo"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                maxlength="5" oninput="this.value=this.value.replace(/[^0-9]/g, '').slice(0,this.maxLength)"
+                                required value="{{ request('codigo') }}">
+                        `;
+                    } else if (buscarPorSelect.value === 'nombre') {
+                        inputContainer.innerHTML = `
+                            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                            <input type="text" name="nombre" id="nombre"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                required maxlength="120" value="{{ request('nombre') }}">
+                        `;
+                    } else if (buscarPorSelect.value === 'dni') {
+                        inputContainer.innerHTML = `
+                            <label for="dni" class="block text-sm font-medium text-gray-700">DNI</label>
+                            <input type="text" name="dni" id="dni"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                maxlength="8" oninput="this.value=this.value.replace(/[^0-9]/g, '').slice(0,this.maxLength)"
+                                required value="{{ request('dni') }}">
+                        `;
+                    } else if (buscarPorSelect.value === 'correo') {
+                        inputContainer.innerHTML = `
+                            <label for="correo" class="block text-sm font-medium text-gray-700">Correo</label>
+                            <input type="email" name="correo" id="correo"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                required maxlength="100" value="{{ request('correo') }}">
+                        `;
+                    } else {
+                        inputContainer.innerHTML = `
+                            <label for="placeholder" class="block text-sm font-medium text-gray-700">Buscar</label>
+                            <input type="text" id="placeholder"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                disabled value="Todos los registros">
+                        `;
+                    }
+                }
+
+                // Add event listener for change
+                buscarPorSelect.addEventListener('change', updateInputContainer);
+
+                // Initial call to set the correct input on page load
+                updateInputContainer();
+            });
     </script>
 @endsection

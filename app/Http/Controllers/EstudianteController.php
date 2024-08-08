@@ -11,6 +11,7 @@ use App\Models\Competencia;
 use App\Models\Curso;
 use App\Models\Curso_por_nivel;
 use App\Models\Domicilio;
+use App\Models\Estado;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
 use App\Models\Grado;
@@ -19,6 +20,7 @@ use App\Models\Notas_por_competencia;
 use App\Models\Seccion;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -36,7 +38,7 @@ class EstudianteController extends BaseController
         $this->middleware('can:Registrar Estudiantes')->only('create','store');
         $this->middleware('can:Editar Estudiantes')->only('edit','update');
         $this->middleware('can:Eliminar Estudiantes')->only('destroy');
-        $this->middleware('can:Registrar Matriculas')->only('matricular','realizarMatricula');
+        $this->middleware('can:Registrar Matriculas')->only('matricular','realizarMatricula', 'infoMatriculas', 'añadeMatriculas');
         $this->middleware('can:Editar Notas')->only('vista_docente');
     }
 
@@ -286,31 +288,74 @@ class EstudianteController extends BaseController
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado exitosamente.');
     }
 
-    public function matricular()
+    public function matricular(Request $request)
     {
-        $estudiantes = Estudiante::whereHas('user', function ($query) {
+        // Inicializar la consulta base para los estudiantes activos
+        $query = Estudiante::whereHas('user', function($query) {
             $query->where('esActivo', 1);
-            $query->where('nro_matricula', null);
-        })->get();
+        });
+
+        // Verificar si hay algún filtro de búsqueda
+        if($request->filled('buscar_por_mat')) {
+            $buscarPor = $request->input('buscar_por_mat');
+            $buscarValor = $request->input($buscarPor);
+
+            if ($buscarPor === 'codigo') {
+                $query->where('codigo_estudiante', 'like', '%'.$buscarValor.'%');
+            } elseif ($buscarPor === 'nombre') {
+                $query->where(function ($query) use ($buscarValor) {
+                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                });
+            } elseif ($buscarPor === 'dni') {
+                $query->where('dni', 'like', '%'.$buscarValor.'%');
+            } elseif ($buscarPor === 'correo') {
+                $query->whereHas('user', function ($query) use ($buscarValor) {
+                    $query->where('email', 'like', '%' . $buscarValor . '%');
+                });
+            }
+        }
+        
+        $estudiantes = $query->paginate(10);
         $niveles = Nivel::all();
         $grados_primaria = Grado::where('id_nivel', 1)->get();
         $grados_secundaria = Grado::where('id_nivel', 2)->get();
-        return view('estudiantes.matricular',compact('niveles', 'grados_primaria', 'grados_secundaria', 'estudiantes'));
+        return view('estudiantes.matricular', compact('niveles', 'grados_primaria', 'grados_secundaria', 'estudiantes'));
     }
 
-    public function realizarMatricula(Request $request)
-    {
+    public function infoMatriculas($codigo_estudiante) {
+        $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->first();
+        $matriculas = $estudiante->estudiantes_seccion->filter(function ($matricula) {
+            return $matricula->esActivo == 1;
+        });
+        return view('estudiantes.info', compact('estudiante', 'matriculas'));
+    }
 
+    public function añadeMatriculas($codigo_estudiante) {
+        $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->first();
+        $niveles = Nivel::all();
+        $grados_primaria = Grado::where('id_nivel', 1)->get();
+        $grados_secundaria = Grado::where('id_nivel', 2)->get();
+        return view('estudiantes.añade-matricula', compact('estudiante', 'niveles', 'grados_primaria', 'grados_secundaria'));
+    }
+
+    public function realizarMatricula(Request $request, $codigo_estudiante)
+    {
         $request->validate([
-            'codigo_estudiante' => 'required',
             'año_escolar' => 'required|integer',
             'nivel' => 'required',
             'grado' => 'required',
             'seccion' => 'required',
         ]);
 
-        $codigo_estudiante = $request->codigo_estudiante;
+        // $codigo_estudiante = $request->codigo_estudiante;
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
+        $matricula_previa = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
+                                             ->where('año_escolar', $request->input('año_escolar'))
+                                             ->first();
+        if($matricula_previa) {
+            return redirect()->back()->withErrors(['error' => 'El estudiante presenta una matrícula previa para el año escolar ' . $request->input('año_escolar') . ' en el grado ' . $matricula_previa->seccion->grado->detalle . ' ' . $matricula_previa->seccion->detalle . ' de ' . $matricula_previa->seccion->grado->nivel->detalle. '.']);
+        }
 
         if ($estudiante->nro_matricula == null){
             do {
@@ -328,6 +373,7 @@ class EstudianteController extends BaseController
             'id_nivel' => $request->input('nivel'),
             'id_grado' => $request->input('grado'),
             'id_seccion' => $request->input('seccion'),
+            'esActivo' => 1,
         ]);
 
         $boleta_nota = Boleta_de_nota::create([
@@ -370,17 +416,34 @@ class EstudianteController extends BaseController
 
         $user = User::findOrFail($estudiante->user_id);
 
-        // Asignar el rol al usuario
-        $role = Role::findOrFail(3);
-        $user->removeRole($role);
-        
-        $role = Role::findOrFail(4);
-        $user->assignRole($role);
+        if($user->hasRole('Estudiante_Registrado')) {
+            // Asignar el rol al usuario
+            $role = Role::findOrFail(3);
+            $user->removeRole($role);
+            
+            $role = Role::findOrFail(4);
+            $user->assignRole($role);
+        }
         // Enviar correo de confirmacion de matricula
         Mail::to($estudiante->email)->send(new ConfirmacionMatricula());
 
-        return redirect()->route('estudiantes.index')->with('success', 'Estudiante matriculado exitosamente.');
+        return redirect()->route('estudiantes.info-matriculas', $estudiante->codigo_estudiante)->with('success', 'Estudiante matriculado exitosamente.');
+    }
 
+    public function eliminarMatricula($codigo_estudiante, $nivel, $grado, $seccion, $año) {
+        $matricula = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
+                                       ->where('id_nivel', $nivel)
+                                       ->where('id_grado', $grado)
+                                       ->where('id_seccion', $seccion)
+                                       ->where('año_escolar', $año)
+                                       ->first();
+        if ($matricula) {
+            $matricula->esActivo = 0;
+            $matricula->save();
+            return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('success', 'Matrícula eliminada exitosamente.');
+        } else {
+            return redirect()->route('estudiantes.info-matriculas', $codigo_estudiante)->with('error', 'Matrícula no encontrada.');
+        }
     }
 
     public function destroy(string $codigo_estudiante)
