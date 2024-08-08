@@ -5,6 +5,7 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\CatedraController;
 use App\Http\Controllers\BoletaNotaController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DirectorController;
 use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\UserController;
@@ -24,9 +25,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');
@@ -35,7 +34,7 @@ Route::middleware([
     Route::get('matricula/añadir/{codigo_estudiante}', [EstudianteController::class, 'añadeMatriculas'])->name('estudiantes.añade-matriculas');
     Route::delete('matricula/{codigo_estudiante}/{nivel}/{grado}/{seccion}/{año}', [EstudianteController::class, 'eliminarMatricula'])->name('estudiantes.elimnar-matricula');
     Route::get('/estudiantes/{codigo_curso}/{nivel}/{grado}/{seccion}', [EstudianteController::class, 'vista_docente'])->name('estudiantes.filtrar-por-aula');
-    
+
     Route::get('catedras/create/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'create'])->name('catedras.custom-create');
     Route::get('catedras/edit/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'edit'])->name('catedras.custom-edit');
     Route::put('catedras/update/{codigo_curso}/{nivel}/{grado}/{seccion}', [CatedraController::class, 'update'])->name('catedras.custom-update');

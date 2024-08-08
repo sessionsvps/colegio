@@ -1,19 +1,3 @@
-{{-- <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <x-welcome />
-            </div>
-        </div>
-    </div>
-</x-app-layout> --}}
-
 @extends('layouts.main')
 
 <head>
@@ -21,11 +5,44 @@
     <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 </head>
 
 @section('contenido')
     <p>DASHBOARD</p>
     @if(Auth::user()->hasRole('Estudiante_Matriculado'))
+        <div class="flex space-x-20 pt-10">
+            <div class="max-w-sm bg-teal-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadCursos }}</div>
+                    <div class="text-lg">Cursos</div>
+                </div>
+                <div class="bg-teal-600 p-3 text-center cursor-pointer hover:bg-teal-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+
+            <div class="max-w-sm bg-yellow-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $aula->grado->detalle }} {{$aula->detalle}} de {{$aula->grado->nivel->detalle}}</div>
+                    <div class="text-lg">Aula</div>
+                </div>
+                <div class="bg-yellow-600 p-3 text-center cursor-pointer hover:bg-yellow-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+
+            <div class="max-w-sm bg-red-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadExoneraciones }}</div>
+                    <div class="text-lg">Exoneraciones</div>
+                </div>
+                <div class="bg-red-600 p-3 text-center cursor-pointer hover:bg-red-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+        </div>
+    @elseif (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin'))
         <div class="flex flex-col mt-8 px-14">
             <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
@@ -40,80 +57,99 @@
                 </div>
             </div>
         </div>
-    @elseif (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin'))
-
     @elseif (Auth::user()->hasRole('Docente'))
+        <div class="flex space-x-20 pt-10">
+            <div class="max-w-sm bg-teal-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadCatedras }}</div>
+                    <div class="text-lg">Cátedras</div>
+                </div>
+                <div class="bg-teal-600 p-3 text-center cursor-pointer hover:bg-teal-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
 
+            <div class="max-w-sm bg-yellow-500 text-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="text-4xl font-bold">{{ $cantidadAulas }}</div>
+                    <div class="text-lg">Aulas</div>
+                </div>
+                <div class="bg-yellow-600 p-3 text-center cursor-pointer hover:bg-yellow-700">
+                    <span class="text-white">More info</span>
+                </div>
+            </div>
+        </div>
     @endif
 @endsection
 
 @section('scripts')
     <script>
         am5.ready(function() {
+            //var userId = "{{ Auth::user()->id }}"; // Obtener el ID del usuario autenticado
 
-            // Create root element
-            var root = am5.Root.new("chartdiv1");
+            // Create root element for first chart
+            var root1 = am5.Root.new("chartdiv1");
 
             // Set themes
-            root.setThemes([
-                am5themes_Animated.new(root)
+            root1.setThemes([
+                am5themes_Animated.new(root1)
             ]);
 
             // Create chart
-            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+            var chart1 = root1.container.children.push(am5xy.XYChart.new(root1, {
                 panX: false,
                 panY: false,
                 paddingLeft: 0,
                 wheelX: "panX",
                 wheelY: "zoomX",
-                layout: root.verticalLayout
+                layout: root1.verticalLayout
             }));
 
             // Add legend
-            var legend = chart.children.push(
-                am5.Legend.new(root, {
+            var legend1 = chart1.children.push(
+                am5.Legend.new(root1, {
                     centerX: am5.p50,
                     x: am5.p50
                 })
             );
 
-            // Load data from API
-            am5.net.load("http://127.0.0.1:8000/api/asistencias").then(function(result) {
+            // Load data from API for first chart
+            am5.net.load(`http://127.0.0.1:8000/api/asistencias`).then(function(result) {
                 var response = am5.JSONParser.parse(result.response);
                 var asistencias = response.asistencias;
                 console.log(asistencias);  // Log para verificar la estructura de los datos
 
                 // Create axes
-                var xRenderer = am5xy.AxisRendererX.new(root, {
+                var xRenderer1 = am5xy.AxisRendererX.new(root1, {
                     cellStartLocation: 0.1,
                     cellEndLocation: 0.9,
                     minorGridEnabled: true
                 });
 
-                var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                var xAxis1 = chart1.xAxes.push(am5xy.CategoryAxis.new(root1, {
                     categoryField: "bimestre",
-                    renderer: xRenderer,
-                    tooltip: am5.Tooltip.new(root, {})
+                    renderer: xRenderer1,
+                    tooltip: am5.Tooltip.new(root1, {})
                 }));
 
-                xRenderer.grid.template.setAll({
+                xRenderer1.grid.template.setAll({
                     location: 1
                 });
 
-                xAxis.data.setAll(asistencias);
+                xAxis1.data.setAll(asistencias);
 
-                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-                    renderer: am5xy.AxisRendererY.new(root, {
+                var yAxis1 = chart1.yAxes.push(am5xy.ValueAxis.new(root1, {
+                    renderer: am5xy.AxisRendererY.new(root1, {
                         strokeOpacity: 0.1
                     })
                 }));
 
-                // Function to create series
-                function makeSeries(name, fieldName) {
-                    var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                // Function to create series for the first chart
+                function makeSeries1(name, fieldName) {
+                    var series = chart1.series.push(am5xy.ColumnSeries.new(root1, {
                         name: name,
-                        xAxis: xAxis,
-                        yAxis: yAxis,
+                        xAxis: xAxis1,
+                        yAxis: yAxis1,
                         valueYField: fieldName,
                         categoryXField: "bimestre"
                     }));
@@ -131,11 +167,11 @@
                     series.appear();
 
                     series.bullets.push(function () {
-                        return am5.Bullet.new(root, {
+                        return am5.Bullet.new(root1, {
                             locationY: 0,
-                            sprite: am5.Label.new(root, {
+                            sprite: am5.Label.new(root1, {
                                 text: "{valueY}",
-                                fill: root.interfaceColors.get("alternativeText"),
+                                fill: root1.interfaceColors.get("alternativeText"),
                                 centerY: 0,
                                 centerX: am5.p50,
                                 populateText: true
@@ -143,64 +179,59 @@
                         });
                     });
 
-                    legend.data.push(series);
+                    legend1.data.push(series);
                 }
 
-                // Create series for each category
-                makeSeries("Inasistencias Justificadas", "inasistencias_justificadas");
-                makeSeries("Inasistencias Injustificadas", "inasistencias_injustificadas");
-                makeSeries("Tardanzas Justificadas", "tardanzas_justificadas");
-                makeSeries("Tardanzas Injustificadas", "tardanzas_injustificadas");
+                // Create series for each category in the first chart
+                makeSeries1("Inasistencias Justificadas", "inasistencias_justificadas");
+                makeSeries1("Inasistencias Injustificadas", "inasistencias_injustificadas");
+                makeSeries1("Tardanzas Justificadas", "tardanzas_justificadas");
+                makeSeries1("Tardanzas Injustificadas", "tardanzas_injustificadas");
 
                 // Make stuff animate on load
-                chart.appear(1000, 100);
+                chart1.appear(1000, 100);
             }).catch(function(result) {
                 console.log("Error loading " + result.xhr.responseURL);
             });
 
-        }); // end am5.ready()
-    </script>
-
-    <script>
-        am5.ready(function() {
-
-            // Create root element
-            var root = am5.Root.new("chartdiv2");
+            // Create root element for second chart
+            var root2 = am5.Root.new("chartdiv2");
 
             // Set themes
-            root.setThemes([
-                am5themes_Animated.new(root)
+            root2.setThemes([
+                am5themes_Animated.new(root2)
             ]);
 
             // Create chart
-            var chart = root.container.children.push(
-                am5percent.PieChart.new(root, {
+            var chart2 = root2.container.children.push(
+                am5percent.PieChart.new(root2, {
                     endAngle: 270
                 })
             );
 
             // Create series
-            var series = chart.series.push(
-                am5percent.PieSeries.new(root, {
+            var series2 = chart2.series.push(
+                am5percent.PieSeries.new(root2, {
                     valueField: "total",
                     categoryField: "nivel_logro",
                     endAngle: 270
                 })
             );
 
-            series.states.create("hidden", {
+            series2.states.create("hidden", {
                 endAngle: -90
             });
 
-            // Load data from API
-            am5.net.load("http://127.0.0.1:8000/api/asistencias").then(function(result) {
+            // Load data from API for second chart
+            am5.net.load(`http://127.0.0.1:8000/api/asistencias`).then(function(result) {
                 var response = am5.JSONParser.parse(result.response);
                 var logros = response.logros;
+                console.log(logros);  // Log para verificar la estructura de los datos
 
                 // Set data
-                series.data.setAll(logros);
+                series2.data.setAll(logros);
 
-                series.appear(1000, 100);
+                series2.appear(1000, 100);
             }).catch(function(result) {
                 console.log("Error loading " + result.xhr.responseURL);
             });
