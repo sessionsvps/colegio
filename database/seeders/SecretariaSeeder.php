@@ -65,7 +65,7 @@ class SecretariaSeeder extends Seeder
                 'departamento' => $faker->state,
                 'provincia' => $faker->city,
                 'distrito' => $faker->citySuffix,
-                'fecha_ingreso' => $faker->date('Y-m-d', 'now'),
+                'fecha_ingreso' => $faker->dateTimeBetween('2020-01-01', '2024-12-31')->format('Y-m-d'),
             ]);
         }
     }

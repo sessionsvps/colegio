@@ -61,7 +61,7 @@ class DirectorSeeder extends Seeder
             'departamento' => 'Lima',
             'provincia' => 'Lima',
             'distrito' => 'San Martin de Porres',
-            'fecha_ingreso' => '2010-05-05',
+            'fecha_ingreso' => '2020-05-05',
         ]);
     }
 }

@@ -66,7 +66,7 @@ class DocenteSeeder extends Seeder
                 'provincia' => $faker->city,
                 'distrito' => $faker->citySuffix,
                 'esTutor' => false,
-                'fecha_ingreso' => $faker->date('Y-m-d', 'now'),
+                'fecha_ingreso' => $faker->dateTimeBetween('2020-01-01', '2024-12-31')->format('Y-m-d'),
             ]);
         }
     }

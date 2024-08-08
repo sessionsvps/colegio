@@ -62,7 +62,7 @@ class EstudianteSeeder extends Seeder
                 'fecha_nacimiento' => $faker->date,
                 'sexo' => $faker->boolean,
                 'nro_matricula' => null,
-                'año_ingreso' => $faker->year,
+                'año_ingreso' => $faker->numberBetween(2020, 2024),
                 'lengua_materna' => $faker->word,
                 'colegio_procedencia' => $faker->optional()->company,
                 'nacionalidad' => $faker->country,
