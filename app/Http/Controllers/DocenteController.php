@@ -37,14 +37,14 @@ class DocenteController extends BaseController
             $buscarValor = $request->input($buscarPor);
 
             if ($buscarPor === 'codigo') {
-                $query->where('codigo_docente', $buscarValor);
+                $query->where('codigo_docente', 'like', '%'.$buscarValor.'%');
             } elseif ($buscarPor === 'nombre') {
                 $query->where(function ($query) use ($buscarValor) {
                     $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
                         ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
                 });
             } elseif ($buscarPor === 'dni') {
-                $query->where('dni', $buscarValor);
+                $query->where('dni', 'like', '%'.$buscarValor.'%');
             } elseif ($buscarPor === 'correo') {
                 $query->whereHas('user', function ($query) use ($buscarValor) {
                     $query->where('email', 'like', '%' . $buscarValor . '%');
