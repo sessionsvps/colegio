@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estudiantes', function (Blueprint $table) {
-            $table->string('codigo_estudiante', 4)->unique();
+        Schema::create('apoderados', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('user_id')->unique();
-            $table->unsignedBigInteger('id_apoderado');
             $table->string('primer_nombre', 30);
             $table->string('otros_nombres', 30)->nullable();
             $table->string('apellido_paterno', 30);
@@ -24,20 +23,8 @@ return new class extends Migration
             $table->string('email', 50)->unique();
             $table->boolean('sexo');
             $table->string('telefono_celular', 9)->nullable();
-            $table->string('nacionalidad', 50);
-            $table->string('departamento', 30);
-            $table->string('provincia', 30);
-            $table->string('distrito', 30);
-            $table->string('nro_matricula', 10)->nullable()->unique();
-            $table->integer('año_ingreso');
-            $table->string('lengua_materna', 30);
-            $table->string('colegio_procedencia', 50)->nullable();
-            $table->timestamps();
-            // Definir la clave foránea
+            // Definir las claves foráneas
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('id_apoderado')->references('id')->on('apoderados');
-            // Definir clave primaria compuesta
-            $table->primary(['codigo_estudiante', 'user_id']);
         });
     }
 
@@ -46,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('estudiantes');
+        Schema::dropIfExists('apoderados');
     }
 };

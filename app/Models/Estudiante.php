@@ -33,6 +33,11 @@ class Estudiante extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function apoderado()
+    {
+        return $this->belongsTo(Apoderado::class, 'id_apoderado');
+    }
+
     public function getFechaNacimientoAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');

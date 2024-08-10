@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Apoderado;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -27,20 +28,37 @@ class EstudianteSeeder extends Seeder
                 $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
             } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
 
-            // Crear el usuario
-            $user = User::create([
+            // Crear el usuario para el apoderado
+            $userApoderado = User::create([
                 'email' => $faker->unique()->safeEmail,
                 'password' => Hash::make('password'), // Usar una contraseña genérica
                 'esActivo' => true,
             ]);
 
-            // Asignar el rol al usuario
-            $role = Role::findOrFail(3); // Asegúrate de que el ID 3 corresponda al rol correcto
-            $user->assignRole($role);
+            // Crear el apoderado
+            $apoderado = Apoderado::create([
+                'user_id' => $userApoderado->id,
+                'primer_nombre' => $faker->firstName,
+                'otros_nombres' => $faker->optional()->firstName,
+                'apellido_paterno' => $faker->lastName,
+                'apellido_materno' => $faker->lastName,
+                'dni' => $faker->unique()->numerify('########'),
+                'email' => $userApoderado->email,
+                'telefono_celular' => $faker->optional()->regexify('[0-9]{9}'),
+                'fecha_nacimiento' => $faker->date,
+                'sexo' => $faker->boolean,
+            ]);
+
+            // Crear el usuario para el estudiante
+            $userEstudiante = User::create([
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'), // Usar una contraseña genérica
+                'esActivo' => true,
+            ]);
 
             // Crear el domicilio
             Domicilio::create([
-                'user_id' => $user->id,
+                'user_id' => $userEstudiante->id,
                 'telefono_fijo' => $faker->optional()->regexify('[0-9]{7,9}'),
                 'direccion' => $faker->address,
                 'departamento' => $faker->state,
@@ -51,13 +69,14 @@ class EstudianteSeeder extends Seeder
             // Crear el estudiante
             Estudiante::create([
                 'codigo_estudiante' => $codigoEstudiante,
-                'user_id' => $user->id,
+                'user_id' => $userEstudiante->id,
+                'id_apoderado' => $apoderado->id,
                 'primer_nombre' => $faker->firstName,
                 'otros_nombres' => $faker->optional()->firstName,
                 'apellido_paterno' => $faker->lastName,
                 'apellido_materno' => $faker->lastName,
                 'dni' => $faker->unique()->numerify('########'),
-                'email' => $user->email,
+                'email' => $userEstudiante->email,
                 'telefono_celular' => $faker->optional()->regexify('[0-9]{9}'),
                 'fecha_nacimiento' => $faker->date,
                 'sexo' => $faker->boolean,
@@ -70,16 +89,6 @@ class EstudianteSeeder extends Seeder
                 'provincia' => $faker->city,
                 'distrito' => $faker->city,
             ]);
-
-            // Llenar la tabla intermedia
-            // Estudiante_Seccion::create([
-            //     'codigo_estudiante' => $codigoEstudiante,
-            //     'user_id' => $user->id,
-            //     'año_escolar' => $faker->year,
-            //     'id_nivel' => $faker->numberBetween(1, 2),
-            //     'id_grado' => $faker->numberBetween(1, 6),
-            //     'id_seccion' => $faker->numberBetween(1, 4),
-            // ]);
         }
     }
 }
