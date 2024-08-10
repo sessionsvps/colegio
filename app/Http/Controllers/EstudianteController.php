@@ -146,40 +146,80 @@ class EstudianteController extends BaseController
 
     public function store(Request $request)
     {
-        $request->validate([
-            'primer_nombre' => 'required|string|max:30',
-            'otros_nombres' => 'nullable|string|max:30',
-            'apellido_paterno' => 'required|string|max:30',
-            'apellido_materno' => 'required|string|max:30',
-            'dni' => 'required|string|min:8|max:8|unique:estudiantes,dni',
-            'email' => 'required|string|email|max:50|unique:estudiantes,email',
-            'fecha_nacimiento' => 'required|date',
-            'sexo' => 'required|boolean',
-            'telefono_celular' => 'nullable|string|size:9',
-            'año_ingreso' => 'required|integer',
-            'lengua_materna' => 'required|string|max:30',
-            'nacionalidad' => 'required|string|max:30',
-            'departamento' => 'required|string|max:30',
-            'provincia' => 'required|string|max:30',
-            'distrito' => 'required|string|max:30',
-            'colegio_procedencia' => 'nullable|string|max:50',
-            'direccion' => 'required|string|max:100',
-            'telefono_fijo' => 'nullable|string|max:30',
-            'departamento_d' => 'required|string|max:30',
-            'provincia_d' => 'required|string|max:30',
-            'distrito_d' => 'required|string|max:30',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-            'primer_nombre_ap' => 'required|string|max:30',
-            'otros_nombres_ap' => 'nullable|string|max:30',
-            'apellido_paterno_ap' => 'required|string|max:30',
-            'apellido_materno_ap' => 'required|string|max:30',
-            'dni_ap' => 'required|string|min:8|max:8|unique:apoderados,dni',
-            'email_ap' => 'required|string|email|max:50|unique:apoderados,email',
-            'fecha_nacimiento_ap' => 'required|date',
-            'sexo_ap' => 'required|boolean',
-            'telefono_celular_ap' => 'nullable|string|size:9',
-            'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-        ]);
+
+        $apoderado = Apoderado::where('dni', $request->input('dni_ap'))->first();
+
+        if (!$apoderado){
+            $request->validate([
+                'primer_nombre' => 'required|string|max:30',
+                'otros_nombres' => 'nullable|string|max:30',
+                'apellido_paterno' => 'required|string|max:30',
+                'apellido_materno' => 'required|string|max:30',
+                'dni' => 'required|string|min:8|max:8|unique:estudiantes,dni',
+                'email' => 'required|string|email|max:50|unique:estudiantes,email',
+                'fecha_nacimiento' => 'required|date',
+                'sexo' => 'required|boolean',
+                'telefono_celular' => 'nullable|string|size:9',
+                'año_ingreso' => 'required|integer',
+                'lengua_materna' => 'required|string|max:30',
+                'nacionalidad' => 'required|string|max:30',
+                'departamento' => 'required|string|max:30',
+                'provincia' => 'required|string|max:30',
+                'distrito' => 'required|string|max:30',
+                'colegio_procedencia' => 'nullable|string|max:50',
+                'direccion' => 'required|string|max:100',
+                'telefono_fijo' => 'nullable|string|max:30',
+                'departamento_d' => 'required|string|max:30',
+                'provincia_d' => 'required|string|max:30',
+                'distrito_d' => 'required|string|max:30',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
+                'primer_nombre_ap' => 'required|string|max:30',
+                'otros_nombres_ap' => 'nullable|string|max:30',
+                'apellido_paterno_ap' => 'required|string|max:30',
+                'apellido_materno_ap' => 'required|string|max:30',
+                'dni_ap' => 'required|string|min:8|max:8|unique:apoderados,dni',
+                'email_ap' => 'required|string|email|max:50|unique:apoderados,email',
+                'fecha_nacimiento_ap' => 'required|date',
+                'sexo_ap' => 'required|boolean',
+                'telefono_celular_ap' => 'nullable|string|size:9',
+                'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
+            ]);
+        }else{
+            $request->validate([
+                'primer_nombre' => 'required|string|max:30',
+                'otros_nombres' => 'nullable|string|max:30',
+                'apellido_paterno' => 'required|string|max:30',
+                'apellido_materno' => 'required|string|max:30',
+                'dni' => 'required|string|min:8|max:8|unique:estudiantes,dni',
+                'email' => 'required|string|email|max:50|unique:estudiantes,email',
+                'fecha_nacimiento' => 'required|date',
+                'sexo' => 'required|boolean',
+                'telefono_celular' => 'nullable|string|size:9',
+                'año_ingreso' => 'required|integer',
+                'lengua_materna' => 'required|string|max:30',
+                'nacionalidad' => 'required|string|max:30',
+                'departamento' => 'required|string|max:30',
+                'provincia' => 'required|string|max:30',
+                'distrito' => 'required|string|max:30',
+                'colegio_procedencia' => 'nullable|string|max:50',
+                'direccion' => 'required|string|max:100',
+                'telefono_fijo' => 'nullable|string|max:30',
+                'departamento_d' => 'required|string|max:30',
+                'provincia_d' => 'required|string|max:30',
+                'distrito_d' => 'required|string|max:30',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
+                'primer_nombre_ap' => 'required|string|max:30',
+                'otros_nombres_ap' => 'nullable|string|max:30',
+                'apellido_paterno_ap' => 'required|string|max:30',
+                'apellido_materno_ap' => 'required|string|max:30',
+                'dni_ap' => 'required|string|min:8|max:8',
+                'email_ap' => 'required|string|email|max:50',
+                'fecha_nacimiento_ap' => 'required|date',
+                'sexo_ap' => 'required|boolean',
+                'telefono_celular_ap' => 'nullable|string|size:9',
+                'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
+            ]);
+        }
 
         // Generar un código estudiante aleatorio de 10 dígitos
         do {
@@ -205,38 +245,40 @@ class EstudianteController extends BaseController
             $user->updateProfilePhoto($request->file('photo'));
         }
 
-        // Generar el correo electrónico del apoderado
-        $primerNombreAp = $request->input('primer_nombre_ap');
-        $apellidoPaternoAp = $request->input('apellido_paterno_ap');
-        $apellidoMaternoAp = $request->input('apellido_materno_ap');
+        if(!$apoderado){
+            // Generar el correo electrónico del apoderado
+            $primerNombreAp = $request->input('primer_nombre_ap');
+            $apellidoPaternoAp = $request->input('apellido_paterno_ap');
+            $apellidoMaternoAp = $request->input('apellido_materno_ap');
 
-        $email_ap = strtolower(substr($primerNombreAp, 0, 1) . $apellidoPaternoAp . substr($apellidoMaternoAp, 0, 1)) . '@sideral.com';
-        $password_ap = $request->input('dni_ap');
+            $email_ap = strtolower(substr($primerNombreAp, 0, 1) . $apellidoPaternoAp . substr($apellidoMaternoAp, 0, 1)) . '@sideral.com';
+            $password_ap = $request->input('dni_ap');
 
-        // Crear el usuario (Por defecto inactivo hasta que se matricule)
-        $userAp = User::create([
-            'email' => $email_ap,
-            'password' => Hash::make($password_ap), // Hashear la contraseña
-            'esActivo' => True
-        ]);
+            // Crear el usuario (Por defecto inactivo hasta que se matricule)
+            $userAp = User::create([
+                'email' => $email_ap,
+                'password' => Hash::make($password_ap), // Hashear la contraseña
+                'esActivo' => True
+            ]);
 
-        if ($request->hasFile('photo2')) {
-            $userAp->updateProfilePhoto($request->file('photo2'));
+            if ($request->hasFile('photo2')) {
+                $userAp->updateProfilePhoto($request->file('photo2'));
+            }
+
+            // Crear el apoderado
+            $apoderado = Apoderado::create([
+                'user_id' => $userAp->id,
+                'primer_nombre' => $request->input('primer_nombre_ap'),
+                'otros_nombres' => $request->input('otros_nombres_ap'),
+                'apellido_paterno' => $request->input('apellido_paterno_ap'),
+                'apellido_materno' => $request->input('apellido_materno_ap'),
+                'dni' => $request->input('dni_ap'),
+                'email' => $request->input('email_ap'),
+                'telefono_celular' => $request->input('telefono_celular_ap'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento_ap'),
+                'sexo' => $request->input('sexo_ap'),
+            ]);
         }
-
-        // Crear el apoderado
-        $apoderado = Apoderado::create([
-            'user_id' => $userAp->id,
-            'primer_nombre' => $request->input('primer_nombre_ap'),
-            'otros_nombres' => $request->input('otros_nombres_ap'),
-            'apellido_paterno' => $request->input('apellido_paterno_ap'),
-            'apellido_materno' => $request->input('apellido_materno_ap'),
-            'dni' => $request->input('dni_ap'),
-            'email' => $request->input('email_ap'),
-            'telefono_celular' => $request->input('telefono_celular_ap'),
-            'fecha_nacimiento' => $request->input('fecha_nacimiento_ap'),
-            'sexo' => $request->input('sexo_ap'),
-        ]);
 
         // Crear el domicilio
         $domicilio = Domicilio::create([
@@ -274,7 +316,9 @@ class EstudianteController extends BaseController
 
         // Enviar correo con credenciales generadas
         Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
-        Mail::to($request->input('email_ap'))->send(new Credenciales($email_ap, $password_ap, false));
+        if(!$apoderado){
+            Mail::to($request->input('email_ap'))->send(new Credenciales($email_ap, $password_ap, false));
+        }
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApoderadoController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\CatedraController;
@@ -67,4 +68,7 @@ Route::middleware([
     Route::get('/export',[ExportController::class,'export'])->name('export');
     Route::get('/export-pdf', [ExportController::class, 'exportPdfEstu'])->name('exportPdfEstu');
     Route::get('/export-pdf-notas/{codigo_estudiante}/{año_escolar}', [ExportController::class, 'exportPdfNotas'])->name('exportPdfNotas');
+
+    Route::get('/apoderados/buscar', [ApoderadoController::class, 'buscarPorDni'])->name('apoderados.buscar');
+
 });

@@ -375,7 +375,7 @@
                     <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4">
                         <img id="photoPreview2"
                             class="w-48 h-52 lg:w-80 lg:h-96 rounded-lg border-2 border-dashed border-gray-300 mb-4">
-                        <label
+                        <label id='lblSeleccionar'
                             class="w-full lg:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer text-center">
                             Seleccionar Archivo
                             <input class="hidden" id="photo2" name="photo2" type="file" accept="image/*"
@@ -582,4 +582,5 @@
     </script>
 
     <script src="{{asset('js/verificar_dni.js')}}"></script>
+    <script src="{{asset('js/verificar_dni_2.js')}}"></script>
 @endsection

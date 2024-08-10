@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Apoderado;
 use Illuminate\Http\Request;
 
 class ApoderadoController extends Controller
@@ -60,5 +61,18 @@ class ApoderadoController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function buscarPorDni(Request $request)
+    {
+        $dni = $request->query('dni');
+        $apoderado = Apoderado::where('dni', $dni)->first();
+
+        if ($apoderado) {
+            $photoUrl = $apoderado->user->profile_photo_url;
+            return response()->json(['success' => true, 'apoderado' => $apoderado, 'photo_url' => $photoUrl]);
+        } else {
+            return response()->json(['success' => false]);
+        }
     }
 }
