@@ -90,6 +90,12 @@ class User extends Authenticatable
         return $this->hasOne(Director::class);
     }
 
+    //Relación uno a uno con estudiante
+    public function apoderado()
+    {
+        return $this->hasOne(Apoderado::class);
+    }
+
     //Relación uno a uno con domicilio
     public function domicilio()
     {
@@ -106,6 +112,8 @@ class User extends Authenticatable
             return trim($this->director->primer_nombre . ' ' . $this->director->otros_nombres . ' ' . $this->director->apellido_paterno . ' ' . $this->director->apellido_materno);
         } elseif ($this->secretaria) {
             return trim($this->secretaria->primer_nombre . ' ' . $this->secretaria->otros_nombres . ' ' . $this->secretaria->apellido_paterno . ' ' . $this->secretaria->apellido_materno);
+        } elseif ($this->apoderado) {
+            return trim($this->apoderado->primer_nombre . ' ' . $this->apoderado->otros_nombres . ' ' . $this->apoderado->apellido_paterno . ' ' . $this->apoderado->apellido_materno);
         } else {
             return 'Admin';
         }

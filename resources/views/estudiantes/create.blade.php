@@ -335,6 +335,162 @@
                 </div>
             </div>
         </div>
+
+        <!-- Datos del Apoderado -->
+        <div class="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-lg font-bold mb-4">Datos del Apoderado</h2>
+        
+            <div class="w-full" id="mensaje_verificacion2"></div>
+        
+            <!-- DNI y Verificar -->
+        
+            <div class="mb-6 grid md:grid-cols-2 gap-5 lg:grid-rows-5">
+                <div class="md:col-span-2 lg:col-span-1">
+                    <div class="flex flex-col lg:flex-row lg:justify-between">
+                        <div class="w-full mb-4 lg:mb-0 lg:mr-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="dni_ap">
+                                DNI
+                            </label>
+                            <input
+                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="dni_ap" name="dni_ap" type="text" placeholder="DNI" value="{{ old('dni_ap') }}" maxlength="8"
+                                pattern="[0-9]{8}">
+                            @error('dni_ap')
+                            <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="lg:mt-7">
+                            <button
+                                class="w-full lg:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="button" id="boton_verificar2">
+                                Verificar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-2 lg:col-span-1 lg:row-span-5">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="photo2">
+                        Foto de Perfil
+                    </label>
+                    <div class="flex flex-col items-center border border-gray-300 rounded-lg p-4">
+                        <img id="photoPreview2"
+                            class="w-48 h-52 lg:w-80 lg:h-96 rounded-lg border-2 border-dashed border-gray-300 mb-4">
+                        <label
+                            class="w-full lg:w-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer text-center">
+                            Seleccionar Archivo
+                            <input class="hidden" id="photo2" name="photo2" type="file" accept="image/*"
+                                onchange="previewImage2(event)">
+                        </label>
+                        @error('photo2')
+                        <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="primer_nombre_ap">
+                        Primer Nombre
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="primer_nombre_ap" name="primer_nombre_ap" type="text" placeholder="Primer Nombre"
+                        value="{{ old('primer_nombre_ap') }}" readonly>
+                    @error('primer_nombre_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="lg:row-start-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="otros_nombres_ap">
+                        Otros Nombres
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="otros_nombres_ap" name="otros_nombres_ap" type="text" placeholder="Otros Nombres"
+                        value="{{ old('otros_nombres_ap') }}" readonly>
+                    @error('otros_nombres_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="lg:row-start-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_paterno_ap">
+                        Apellido Paterno
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="apellido_paterno_ap" name="apellido_paterno_ap" type="text" placeholder="Apellido Paterno"
+                        value="{{ old('apellido_paterno_ap') }}" readonly>
+                    @error('apellido_paterno_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="lg:row-start-5">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="apellido_materno_ap">
+                        Apellido Materno
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="apellido_materno_ap" name="apellido_materno_ap" type="text" placeholder="Apellido Materno"
+                        value="{{ old('apellido_materno_ap') }}" readonly>
+                    @error('apellido_materno_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fecha_nacimiento_ap">
+                        Fecha de Nacimiento
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="fecha_nacimiento_ap" name="fecha_nacimiento_ap" type="date" placeholder="Fecha de Nacimiento"
+                        value="{{ old('fecha_nacimiento_ap') }}" readonly>
+                    @error('fecha_nacimiento_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="sexo_ap">
+                        Sexo
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="sexo_texto_ap" name="sexo_texto_ap" type="text" placeholder="Sexo" value="{{ old('sexo_texto_ap') }}"
+                        readonly>
+                    <input id="sexo_ap" name="sexo_ap" type="hidden" value="{{ old('sexo_ap') }}">
+                    @error('sexo_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email_ap">
+                        Correo
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email_ap" name="email_ap" type="email" placeholder="Correo" value="{{ old('email_ap') }}">
+                    @error('email_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="w-full md:w-1/2 px-3 mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="telefono_celular_ap">
+                        Teléfono Celular
+                    </label>
+                    <input
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="telefono_celular_ap" name="telefono_celular_ap" type="text" placeholder="Teléfono Celular"
+                        value="{{ old('telefono_celular_ap') }}" maxlength="9">
+                    @error('telefono_celular_ap')
+                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+        </div>
     
         <div class="flex items-center justify-center">
             <button
@@ -411,6 +567,18 @@
             }
             reader.readAsDataURL(event.target.files[0]);
         }
+    </script>
+
+    <script>
+        function previewImage2(event) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var output = document.getElementById('photoPreview2');
+                    output.src = reader.result;
+                    output.style.display = 'block';
+                }
+                reader.readAsDataURL(event.target.files[0]);
+            }
     </script>
 
     <script src="{{asset('js/verificar_dni.js')}}"></script>

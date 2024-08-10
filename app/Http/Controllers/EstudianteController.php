@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ConfirmacionMatricula;
 use App\Mail\Credenciales;
 use App\Mail\CredencialesEstudiante;
+use App\Models\Apoderado;
 use App\Models\Asistencia;
 use App\Models\Boleta_de_nota;
 use App\Models\Competencia;
@@ -25,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use phpDocumentor\Reflection\PseudoTypes\True_;
@@ -44,45 +46,65 @@ class EstudianteController extends BaseController
 
     public function index(Request $request)
     {
-        $query = Estudiante::whereHas('user', function ($query) {
-            $query->where('esActivo', 1);
-        });
+        $auth = Auth::user()->id;
+        $user = User::findOrFail($auth);
 
-        if ($request->filled('filtrar_por')){
-            $filtrarPor = $request->input('filtrar_por');
-            if ($filtrarPor == 'matriculado'){
-                $query->whereNotNull('nro_matricula')->get();
-            }else if ($filtrarPor == 'no_matriculado'){
-                $query->where('nro_matricula',null)->get();
-            }
-        }
+        switch (true) {
+            case $user->hasRole('Admin'):
+            case $user->hasRole('Secretaria'):
+            case $user->hasRole('Director'):
 
-        if ($request->filled('año_ingreso')) {
-            $query->where('año_ingreso', $request->input('año_ingreso'))->get();
-        }
-
-        if ($request->filled('buscar_por')) {
-            $buscarPor = $request->input('buscar_por');
-            $buscarValor = $request->input($buscarPor);
-
-            if ($buscarPor === 'codigo') {
-                $query->where('codigo_estudiante', 'like', '%'.$buscarValor.'%');
-            } elseif ($buscarPor === 'nombre') {
-                $query->where(function ($query) use ($buscarValor) {
-                    $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
-                        ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                $query = Estudiante::whereHas('user', function ($query) {
+                    $query->where('esActivo', 1);
                 });
-            } elseif ($buscarPor === 'dni') {
-                $query->where('dni', 'like', '%'.$buscarValor.'%');
-            } elseif ($buscarPor === 'correo') {
-                $query->whereHas('user', function ($query) use ($buscarValor) {
-                    $query->where('email', 'like', '%' . $buscarValor . '%');
-                });
-            }
-        }
 
-        $estudiantes = $query->paginate(10);
-        return view('estudiantes.index', compact('estudiantes'));
+                if ($request->filled('filtrar_por')) {
+                    $filtrarPor = $request->input('filtrar_por');
+                    if ($filtrarPor == 'matriculado') {
+                        $query->whereNotNull('nro_matricula')->get();
+                    } else if ($filtrarPor == 'no_matriculado') {
+                        $query->where('nro_matricula', null)->get();
+                    }
+                }
+
+                if ($request->filled('año_ingreso')) {
+                    $query->where('año_ingreso', $request->input('año_ingreso'))->get();
+                }
+
+                if ($request->filled('buscar_por')) {
+                    $buscarPor = $request->input('buscar_por');
+                    $buscarValor = $request->input($buscarPor);
+
+                    if ($buscarPor === 'codigo') {
+                        $query->where('codigo_estudiante', 'like', '%' . $buscarValor . '%');
+                    } elseif ($buscarPor === 'nombre') {
+                        $query->where(function ($query) use ($buscarValor) {
+                            $query->where(DB::raw("CONCAT(primer_nombre, ' ', otros_nombres, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%')
+                                ->orWhere(DB::raw("CONCAT(primer_nombre, ' ', apellido_paterno, ' ', apellido_materno)"), 'like', '%' . $buscarValor . '%');
+                        });
+                    } elseif ($buscarPor === 'dni') {
+                        $query->where('dni', 'like', '%' . $buscarValor . '%');
+                    } elseif ($buscarPor === 'correo') {
+                        $query->whereHas('user', function ($query) use ($buscarValor) {
+                            $query->where('email', 'like', '%' . $buscarValor . '%');
+                        });
+                    }
+                }
+                $estudiantes = $query->paginate(10);
+                return view('estudiantes.index', compact('estudiantes'));
+            case $user->hasRole('Apoderado'):
+                $apoderado = Apoderado::where('user_id', $user->id)->first();
+                $estudiantes = Estudiante_Seccion::whereHas('estudiante', function ($query) use ($apoderado) {
+                    $query->where('id_apoderado', $apoderado->id)
+                    ->whereHas('user', function ($query) {
+                        $query->where('esActivo', 1);
+                    });
+                })->paginate(10);
+                return view('estudiantes.index', compact('estudiantes'));
+                break;
+            default:
+                break;
+        }
     }
 
     public function vista_docente($codigo_curso, $nivel, $grado, $seccion) 
@@ -146,7 +168,17 @@ class EstudianteController extends BaseController
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
+            'primer_nombre_ap' => 'required|string|max:30',
+            'otros_nombres_ap' => 'nullable|string|max:30',
+            'apellido_paterno_ap' => 'required|string|max:30',
+            'apellido_materno_ap' => 'required|string|max:30',
+            'dni_ap' => 'required|string|min:8|max:8|unique:apoderados,dni',
+            'email_ap' => 'required|string|email|max:50|unique:apoderados,email',
+            'fecha_nacimiento_ap' => 'required|date',
+            'sexo_ap' => 'required|boolean',
+            'telefono_celular_ap' => 'nullable|string|size:9',
+            'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
         ]);
 
         // Generar un código estudiante aleatorio de 10 dígitos
@@ -154,7 +186,7 @@ class EstudianteController extends BaseController
             $codigoEstudiante = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
         } while (Estudiante::where('codigo_estudiante', $codigoEstudiante)->exists());
 
-        // Generar el correo electrónico
+        // Generar el correo electrónico del estudiante
         $primerNombre = $request->input('primer_nombre');
         $apellidoPaterno = $request->input('apellido_paterno');
         $apellidoMaterno = $request->input('apellido_materno');
@@ -173,9 +205,38 @@ class EstudianteController extends BaseController
             $user->updateProfilePhoto($request->file('photo'));
         }
 
-        // Asignar el rol al usuario
-        $role = Role::findOrFail(3);
-        $user->assignRole($role);
+        // Generar el correo electrónico del apoderado
+        $primerNombreAp = $request->input('primer_nombre_ap');
+        $apellidoPaternoAp = $request->input('apellido_paterno_ap');
+        $apellidoMaternoAp = $request->input('apellido_materno_ap');
+
+        $email_ap = strtolower(substr($primerNombreAp, 0, 1) . $apellidoPaternoAp . substr($apellidoMaternoAp, 0, 1)) . '@sideral.com';
+        $password_ap = $request->input('dni_ap');
+
+        // Crear el usuario (Por defecto inactivo hasta que se matricule)
+        $userAp = User::create([
+            'email' => $email_ap,
+            'password' => Hash::make($password_ap), // Hashear la contraseña
+            'esActivo' => True
+        ]);
+
+        if ($request->hasFile('photo2')) {
+            $userAp->updateProfilePhoto($request->file('photo2'));
+        }
+
+        // Crear el apoderado
+        $apoderado = Apoderado::create([
+            'user_id' => $userAp->id,
+            'primer_nombre' => $request->input('primer_nombre_ap'),
+            'otros_nombres' => $request->input('otros_nombres_ap'),
+            'apellido_paterno' => $request->input('apellido_paterno_ap'),
+            'apellido_materno' => $request->input('apellido_materno_ap'),
+            'dni' => $request->input('dni_ap'),
+            'email' => $request->input('email_ap'),
+            'telefono_celular' => $request->input('telefono_celular_ap'),
+            'fecha_nacimiento' => $request->input('fecha_nacimiento_ap'),
+            'sexo' => $request->input('sexo_ap'),
+        ]);
 
         // Crear el domicilio
         $domicilio = Domicilio::create([
@@ -191,6 +252,7 @@ class EstudianteController extends BaseController
         $estudiante = Estudiante::create([
             'codigo_estudiante' => $codigoEstudiante,
             'user_id' => $user->id,
+            'id_apoderado' => $apoderado->id,
             'primer_nombre' => $request->input('primer_nombre'),
             'otros_nombres' => $request->input('otros_nombres'),
             'apellido_paterno' => $request->input('apellido_paterno'),
@@ -212,6 +274,7 @@ class EstudianteController extends BaseController
 
         // Enviar correo con credenciales generadas
         Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
+        Mail::to($request->input('email_ap'))->send(new Credenciales($email_ap, $password_ap, false));
 
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante registrado exitosamente.');
     }
@@ -349,8 +412,7 @@ class EstudianteController extends BaseController
         // $codigo_estudiante = $request->codigo_estudiante;
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
         $matricula_previa = Estudiante_Seccion::where('codigo_estudiante', $codigo_estudiante)
-                                             ->where('año_escolar', $request->input('año_escolar'))
-                                             ->first();
+            ->where('año_escolar', $request->input('año_escolar'))->first();
         if($matricula_previa) {
             return redirect()->back()->withErrors(['error' => 'El estudiante presenta una matrícula previa para el año escolar ' . $request->input('año_escolar') . ' en el grado ' . $matricula_previa->seccion->grado->detalle . ' ' . $matricula_previa->seccion->detalle . ' de ' . $matricula_previa->seccion->grado->nivel->detalle. '.']);
         }
@@ -412,15 +474,18 @@ class EstudianteController extends BaseController
         }
 
         $user = User::findOrFail($estudiante->user_id);
+        $apoderado = Apoderado::findOrFail($estudiante->id_apoderado);
+        $user_ap = User::findOrFail($apoderado->user_id);
 
-        if($user->hasRole('Estudiante_Registrado')) {
-            // Asignar el rol al usuario
-            $role = Role::findOrFail(3);
-            $user->removeRole($role);
-            
+        if($user->getRoleNames()->isEmpty()) {
             $role = Role::findOrFail(4);
             $user->assignRole($role);
         }
+        if ($user_ap->getRoleNames()->isEmpty()) {
+            $role = Role::findOrFail(3);
+            $user_ap->assignRole($role);
+        }
+
         // Enviar correo de confirmacion de matricula
         Mail::to($estudiante->email)->send(new ConfirmacionMatricula());
 

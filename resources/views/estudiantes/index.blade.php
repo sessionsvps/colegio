@@ -26,70 +26,74 @@
         @endcan
     </div>
 
-    <form method="GET" action="{{ route('estudiantes.index') }}">
-        <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+    @if (Auth::user()->hasRole('Docente') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
+        <form method="GET" action="{{ route('estudiantes.index') }}">
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <div>
+                    <label for="filtrar_por" class="block text-sm font-medium text-gray-700">Filtrar Por</label>
+                    <select id="filtrar_por" name="filtrar_por"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="" {{ request('filtrar_por')=='' ? 'selected' : '' }}>Todos</option>
+                        <option value="matriculado" {{ request('filtrar_por')=='matriculado' ? 'selected' : '' }}>Matriculado
+                        </option>
+                        <option value="no_matriculado" {{ request('filtrar_por')=='no_matriculado' ? 'selected' : '' }}>No
+                            Matriculado</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="año_ingreso" class="block text-sm font-medium text-gray-700">Año de Ingreso</label>
+                    <select id="año_ingreso" name="año_ingreso"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="" {{ request('año_ingreso')=='' ? 'selected' : '' }}>Todos</option>
+                        <option value="2024" {{ request('año_ingreso')=='2024' ? 'selected' : '' }}>2024</option>
+                        <option value="2023" {{ request('año_ingreso')=='2023' ? 'selected' : '' }}>2023</option>
+                        <option value="2022" {{ request('año_ingreso')=='2022' ? 'selected' : '' }}>2022</option>
+                        <option value="2021" {{ request('año_ingreso')=='2021' ? 'selected' : '' }}>2021</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="buscar_por" class="block text-sm font-medium text-gray-700">Buscar Por</label>
+                    <select id="buscar_por" name="buscar_por"
+                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option value="" {{ request('buscar_por')=='' ? 'selected' : '' }}>Todos</option>
+                        <option value="codigo" {{ request('buscar_por')=='codigo' ? 'selected' : '' }}>Código</option>
+                        <option value="nombre" {{ request('buscar_por')=='nombre' ? 'selected' : '' }}>Nombre</option>
+                        <option value="dni" {{ request('buscar_por')=='dni' ? 'selected' : '' }}>DNI</option>
+                        <option value="correo" {{ request('buscar_por')=='correo' ? 'selected' : '' }}>Correo</option>
+                    </select>
+                </div>
+                <div id="inputContainer">
+                    <!-- Aquí se insertarán los inputs dinámicamente -->
+                </div>
+                <div class="col-span-2 lg:mt-6 lg:col-span-1" id="botonBuscar">
+                    <button type="submit"
+                        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label for="filtrar_por" class="block text-sm font-medium text-gray-700">Filtrar Por</label>
-                <select id="filtrar_por" name="filtrar_por"
+                <label for="reporte" class="block text-sm font-medium text-gray-700">Seleccione un Formato</label>
+                <select id="reporte" name="reporte"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" {{ request('filtrar_por')=='' ? 'selected' : '' }}>Todos</option>
-                    <option value="matriculado" {{ request('filtrar_por')=='matriculado' ? 'selected' : '' }}>Matriculado</option>
-                    <option value="no_matriculado" {{ request('filtrar_por')=='no_matriculado' ? 'selected' : '' }}>No Matriculado</option>
+                    <option value="" selected disabled></option>
+                    <option value="0">PDF</option>
+                    <option value="1">EXCEL</option>
                 </select>
             </div>
             <div>
-                <label for="año_ingreso" class="block text-sm font-medium text-gray-700">Año de Ingreso</label>
-                <select id="año_ingreso" name="año_ingreso"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" {{ request('año_ingreso')=='' ? 'selected' : '' }}>Todos</option>
-                    <option value="2024" {{ request('año_ingreso')=='2024' ? 'selected' : '' }}>2024</option>
-                    <option value="2023" {{ request('año_ingreso')=='2023' ? 'selected' : '' }}>2023</option>
-                    <option value="2022" {{ request('año_ingreso')=='2022' ? 'selected' : '' }}>2022</option>
-                    <option value="2021" {{ request('año_ingreso')=='2021' ? 'selected' : '' }}>2021</option>
-                </select>
-            </div>
-            <div>
-                <label for="buscar_por" class="block text-sm font-medium text-gray-700">Buscar Por</label>
-                <select id="buscar_por" name="buscar_por"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" {{ request('buscar_por')=='' ? 'selected' : '' }}>Todos</option>
-                    <option value="codigo" {{ request('buscar_por')=='codigo' ? 'selected' : '' }}>Código</option>
-                    <option value="nombre" {{ request('buscar_por')=='nombre' ? 'selected' : '' }}>Nombre</option>
-                    <option value="dni" {{ request('buscar_por')=='dni' ? 'selected' : '' }}>DNI</option>
-                    <option value="correo" {{ request('buscar_por')=='correo' ? 'selected' : '' }}>Correo</option>
-                </select>
-            </div>
-            <div id="inputContainer">
-                <!-- Aquí se insertarán los inputs dinámicamente -->
-            </div>
-            <div class="col-span-2 lg:mt-6 lg:col-span-1" id="botonBuscar">
-                <button type="submit"
-                    class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                    Buscar
-                </button>
+                <a id="reportButton"
+                    class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                    Generar Reporte
+                </a>
             </div>
         </div>
-    </form>
+    @endif
 
-    <div class="mb-10 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <label for="reporte" class="block text-sm font-medium text-gray-700">Seleccione un Formato</label>
-            <select id="reporte" name="reporte"
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                <option value="" selected disabled></option>
-                <option value="0">PDF</option>
-                <option value="1">EXCEL</option>
-            </select>
-        </div>
-        <div>
-            <a id="reportButton"
-                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                Generar Reporte
-            </a>
-        </div>
-    </div>
-
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
             <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -102,12 +106,19 @@
                     <th scope="col" class="px-6 py-3">
                         DNI
                     </th>
+                    @if (Auth::user()->hasRole('Apoderado'))
+                        <th scope="col" class="px-6 py-3">
+                            Aula
+                        </th>
+                    @endif
                     <th scope="col" class="px-6 py-3">
                         Correo
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                        Acciones
-                    </th>
+                    @if (!Auth::user()->hasRole('Apoderado'))
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -117,28 +128,49 @@
                         {{ $estudiante->codigo_estudiante }}
                     </th>
                     <td class="px-6 py-4">
-                        {{ $estudiante->primer_nombre }} {{ $estudiante->otros_nombres }} {{
-                        $estudiante->apellido_paterno }} {{
-                        $estudiante->apellido_materno }}
+                        @if (Auth::user()->hasRole('Apoderado'))
+                            {{ $estudiante->estudiante->primer_nombre }} {{ $estudiante->estudiante->otros_nombres }} {{
+                            $estudiante->estudiante->apellido_paterno }} {{
+                            $estudiante->estudiante->apellido_materno }}
+                        @else
+                            {{ $estudiante->primer_nombre }} {{ $estudiante->otros_nombres }} {{
+                            $estudiante->apellido_paterno }} {{
+                            $estudiante->apellido_materno }}
+                        @endif 
                     </td>
                     <td class="px-6 py-4">
-                        {{ $estudiante->dni }}
+                        @if (Auth::user()->hasRole('Apoderado'))
+                            {{ $estudiante->estudiante->dni }}
+                        @else
+                            {{ $estudiante->dni }}
+                        @endif
                     </td>
+                    @if (Auth::user()->hasRole('Apoderado'))
+                        <td class="px-6 py-4">
+                            {{ $estudiante->seccion->grado->detalle }} {{ $estudiante->seccion->detalle }} de {{ $estudiante->seccion->grado->nivel->detalle }}
+                        </td>
+                    @endif
                     <td class="px-6 py-4">
-                        {{ $estudiante->user->email }}
+                        @if (Auth::user()->hasRole('Apoderado'))
+                            {{ $estudiante->estudiante->user->email }}
+                        @else
+                            {{ $estudiante->user->email }}
+                        @endif
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-center">
-                            @can('Editar Estudiantes')
-                            <a href="{{ route('estudiantes.edit', $estudiante->codigo_estudiante) }}"
-                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                            @endcan
-                            @can('Eliminar Estudiantes')
-                            <button type="button" onclick="confirmDelete('{{ $estudiante->id }}')"
-                                class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
-                            @endcan
-                        </div>
-                    </td>
+                    @if (!Auth::user()->hasRole('Apoderado'))
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-center">
+                                @can('Editar Estudiantes')
+                                <a href="{{ route('estudiantes.edit', $estudiante->codigo_estudiante) }}"
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                                @endcan
+                                @can('Eliminar Estudiantes')
+                                <button type="button" onclick="confirmDelete('{{ $estudiante->codigo_estudiante }}')"
+                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                                @endcan
+                            </div>
+                        </td>
+                    @endif
                 </tr>
                 @empty
                 <tr>

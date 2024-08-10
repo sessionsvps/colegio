@@ -131,6 +131,8 @@
                 <p>Director</p>
                 @elseif (Auth::user()->hasRole('Secretaria'))
                 <p>Secretaria</p>
+                @elseif (Auth::user()->hasRole('Apoderado'))
+                <p>Apoderado</p>
                 @endif
             </div>
             <ul class="space-y-2 font-medium bg">

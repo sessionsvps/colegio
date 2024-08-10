@@ -11,6 +11,8 @@ class AttemptToAuthenticate extends BaseAttemptToAuthenticate
     {
         $user = \App\Models\User::where('email', $request->email)->first();
 
+        //dd($user->getRoleNames());
+
         if ($user->getRoleNames()->isEmpty() || $user->esActivo == 0) {
             throw ValidationException::withMessages([
                 'email' => [trans('auth.failed')],
