@@ -68,7 +68,7 @@ Route::middleware([
     Route::get('/export',[ExportController::class,'export'])->name('export');
     Route::get('/export-pdf', [ExportController::class, 'exportPdfEstu'])->name('exportPdfEstu');
     Route::get('/export-pdf-notas/{codigo_estudiante}/{año_escolar}', [ExportController::class, 'exportPdfNotas'])->name('exportPdfNotas');
-
+    Route::resource('apoderados', ApoderadoController::class)->except('show');
     Route::get('/apoderados/buscar', [ApoderadoController::class, 'buscarPorDni'])->name('apoderados.buscar');
 
 });

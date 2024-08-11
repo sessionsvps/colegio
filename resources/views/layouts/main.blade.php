@@ -194,6 +194,15 @@
                         </a>
                     </li>
                 @endcan
+                @can('Ver Apoderados')
+                <li>
+                    <a href="{{route('apoderados.index')}}"
+                        class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-green-100 dark:hover:bg-gray-700 group">
+                        <i class="fa-solid fa-person-breastfeeding fa-lg"></i>
+                        <span class="ms-3">Apoderados</span>
+                    </a>
+                </li>
+                @endcan
                 @can('Ver Estudiantes')
                     <li>
                         <a href="{{route('estudiantes.index')}}"

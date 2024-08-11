@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Apoderado;
 use App\Models\Bimestre;
 use App\Models\Curso;
 use App\Models\Curso_por_nivel;
@@ -27,7 +28,6 @@ class ExoneracionController extends BaseController
     public function index(Request $request)
     {
         $estudiante = null;
-        $exoneraciones = collect();
 
         $auth = Auth::user()->id;
         $user = User::findOrFail($auth);
@@ -87,6 +87,21 @@ class ExoneracionController extends BaseController
                     ->whereIn('codigo_estudiante', $codigo_estudiantes)
                     ->get();
                 return view('exoneraciones.index', compact('estudiantes', 'exoneraciones', 'niveles', 'grados_primaria', 'grados_secundaria'));
+                break;
+            case $user->hasRole('Apoderado'):
+                $apoderado = Apoderado::where('user_id',$user->id)->first();
+                $estudiantes = Estudiante_Seccion::where('año_escolar', '2024')
+                    ->whereHas('estudiante', function ($query) use ($apoderado) {
+                    $query->where('id_apoderado', $apoderado->id)
+                        ->whereHas('user', function ($query) {
+                            $query->where('esActivo', 1);
+                        });
+                })->get();
+                $codigo_estudiantes = $estudiantes->pluck('codigo_estudiante');
+                $exoneraciones = Exoneracion::where('año_escolar', '2024')
+                    ->whereIn('codigo_estudiante', $codigo_estudiantes)
+                    ->get();
+                return view('exoneraciones.index', compact('estudiantes', 'exoneraciones'));
                 break;
             case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id', $user->id)

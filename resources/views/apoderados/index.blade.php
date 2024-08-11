@@ -17,16 +17,10 @@
     </div>
     @endif
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Estudiantes</h2>
-        @can('Registrar Estudiantes')
-        <a href="{{ route('estudiantes.create') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Añadir
-        </a>
-        @endcan
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Apoderados</h2>
     </div>
 
-    @if (Auth::user()->hasRole('Docente') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
+    {{-- @if (Auth::user()->hasRole('Docente') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
         <form method="GET" action="{{ route('estudiantes.index') }}">
             <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <div>
@@ -91,7 +85,7 @@
                 </a>
             </div>
         </div>
-    @endif
+    @endif --}}
 
     <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
@@ -106,85 +100,43 @@
                     <th scope="col" class="px-6 py-3">
                         DNI
                     </th>
-                    @if (Auth::user()->hasRole('Apoderado'))
-                        <th scope="col" class="px-6 py-3">
-                            Aula
-                        </th>
-                    @endif
                     <th scope="col" class="px-6 py-3">
                         Correo
                     </th>
-                    @if (!Auth::user()->hasRole('Apoderado'))
-                        <th scope="col" class="px-6 py-3">
-                            Apoderado(a)
-                        </th>
-                    @endif
-                    @if (!Auth::user()->hasRole('Apoderado'))
+                    @can('Editar Apoderados')
                         <th scope="col" class="px-6 py-3">
                             Acciones
                         </th>
-                    @endif
+                    @endcan
                 </tr>
             </thead>
             <tbody>
-                @forelse ($estudiantes as $estudiante)
+                @forelse ($apoderados as $apoderado)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $estudiante->codigo_estudiante }}
+                        {{ $apoderado->id }}
                     </th>
                     <td class="px-6 py-4">
-                        @if (Auth::user()->hasRole('Apoderado'))
-                            {{ $estudiante->estudiante->primer_nombre }} {{ $estudiante->estudiante->otros_nombres }} {{
-                            $estudiante->estudiante->apellido_paterno }} {{
-                            $estudiante->estudiante->apellido_materno }}
-                        @else
-                            {{ $estudiante->primer_nombre }} {{ $estudiante->otros_nombres }} {{
-                            $estudiante->apellido_paterno }} {{
-                            $estudiante->apellido_materno }}
-                        @endif 
+                        {{$apoderado->primer_nombre}} {{$apoderado->otros_nombres}} {{$apoderado->apellido_paterno}} {{$apoderado->apellido_materno}}
                     </td>
                     <td class="px-6 py-4">
-                        @if (Auth::user()->hasRole('Apoderado'))
-                            {{ $estudiante->estudiante->dni }}
-                        @else
-                            {{ $estudiante->dni }}
-                        @endif
+                        {{$apoderado->dni}}
                     </td>
-                    @if (Auth::user()->hasRole('Apoderado'))
-                        <td class="px-6 py-4">
-                            {{ $estudiante->seccion->grado->detalle }} {{ $estudiante->seccion->detalle }} de {{ $estudiante->seccion->grado->nivel->detalle }}
-                        </td>
-                    @endif
                     <td class="px-6 py-4">
-                        @if (Auth::user()->hasRole('Apoderado'))
-                            {{ $estudiante->estudiante->user->email }}
-                        @else
-                            {{ $estudiante->user->email }}
-                        @endif
+                        {{$apoderado->user->email}}
                     </td>
-                    @if (!Auth::user()->hasRole('Apoderado'))
-                        <td class="px-6 py-4">
-                            {{$estudiante->apoderado->primer_nombre}} {{$estudiante->apoderado->otros_nombres}} {{$estudiante->apoderado->apellido_paterno}} {{$estudiante->apoderado->apellido_materno}}
-                        </td>
-                    @endif
-                    @if (!Auth::user()->hasRole('Apoderado'))
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-center">
-                                @can('Editar Estudiantes')
-                                <a href="{{ route('estudiantes.edit', $estudiante->codigo_estudiante) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                                @endcan
-                                @can('Eliminar Estudiantes')
-                                <button type="button" onclick="confirmDelete('{{ $estudiante->codigo_estudiante }}')"
-                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
-                                @endcan
-                            </div>
-                        </td>
-                    @endif
+                    @can('Editar Apoderados')
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-center">
+                            <a href="{{ route('apoderados.edit', $apoderado->id) }}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                        </div>
+                    </td>
+                    @endcan
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-6 py-4 text-center">
+                    <td colspan="5" class="px-6 py-4 text-center">
                         No hay registros
                     </td>
                 </tr>
@@ -193,7 +145,7 @@
         </table>
     </div>
     <div class="mt-10">
-        {{ $estudiantes->links() }}
+        {{ $apoderados->links() }}
     </div>
 @endsection
 
@@ -211,23 +163,6 @@
                     }
                 }, 3000); // 3 segundos antes de empezar a desvanecer
             });
-    </script>
-
-    <script>
-        function confirmDelete(id){
-            alertify.confirm("¿Seguro que quieres eliminar al estudiante?",
-            function(){
-                let form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/estudiantes/' + id;
-                form.innerHTML = '@csrf @method("DELETE")';
-                document.body.appendChild(form);
-                form.submit();
-            },
-            function(){
-                alertify.error('Cancelado');
-            });
-        }
     </script>
 
     <script>
@@ -285,20 +220,4 @@
                 updateInputContainer();
             });
     </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var reporteSelect = document.getElementById('reporte');
-        var generateReportButton = document.getElementById('reportButton');
-
-        reporteSelect.addEventListener('change', function () {
-            var selectedValue = this.value;
-            if (selectedValue == '1') { // EXCEL
-                generateReportButton.href = "{{ route('export') }}";
-            } else if (selectedValue == '0') { // PDF
-                generateReportButton.href = "{{ route('exportPdfEstu') }}";
-            }
-        });
-    });
-</script>
 @endsection

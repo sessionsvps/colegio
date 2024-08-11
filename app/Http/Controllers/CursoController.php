@@ -47,7 +47,7 @@ class CursoController extends BaseController
                     })->paginate(20)->appends(['nivel_educativo' => $filtranivel]);
                 }
                 return view('cursos.index',compact('cursos', 'niveles', 'filtranivel', 'user'));   
-            break;
+                break;
             case $user->hasRole('Estudiante_Matriculado'):
                 $estudiante = Estudiante_Seccion::where('user_id',$user->id)
                     ->where('año_escolar','2024')->first();
@@ -65,7 +65,7 @@ class CursoController extends BaseController
                 ->get();
 
                 return view('cursos.index',compact('cursos','user'));   
-            break;
+                break;
             case $user->hasRole('Docente'):
                 $user_id = $user->id;
                 $docente = Docente::whereHas('user', function($query) use($user_id) {

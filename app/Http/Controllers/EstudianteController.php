@@ -94,7 +94,8 @@ class EstudianteController extends BaseController
                 return view('estudiantes.index', compact('estudiantes'));
             case $user->hasRole('Apoderado'):
                 $apoderado = Apoderado::where('user_id', $user->id)->first();
-                $estudiantes = Estudiante_Seccion::whereHas('estudiante', function ($query) use ($apoderado) {
+                $estudiantes = Estudiante_Seccion::where('año_escolar','2024')
+                    ->whereHas('estudiante', function ($query) use ($apoderado) {
                     $query->where('id_apoderado', $apoderado->id)
                     ->whereHas('user', function ($query) {
                         $query->where('esActivo', 1);
@@ -555,9 +556,13 @@ class EstudianteController extends BaseController
     public function destroy(string $codigo_estudiante)
     {
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
+        $apoderado  = Apoderado::findOrFail($estudiante->id_apoderado);
         $user = User::findOrFail($estudiante->user_id);
+        $userAp = User::findOrFail($apoderado->user_id);
         $user->esActivo = 0;
+        $userAp->esActivo = 0;
         $user->save();
+        $userAp->save();
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante eliminado exitosamente.');
     }
 }

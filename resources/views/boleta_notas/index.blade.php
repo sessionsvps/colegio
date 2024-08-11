@@ -60,7 +60,7 @@
         </form>
     @endif
 
-    @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director'))
+    @if(Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Director') || Auth::user()->hasRole('Apoderado'))
         <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
             <table class="w-full text-md text-center text-gray-500 dark:text-gray-400">
                 <thead class="text-md text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
@@ -181,7 +181,7 @@
 @endsection
 
 @section('scripts')
-    @if (!Auth::user()->hasRole('Estudiante_Matriculado'))
+    @if (!Auth::user()->hasRole('Estudiante_Matriculado') && !Auth::user()->hasRole('Apoderado'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                                             const nivelSelect = document.getElementById('nivel');

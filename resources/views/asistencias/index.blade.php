@@ -137,193 +137,193 @@
     @endif
     
     @if(Auth::user()->hasRole('Estudiante_Matriculado'))
-    @if ($estudiante)
-        <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
-            <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
-                <div class="flex-shrink-0">
-                    <svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path
-                            d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                    </svg>
+        @if ($estudiante)
+            <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
+                <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">{{ $estudiante->estudiante->primer_nombre . ' ' .
+                            $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' .
+                            $estudiante->estudiante->apellido_materno }}</h3>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Código:</span> {{ $estudiante->codigo_estudiante
+                            }}
+                        </p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">DNI:</span> {{ $estudiante->estudiante->dni }}</p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Correo:</span> {{ $estudiante->estudiante->email
+                            }}</p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Aula:</span> {{
+                            $estudiante->seccion->grado->detalle .
+                            ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900">{{ $estudiante->estudiante->primer_nombre . ' ' .
-                        $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' .
-                        $estudiante->estudiante->apellido_materno }}</h3>
-                    <p class="text-gray-700 mt-1"><span class="font-semibold">Código:</span> {{ $estudiante->codigo_estudiante
-                        }}
-                    </p>
-                    <p class="text-gray-700 mt-1"><span class="font-semibold">DNI:</span> {{ $estudiante->estudiante->dni }}</p>
-                    <p class="text-gray-700 mt-1"><span class="font-semibold">Correo:</span> {{ $estudiante->estudiante->email
-                        }}</p>
-                    <p class="text-gray-700 mt-1"><span class="font-semibold">Aula:</span> {{
-                        $estudiante->seccion->grado->detalle .
-                        ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
+                @if($asistencia)
+                <div class=" bg-gray-50 shadow-md rounded-lg p-6">
+                    <div class="flex justify-end mb-4">
+                        @can('Editar Asistencias')
+                        @if ($asistencia->bimestre->esActivo)
+                        <a
+                            href="{{route('asistencias.edit',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre, 'año_escolar' => $asistencia->año_escolar]) }}">
+                            <button
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Editar
+                            </button>
+                        </a>
+                        @endif
+                        @endcan
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Inasistencias Justificadas: {{ $asistencia->inasistencias_justificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Inasistencias Injustificadas: {{ $asistencia->inasistencias_injustificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Tardanzas Justificadas: {{ $asistencia->tardanzas_justificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Tardanzas Injustificadas: {{ $asistencia->tardanzas_injustificadas }}
+                            </div>
+                        </li>
+                    </ul>
                 </div>
+                @endif
             </div>
-            @if($asistencia)
-            <div class=" bg-gray-50 shadow-md rounded-lg p-6">
-                <div class="flex justify-end mb-4">
-                    @can('Editar Asistencias')
-                    @if ($asistencia->bimestre->esActivo)
-                    <a
-                        href="{{route('asistencias.edit',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre, 'año_escolar' => $asistencia->año_escolar]) }}">
-                        <button
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Editar
-                        </button>
-                    </a>
-                    @endif
-                    @endcan
-                </div>
-                <ul class="space-y-4">
-                    <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                        <div class="flex-shrink-0 mr-4">
-                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 text-gray-800">
-                            Inasistencias Justificadas: {{ $asistencia->inasistencias_justificadas }}
-                        </div>
-                    </li>
-                    <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                        <div class="flex-shrink-0 mr-4">
-                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 text-gray-800">
-                            Inasistencias Injustificadas: {{ $asistencia->inasistencias_injustificadas }}
-                        </div>
-                    </li>
-                    <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                        <div class="flex-shrink-0 mr-4">
-                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 text-gray-800">
-                            Tardanzas Justificadas: {{ $asistencia->tardanzas_justificadas }}
-                        </div>
-                    </li>
-                    <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                        <div class="flex-shrink-0 mr-4">
-                            <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1 text-gray-800">
-                            Tardanzas Injustificadas: {{ $asistencia->tardanzas_injustificadas }}
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            @endif
-        </div>
-    @endif
-    @else
-    @if($estudiantes)
-    @foreach ($estudiantes as $estudiante)
-    @php
-    $asistencia = $asistencias->where('codigo_estudiante', $estudiante->codigo_estudiante)->first();
-    @endphp
-    <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
-        <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
-            <div class="flex-shrink-0">
-                <svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold text-gray-900">{{ $estudiante->estudiante->primer_nombre . ' ' .
-                    $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' .
-                    $estudiante->estudiante->apellido_materno }}</h3>
-                <p class="text-gray-700 mt-1"><span class="font-semibold">Código:</span> {{ $estudiante->codigo_estudiante
-                    }}
-                </p>
-                <p class="text-gray-700 mt-1"><span class="font-semibold">DNI:</span> {{ $estudiante->estudiante->dni }}</p>
-                <p class="text-gray-700 mt-1"><span class="font-semibold">Correo:</span> {{ $estudiante->estudiante->email
-                    }}</p>
-                <p class="text-gray-700 mt-1"><span class="font-semibold">Aula:</span> {{
-                    $estudiante->seccion->grado->detalle .
-                    ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
-            </div>
-        </div>
-        @if($asistencia)
-        <div class=" bg-gray-50 shadow-md rounded-lg p-6">
-            <div class="flex justify-end mb-4">
-                @can('Editar Asistencias')
-                <a
-                    href="{{route('asistencias.edit',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre, 'año_escolar' => $asistencia->año_escolar]) }}">
-                    <button
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        Editar
-                    </button>
-                </a>
-                @endcan
-            </div>
-            <ul class="space-y-4">
-                <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                    <div class="flex-shrink-0 mr-4">
-                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 text-gray-800">
-                        Inasistencias Justificadas: {{ $asistencia->inasistencias_justificadas }}
-                    </div>
-                </li>
-                <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                    <div class="flex-shrink-0 mr-4">
-                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 text-gray-800">
-                        Inasistencias Injustificadas: {{ $asistencia->inasistencias_injustificadas }}
-                    </div>
-                </li>
-                <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                    <div class="flex-shrink-0 mr-4">
-                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 text-gray-800">
-                        Tardanzas Justificadas: {{ $asistencia->tardanzas_justificadas }}
-                    </div>
-                </li>
-                <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
-                    <div class="flex-shrink-0 mr-4">
-                        <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1 text-gray-800">
-                        Tardanzas Injustificadas: {{ $asistencia->tardanzas_injustificadas }}
-                    </div>
-                </li>
-            </ul>
-        </div>
         @endif
-    </div>
-    @endforeach
-    @endif
+    @else
+        @if($estudiantes)
+            @foreach ($estudiantes as $estudiante)
+                @php
+                $asistencia = $asistencias->where('codigo_estudiante', $estudiante->codigo_estudiante)->first();
+                @endphp
+            <div class="mt-10 md:mt-20 grid lg:grid-cols-2 gap-5">
+                <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">{{ $estudiante->estudiante->primer_nombre . ' ' .
+                            $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' .
+                            $estudiante->estudiante->apellido_materno }}</h3>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Código:</span> {{ $estudiante->codigo_estudiante
+                            }}
+                        </p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">DNI:</span> {{ $estudiante->estudiante->dni }}</p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Correo:</span> {{ $estudiante->estudiante->email
+                            }}</p>
+                        <p class="text-gray-700 mt-1"><span class="font-semibold">Aula:</span> {{
+                            $estudiante->seccion->grado->detalle .
+                            ' ' . $estudiante->seccion->detalle . ' de ' . $estudiante->seccion->grado->nivel->detalle}}</p>
+                    </div>
+                </div>
+                @if($asistencia)
+                <div class=" bg-gray-50 shadow-md rounded-lg p-6">
+                    <div class="flex justify-end mb-4">
+                        @can('Editar Asistencias')
+                        <a
+                            href="{{route('asistencias.edit',['codigo_estudiante' => $asistencia->codigo_estudiante, 'id_bimestre' => $asistencia->id_bimestre, 'año_escolar' => $asistencia->año_escolar]) }}">
+                            <button
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Editar
+                            </button>
+                        </a>
+                        @endcan
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Inasistencias Justificadas: {{ $asistencia->inasistencias_justificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Inasistencias Injustificadas: {{ $asistencia->inasistencias_injustificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Tardanzas Justificadas: {{ $asistencia->tardanzas_justificadas }}
+                            </div>
+                        </li>
+                        <li class="p-4 bg-white rounded-lg shadow-sm flex items-center">
+                            <div class="flex-shrink-0 mr-4">
+                                <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10.5l-1.5-1.5-1.415 1.415L8 13.414l6-6-1.415-1.414L8 10.5z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 text-gray-800">
+                                Tardanzas Injustificadas: {{ $asistencia->tardanzas_injustificadas }}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        @endif
     @endif
 @endsection
 
 @section('scripts')
-    @if (!Auth::user()->hasRole('Estudiante_Matriculado'))
+    @if (!Auth::user()->hasRole('Estudiante_Matriculado') && !Auth::user()->hasRole('Apoderado'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                             const nivelSelect = document.getElementById('nivel');

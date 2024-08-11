@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +23,11 @@ class Apoderado extends Model
     public function estudiantes()
     {
         return $this->hasMany(Estudiante::class);
+    }
+
+    public function getFechaNacimientoAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
     }
 
 }
