@@ -26,7 +26,7 @@
             <p class="text-gray-600 sm:text-lg lg:text-xl mt-1"><span class="font-semibold">Año de actualización:</span> {{
                 $curso->año_actualizacion }}</p>
             <p class="text-gray-600 sm:text-lg lg:text-xl mt-1"><span class="font-semibold">Aula:</span> {{
-                $q_seccion->grado->detalle }} {{$q_seccion->detalle}} de {{$q_seccion->grado->nivel->detalle}}</p>   
+                $q_seccion->grado->detalle }} {{$q_seccion->detalle}} de {{$q_seccion->grado->nivel->detalle}}</p>
         </div>
         <div class="hidden md:block flex-shrink-0 mt-4 lg:mt-0">
             <img src="{{ asset("img/info_cursos/$curso->codigo_curso.webp") }}" alt="Imagen del Curso"
@@ -44,10 +44,14 @@
                 <option value="1">EXCEL</option>
             </select>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a id="reportButton"
                 class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
                 Generar Reporte
+            </a>
+            <a id="auxiliarButton"
+                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
+                Reporte Auxiliar
             </a>
             @can('Editar Notas')
                 <a href="{{ route('boleta_notas.edit', ['codigo_curso' => $curso->codigo_curso,'nivel' => $q_seccion->id_nivel , 'grado' => $q_seccion->id_grado,'seccion' => $q_seccion->id_seccion]) }}"
@@ -149,5 +153,39 @@
                             }
                         }, 3000); // 3 segundos antes de empezar a desvanecer
                     });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var reporteSelect = document.getElementById('reporte');
+        var generateReportButton = document.getElementById('reportButton');
+
+        reporteSelect.addEventListener('change', function () {
+            var selectedValue = this.value;
+            if (selectedValue == '1') { // EXCEL
+                generateReportButton.href = "{{ route('export') }}";
+            } else if (selectedValue == '0') { // PDF
+                generateReportButton.href = "{{ route('exportPdfNotaProfe', [
+                    'codigo_curso' => $curso->codigo_curso,
+                    'nivel' => $q_seccion->id_nivel,
+                    'grado' => $q_seccion->id_grado,
+                    'seccion' => $q_seccion->id_seccion
+                ]) }}";
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var generateReportButton = document.getElementById('auxiliarButton');
+
+        generateReportButton.href = "{{ route('exportPdfAuxiliar', [
+                'codigo_curso' => $curso->codigo_curso,
+                'nivel' => $q_seccion->id_nivel,
+                'grado' => $q_seccion->id_grado,
+                'seccion' => $q_seccion->id_seccion
+        ]) }}";
+    });
     </script>
 @endsection

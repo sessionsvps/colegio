@@ -6,6 +6,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports\EstudiantesExport;
 use App\Models\Asistencia;
+use App\Models\Curso;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante;
 use App\Models\Estudiante_Seccion;
@@ -159,6 +160,131 @@ class ExportController extends Controller
                 echo $dompdf->output();
             },
             'libreta_notas.pdf'
+        );
+    }
+
+    public function exportPdfNotaProfe($codigo_curso, $nivel, $grado, $seccion){
+
+        $estudiantes = Estudiante_Seccion::where('año_escolar', Carbon::now()->year)
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->whereDoesntHave('exoneraciones', function ($query) use ($codigo_curso) {
+                $query->where('codigo_curso', $codigo_curso);
+            })
+            ->get();
+
+        $curso = Curso::where('codigo_curso', $codigo_curso)
+            ->where('esActivo', 1)
+            ->first();
+
+        //dd($estudiantes);
+
+        // Convertir la imagen a base64
+        $path = public_path('img/logo.png');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        // Convertir la imagen a base64
+        $path2 = public_path('img/logoMinedu.png');
+        $type2 = pathinfo($path2, PATHINFO_EXTENSION);
+        $data2 = file_get_contents($path2);
+        $base642 = 'data:image/' . $type2 . ';base64,' . base64_encode($data2);
+
+        // Generar el HTML de la vista Blade
+        $htmlContent = View::make('exportar.exNotasProfe', [
+            'estudiantes' => $estudiantes,
+            'curso' => $curso,
+            'base64' => $base64,
+            'base642' => $base642
+        ])->render();
+
+        // Crear una instancia de Dompdf con opciones
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true); // Permitir recursos remotos
+
+        $dompdf = new Dompdf($options);
+
+        // Cargar el contenido HTML en Dompdf
+        $dompdf->loadHtml($htmlContent);
+
+        // Ajustar el tamaño de la página y los márgenes
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Renderizar el PDF
+        $dompdf->render();
+
+        // Configurar la respuesta HTTP para descargar el archivo PDF
+        return response()->streamDownload(
+            function () use ($dompdf) {
+                echo $dompdf->output();
+            },
+            'reporte-notas-alumnos.pdf'
+        );
+    }
+
+    public function exportPdfAuxiliar($codigo_curso, $nivel, $grado, $seccion)
+    {
+
+        $estudiantes = Estudiante_Seccion::where('año_escolar', Carbon::now()->year)
+            ->where('id_nivel', $nivel)
+            ->where('id_grado', $grado)
+            ->where('id_seccion', $seccion)
+            ->whereDoesntHave('exoneraciones', function ($query) use ($codigo_curso) {
+                $query->where('codigo_curso', $codigo_curso);
+            })
+            ->get();
+
+        $curso = Curso::where('codigo_curso', $codigo_curso)
+            ->where('esActivo', 1)
+            ->first();
+
+        //dd($estudiantes);
+
+        // Convertir la imagen a base64
+        $path = public_path('img/logo.png');
+        $type = pathinfo($path, PATHINFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+        // Convertir la imagen a base64
+        $path2 = public_path('img/logoMinedu.png');
+        $type2 = pathinfo($path2, PATHINFO_EXTENSION);
+        $data2 = file_get_contents($path2);
+        $base642 = 'data:image/' . $type2 . ';base64,' . base64_encode($data2);
+
+        // Generar el HTML de la vista Blade
+        $htmlContent = View::make('exportar.exReporteAuxiliar', [
+            'estudiantes' => $estudiantes,
+            'curso' => $curso,
+            'base64' => $base64,
+            'base642' => $base642
+        ])->render();
+
+        // Crear una instancia de Dompdf con opciones
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true); // Permitir recursos remotos
+
+        $dompdf = new Dompdf($options);
+
+        // Cargar el contenido HTML en Dompdf
+        $dompdf->loadHtml($htmlContent);
+
+        // Ajustar el tamaño de la página y los márgenes
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Renderizar el PDF
+        $dompdf->render();
+
+        // Configurar la respuesta HTTP para descargar el archivo PDF
+        return response()->streamDownload(
+            function () use ($dompdf) {
+                echo $dompdf->output();
+            },
+            'registro-auxiliar.pdf'
         );
     }
 

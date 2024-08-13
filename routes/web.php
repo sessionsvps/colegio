@@ -45,11 +45,11 @@ Route::middleware([
     Route::resource('director', DirectorController::class)->except('show');
     Route::resource('secretarias', SecretariaController::class)->except('show');
     Route::resource('docentes', DocenteController::class)->except('show');
-    
+
     Route::get('aulas/{año}', [AulaController::class, 'estudianteIndex'])->name('aulas.estudiante');
     Route::resource('aulas', AulaController::class)->except('show');
     Route::get('aulas/{año_escolar}/{nivel}/{grado}/{seccion}/info', [AulaController::class, 'info'])->name('aulas.info');
-    
+
     Route::resource('users', UserController::class)->except('show');
     Route::resource('cursos', CursoController::class)->except('show');
     Route::get('cursos/{id}/{año_escolar}/info', [CursoController::class, 'info'])->name('cursos.info');
@@ -67,6 +67,8 @@ Route::middleware([
     Route::put('/asistencias/{codigo_estudiante}/{id_bimestre}/{año_escolar}', [AsistenciaController::class, 'update'])->name('asistencias.update');
     Route::get('/export',[ExportController::class,'export'])->name('export');
     Route::get('/export-pdf', [ExportController::class, 'exportPdfEstu'])->name('exportPdfEstu');
+    Route::get('/export-pdf-nota-profe/{codigo_curso}/{nivel}/{grado}/{seccion}', [ExportController::class, 'exportPdfNotaProfe'])->name('exportPdfNotaProfe');
+    Route::get('/export-pdf-auxiliar/{codigo_curso}/{nivel}/{grado}/{seccion}', [ExportController::class, 'exportPdfAuxiliar'])->name('exportPdfAuxiliar');
     Route::get('/export-pdf-notas/{codigo_estudiante}/{año_escolar}', [ExportController::class, 'exportPdfNotas'])->name('exportPdfNotas');
     Route::resource('apoderados', ApoderadoController::class)->except('show');
     Route::get('/apoderados/buscar', [ApoderadoController::class, 'buscarPorDni'])->name('apoderados.buscar');

@@ -108,7 +108,7 @@ class EstudianteController extends BaseController
         }
     }
 
-    public function vista_docente($codigo_curso, $nivel, $grado, $seccion) 
+    public function vista_docente($codigo_curso, $nivel, $grado, $seccion)
     {
         // dd($codigo_curso, $nivel, $grado, $seccion);
         $curso = Curso::where('codigo_curso', $codigo_curso)
@@ -423,7 +423,7 @@ class EstudianteController extends BaseController
                 });
             }
         }
-        
+
         $estudiantes = $query->paginate(10);
         $niveles = Nivel::all();
         $grados_primaria = Grado::where('id_nivel', 1)->get();
