@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabla de Competencias y Bimestres</title>
+    <title>Reporte Notas</title>
     <style>
         table {
             width: 100%;
@@ -66,18 +66,30 @@
                 <tr>
                     <td rowspan="{{ $cantidadCompetencias }}">{{ $estudiante->estudiante->apellido_paterno . ' ' . $estudiante->estudiante->apellido_materno . ' ' . $estudiante->estudiante->primer_nombre . ' ' . $estudiante->estudiante->otros_nombres }}</td>
                     <td>{{ $firstcompete ? $firstcompete->descripcion : '' }}</td>
+                    {{-- <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
+                    <td></td> --}}
+                    @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                        @php
+                            $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_estudiante',$estudiante->estudiante->codigo_estudiante)->where('codigo_curso', $curso->codigo_curso)->where('orden',$firstcompete->orden)->first();
+                        @endphp
+                        <td>{{ $nota ? $nota->nivel_logro : '' }}</td>
+                    @endfor
                 </tr>
                 @foreach($competencias as $competencia)
                     <tr>
                         <td>{{ $competencia->descripcion }}</td>
+                        {{-- <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
+                        <td></td> --}}
+                        @for ($bimestre = 1; $bimestre <= 4; $bimestre++)
+                            @php
+                                $nota=$notas->where('id_bimestre',$bimestre)->where('codigo_estudiante',$estudiante->estudiante->codigo_estudiante)->where('codigo_curso', $curso->codigo_curso)->where('orden',$competencia->orden)->first();
+                            @endphp
+                            <td>{{ $nota ? $nota->nivel_logro : '' }}</td>
+                        @endfor
                     </tr>
                 @endforeach
             @endforeach

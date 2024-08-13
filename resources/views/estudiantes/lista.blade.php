@@ -51,7 +51,7 @@
             </a>
             <a id="auxiliarButton"
                 class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
-                Reporte Auxiliar
+                Registro Auxiliar
             </a>
             @can('Editar Notas')
                 <a href="{{ route('boleta_notas.edit', ['codigo_curso' => $curso->codigo_curso,'nivel' => $q_seccion->id_nivel , 'grado' => $q_seccion->id_grado,'seccion' => $q_seccion->id_seccion]) }}"

@@ -178,6 +178,9 @@ class ExportController extends Controller
             ->where('esActivo', 1)
             ->first();
 
+        $notas = Notas_por_competencia::where('año_escolar', Carbon::now()->year)
+                                    ->where('exoneracion', 0)->get();
+
         //dd($estudiantes);
 
         // Convertir la imagen a base64
@@ -196,6 +199,7 @@ class ExportController extends Controller
         $htmlContent = View::make('exportar.exNotasProfe', [
             'estudiantes' => $estudiantes,
             'curso' => $curso,
+            'notas'=>$notas,
             'base64' => $base64,
             'base642' => $base642
         ])->render();
