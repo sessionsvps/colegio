@@ -84,7 +84,7 @@ class EstudianteSeeder extends Seeder
                 'año_ingreso' => $faker->numberBetween(2020, 2024),
                 'lengua_materna' => $faker->word,
                 'colegio_procedencia' => $faker->optional()->company,
-                'nacionalidad' => 'Peruana',
+                'nacionalidad' => 'Peruano(a)',
                 'departamento' => 15,
                 'provincia' => 127,
                 'distrito' => 1272,

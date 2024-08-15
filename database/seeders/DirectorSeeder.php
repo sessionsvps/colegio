@@ -57,7 +57,7 @@ class DirectorSeeder extends Seeder
             'telefono_celular' => '991001882',
             'id_estado' => 1,
             'fecha_nacimiento' => '1991-11-05',
-            'nacionalidad' => 'Peruana',
+            'nacionalidad' => 'Peruano(a)',
             'departamento' => 15,
             'provincia' => 127,
             'distrito' => 1285,
