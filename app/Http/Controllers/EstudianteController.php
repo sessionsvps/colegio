@@ -7,6 +7,7 @@ use App\Mail\Credenciales;
 use App\Mail\CredencialesEstudiante;
 use App\Models\Apoderado;
 use App\Models\Asistencia;
+use App\Models\Bimestre;
 use App\Models\Boleta_de_nota;
 use App\Models\Competencia;
 use App\Models\Curso;
@@ -110,6 +111,7 @@ class EstudianteController extends BaseController
 
     public function vista_docente($codigo_curso, $nivel, $grado, $seccion)
     {
+        $bimestres = Bimestre::all();
         // dd($codigo_curso, $nivel, $grado, $seccion);
         $curso = Curso::where('codigo_curso', $codigo_curso)
             ->where('esActivo',1)
@@ -128,7 +130,7 @@ class EstudianteController extends BaseController
             })
             ->get();
         // dd($estudiantes);
-        return view('estudiantes.lista', compact('curso', 'estudiantes', 'q_seccion'));
+        return view('estudiantes.lista', compact('bimestres','curso', 'estudiantes', 'q_seccion'));
     }
 
     public function create()

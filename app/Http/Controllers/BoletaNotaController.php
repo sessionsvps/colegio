@@ -138,7 +138,7 @@ class BoletaNotaController extends BaseController
         return view('boleta_notas.info', compact('estudiante', 'cursos', 'notas'));
     }
 
-    public function edit(string $codigo_curso,string $nivel,string $grado,string $seccion)
+    public function edit(string $codigo_curso,string $bimestre,string $nivel,string $grado,string $seccion)
     {
         $curso = Curso::where('codigo_curso', $codigo_curso)
             ->where('esActivo', 1)
@@ -159,14 +159,14 @@ class BoletaNotaController extends BaseController
             ->get();
         $codigo_estudiantes = $estudiantes->pluck('codigo_estudiante')->toArray();
         $notas = Notas_por_competencia::where('codigo_curso', $codigo_curso)
-            ->where('id_bimestre', $bimestre_activo->id)
+            ->where('id_bimestre', $bimestre)
             ->where('año_escolar', Carbon::now()->year)
             ->whereIn('codigo_estudiante', $codigo_estudiantes)
             ->get();
-        return view('boleta_notas.edit', compact('estudiantes','notas','curso','aula','competencias'));
+        return view('boleta_notas.edit', compact('bimestre','estudiantes','notas','curso','aula','competencias'));
     }
 
-    public function update(Request $request, string $codigo_curso, string $nivel, string $grado, string $seccion)
+    public function update(Request $request,string $codigo_curso, string $nivel, string $grado, string $seccion)
     {
         $curso = Curso::where('codigo_curso', $codigo_curso)
             ->where('esActivo', 1)

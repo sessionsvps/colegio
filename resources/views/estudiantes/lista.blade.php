@@ -34,31 +34,39 @@
         </div>
     </div>
 
-    <div class="my-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div class="my-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-            <label for="reporte" class="block text-sm font-medium text-gray-700">Seleccione un Formato</label>
-            <select id="reporte" name="reporte"
+            <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
+            <select id="bimestre" name="bimestre"
                 class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                <option value="" selected disabled></option>
-                <option value="0">PDF</option>
-                <option value="1">EXCEL</option>
+                @foreach($bimestres as $bimestre)
+                <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
+                    {{ $bimestre->descripcion }}
+                </option>
+                @endforeach
             </select>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a id="reportButton"
-                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
-                Generar Reporte
-            </a>
-            <a id="auxiliarButton"
-                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full md:w-auto">
-                Registro Auxiliar
-            </a>
+        <div>
             @can('Editar Notas')
-                <a href="{{ route('boleta_notas.edit', ['codigo_curso' => $curso->codigo_curso,'nivel' => $q_seccion->id_nivel , 'grado' => $q_seccion->id_grado,'seccion' => $q_seccion->id_seccion]) }}"
-                    class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full">
-                    Registrar Notas
-                </a>
+            <a id="editNotasButton"
+                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                Registrar Notas
+            </a>
             @endcan
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 md:col-span-2 lg:flex lg:justify-end">
+            <div>
+                <a id="reportButton"
+                    class="lg:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                    Reporte de Notas
+                </a>
+            </div>
+            <div>
+                <a id="auxiliarButton"
+                    class="lg:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                    Registro Auxiliar
+                </a>
+            </div>
         </div>
     </div>
 
@@ -96,47 +104,6 @@
         </table>
     </div>
 
-    {{-- <div class="mt-10 md:mt-20 grid lg:grid-cols-1 gap-5">
-        <div class="flex items-center bg-gray-50 shadow-md rounded-lg p-6 space-x-4 w-full">
-            <div class="w-full">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                                Código Estudiante
-                            </th>
-                            <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                                Nombres
-                            </th>
-                            <th class="py-2 px-4 border-b-2 border-gray-200 bg-gray-100 text-left text-sm leading-4 text-gray-600 uppercase">
-                                Acciones
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($estudiantes as $estudiante)
-                        <tr class="bg-white border-b hover:bg-gray-50">
-                            <td class="py-2 px-4 border-b border-gray-200">{{ $estudiante->codigo_estudiante }}</td>
-                            <td class="py-2 px-4 border-b border-gray-200">
-                                {{ $estudiante->estudiante->primer_nombre . ' ' . $estudiante->estudiante->otros_nombres . ' ' . $estudiante->estudiante->apellido_paterno . ' ' . $estudiante->estudiante->apellido_materno }}
-                            </td>
-                            <td class="py-2 px-4 border-b border-gray-200">
-                                <a href="{{ route('boleta_notas.edit', ['codigo_estudiante' => $estudiante->codigo_estudiante, 'codigo_curso' => $curso->codigo_curso,'año_escolar' => $estudiante->año_escolar]) }}"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-                                    Registrar Notas
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="3" class="text-center py-2 px-4 border-b border-gray-200 italic">No hay estudiantes registrados en esta sección</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div> --}}
 @endsection
 
 @section('scripts')
@@ -157,35 +124,45 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        var reporteSelect = document.getElementById('reporte');
-        var generateReportButton = document.getElementById('reportButton');
-
-        reporteSelect.addEventListener('change', function () {
-            var selectedValue = this.value;
-            if (selectedValue == '1') { // EXCEL
-                generateReportButton.href = "{{ route('export') }}";
-            } else if (selectedValue == '0') { // PDF
-                generateReportButton.href = "{{ route('exportPdfNotaProfe', [
+            var bimestreSelect = document.getElementById('bimestre');
+            var editNotasButton = document.getElementById('editNotasButton');
+    
+            function updateEditNotasHref() {
+                var selectedBimestre = bimestreSelect.value;
+                var route = "{{ route('boleta_notas.edit', [
                     'codigo_curso' => $curso->codigo_curso,
+                    'bimestre' => ':bimestre',
                     'nivel' => $q_seccion->id_nivel,
                     'grado' => $q_seccion->id_grado,
                     'seccion' => $q_seccion->id_seccion
                 ]) }}";
+    
+                editNotasButton.href = route.replace(':bimestre', selectedBimestre);
             }
+    
+            // Update the href when the page loads and whenever the select changes
+            updateEditNotasHref();
+            bimestreSelect.addEventListener('change', updateEditNotasHref);
         });
-    });
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-        var generateReportButton = document.getElementById('auxiliarButton');
+            var generateReportButton = document.getElementById('reportButton');
+            generateReportButton.href = "{{ route('exportPdfNotaProfe', ['codigo_curso' => $curso->codigo_curso,'nivel' =>$q_seccion->id_nivel,'grado' => $q_seccion->id_grado,'seccion' => $q_seccion->id_seccion]) }}";
+        });
+    </script>
 
-        generateReportButton.href = "{{ route('exportPdfAuxiliar', [
-                'codigo_curso' => $curso->codigo_curso,
-                'nivel' => $q_seccion->id_nivel,
-                'grado' => $q_seccion->id_grado,
-                'seccion' => $q_seccion->id_seccion
-        ]) }}";
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var generateReportButton = document.getElementById('auxiliarButton');
+    
+            generateReportButton.href = "{{ route('exportPdfAuxiliar', [
+                    'codigo_curso' => $curso->codigo_curso,
+                    'nivel' => $q_seccion->id_nivel,
+                    'grado' => $q_seccion->id_grado,
+                    'seccion' => $q_seccion->id_seccion
+            ]) }}";
+        });
     </script>
 @endsection
