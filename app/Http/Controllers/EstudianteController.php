@@ -153,7 +153,7 @@ class EstudianteController extends BaseController
         $apoderado = Apoderado::where('dni', $request->input('dni_ap'))->first();
 
         if (!$apoderado){
-            $request->validate([
+            $validaciones = [
                 'primer_nombre' => 'required|string|max:30',
                 'otros_nombres' => 'nullable|string|max:30',
                 'apellido_paterno' => 'required|string|max:30',
@@ -166,9 +166,9 @@ class EstudianteController extends BaseController
                 'año_ingreso' => 'required|integer',
                 'lengua_materna' => 'required|string|max:30',
                 'nacionalidad' => 'required|string|max:30',
-                'departamento' => 'required|string|max:30',
-                'provincia' => 'required|string|max:30',
-                'distrito' => 'required|string|max:30',
+                // 'departamento' => 'required|string|max:30',
+                // 'provincia' => 'required|string|max:30',
+                // 'distrito' => 'required|string|max:30',
                 'colegio_procedencia' => 'nullable|string|max:50',
                 'direccion' => 'required|string|max:100',
                 'telefono_fijo' => 'nullable|string|max:30',
@@ -186,9 +186,9 @@ class EstudianteController extends BaseController
                 'sexo_ap' => 'required|boolean',
                 'telefono_celular_ap' => 'nullable|string|size:9',
                 'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-            ]);
+            ];
         }else{
-            $request->validate([
+            $validaciones = [
                 'primer_nombre' => 'required|string|max:30',
                 'otros_nombres' => 'nullable|string|max:30',
                 'apellido_paterno' => 'required|string|max:30',
@@ -201,9 +201,9 @@ class EstudianteController extends BaseController
                 'año_ingreso' => 'required|integer',
                 'lengua_materna' => 'required|string|max:30',
                 'nacionalidad' => 'required|string|max:30',
-                'departamento' => 'required|string|max:30',
-                'provincia' => 'required|string|max:30',
-                'distrito' => 'required|string|max:30',
+                // 'departamento' => 'required|string|max:30',
+                // 'provincia' => 'required|string|max:30',
+                // 'distrito' => 'required|string|max:30',
                 'colegio_procedencia' => 'nullable|string|max:50',
                 'direccion' => 'required|string|max:100',
                 'telefono_fijo' => 'nullable|string|max:30',
@@ -221,8 +221,22 @@ class EstudianteController extends BaseController
                 'sexo_ap' => 'required|boolean',
                 'telefono_celular_ap' => 'nullable|string|size:9',
                 'photo2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024',
-            ]);
+            ]; 
         }
+
+        if ($request->nacionalidad === 'Extranjero(a)') {
+            // Si la nacionalidad es extranjera, los campos son opcionales
+            $validaciones['departamento'] = 'nullable|string|max:30';
+            $validaciones['provincia'] = 'nullable|string|max:30';
+            $validaciones['distrito'] = 'nullable|string|max:30';
+        } else {
+            // Si la nacionalidad no es extranjera, los campos son obligatorios
+            $validaciones['departamento'] = 'required|string|max:30';
+            $validaciones['provincia'] = 'required|string|max:30';
+            $validaciones['distrito'] = 'required|string|max:30';
+        }
+
+        $request->validate($validaciones);
 
         // Generar un código estudiante aleatorio de 10 dígitos
         do {
@@ -294,28 +308,54 @@ class EstudianteController extends BaseController
         ]);
 
         // Crear el estudiante
-        $estudiante = Estudiante::create([
-            'codigo_estudiante' => $codigoEstudiante,
-            'user_id' => $user->id,
-            'id_apoderado' => $apoderado->id,
-            'primer_nombre' => $request->input('primer_nombre'),
-            'otros_nombres' => $request->input('otros_nombres'),
-            'apellido_paterno' => $request->input('apellido_paterno'),
-            'apellido_materno' => $request->input('apellido_materno'),
-            'dni' => $request->input('dni'),
-            'email' => $request->input('email'),
-            'telefono_celular' => $request->input('telefono_celular'),
-            'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-            'sexo' => $request->input('sexo'),
-            'nro_matricula' => null,
-            'año_ingreso' => $request->input('año_ingreso'),
-            'lengua_materna' => $request->input('lengua_materna'),
-            'colegio_procedencia' => $request->input('colegio_procedencia'),
-            'nacionalidad' => $request->input('nacionalidad'),
-            'departamento' => $request->input('departamento'),
-            'provincia' => $request->input('provincia'),
-            'distrito' => $request->input('distrito'),
-        ]);
+        if($request->nacionalidad == 'Peruano(a)') {
+            $estudiante = Estudiante::create([
+                'codigo_estudiante' => $codigoEstudiante,
+                'user_id' => $user->id,
+                'id_apoderado' => $apoderado->id,
+                'primer_nombre' => $request->input('primer_nombre'),
+                'otros_nombres' => $request->input('otros_nombres'),
+                'apellido_paterno' => $request->input('apellido_paterno'),
+                'apellido_materno' => $request->input('apellido_materno'),
+                'dni' => $request->input('dni'),
+                'email' => $request->input('email'),
+                'telefono_celular' => $request->input('telefono_celular'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'sexo' => $request->input('sexo'),
+                'nro_matricula' => null,
+                'año_ingreso' => $request->input('año_ingreso'),
+                'lengua_materna' => $request->input('lengua_materna'),
+                'colegio_procedencia' => $request->input('colegio_procedencia'),
+                'nacionalidad' => $request->input('nacionalidad'),
+                'departamento' => $request->input('departamento'),
+                'provincia' => $request->input('provincia'),
+                'distrito' => $request->input('distrito'),
+            ]);
+        } else {
+            $estudiante = Estudiante::create([
+                'codigo_estudiante' => $codigoEstudiante,
+                'user_id' => $user->id,
+                'id_apoderado' => $apoderado->id,
+                'primer_nombre' => $request->input('primer_nombre'),
+                'otros_nombres' => $request->input('otros_nombres'),
+                'apellido_paterno' => $request->input('apellido_paterno'),
+                'apellido_materno' => $request->input('apellido_materno'),
+                'dni' => $request->input('dni'),
+                'email' => $request->input('email'),
+                'telefono_celular' => $request->input('telefono_celular'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'sexo' => $request->input('sexo'),
+                'nro_matricula' => null,
+                'año_ingreso' => $request->input('año_ingreso'),
+                'lengua_materna' => $request->input('lengua_materna'),
+                'colegio_procedencia' => $request->input('colegio_procedencia'),
+                'nacionalidad' => $request->input('nacionalidad'),
+                'departamento' => null,
+                'provincia' => null,
+                'distrito' => null,
+            ]);
+        }
+        
 
         // Enviar correo con credenciales generadas
         Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
@@ -337,7 +377,7 @@ class EstudianteController extends BaseController
         $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
         $domicilio = Domicilio::findOrFail($estudiante->user_id);
 
-        $request->validate([
+        $validaciones = [
             'primer_nombre' => 'required|string|max:30',
             'otros_nombres' => 'nullable|string|max:30',
             'apellido_paterno' => 'required|string|max:30',
@@ -360,27 +400,63 @@ class EstudianteController extends BaseController
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
-        ]);
+        ];
+
+        if ($request->nacionalidad === 'Extranjero(a)') {
+            // Si la nacionalidad es extranjera, los campos son opcionales
+            $validaciones['departamento'] = 'nullable|string|max:30';
+            $validaciones['provincia'] = 'nullable|string|max:30';
+            $validaciones['distrito'] = 'nullable|string|max:30';
+        } else {
+            // Si la nacionalidad no es extranjera, los campos son obligatorios
+            $validaciones['departamento'] = 'required|string|max:30';
+            $validaciones['provincia'] = 'required|string|max:30';
+            $validaciones['distrito'] = 'required|string|max:30';
+        }
+
+        $request->validate($validaciones);
 
         // Actualizar datos del estudiante
-        $estudiante->update([
-            'primer_nombre' => $request->primer_nombre,
-            'otros_nombres' => $request->otros_nombres,
-            'apellido_paterno' => $request->apellido_paterno,
-            'apellido_materno' => $request->apellido_materno,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'sexo' => $request->sexo,
-            'año_ingreso' => $request->año_ingreso,
-            'telefono_celular' => $request->telefono_celular,
-            'lengua_materna' => $request->lengua_materna,
-            'colegio_procedencia' => $request->colegio_procedencia,
-            'nacionalidad' => $request->nacionalidad,
-            'departamento' => $request->departamento,
-            'provincia' => $request->provincia,
-            'distrito' => $request->distrito,
-        ]);
+        if($request->nacionalidad == 'Peruano(a)') {
+            $estudiante->update([
+                'primer_nombre' => $request->primer_nombre,
+                'otros_nombres' => $request->otros_nombres,
+                'apellido_paterno' => $request->apellido_paterno,
+                'apellido_materno' => $request->apellido_materno,
+                'dni' => $request->dni,
+                'email' => $request->email,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'sexo' => $request->sexo,
+                'año_ingreso' => $request->año_ingreso,
+                'telefono_celular' => $request->telefono_celular,
+                'lengua_materna' => $request->lengua_materna,
+                'colegio_procedencia' => $request->colegio_procedencia,
+                'nacionalidad' => $request->nacionalidad,
+                'departamento' => $request->departamento,
+                'provincia' => $request->provincia,
+                'distrito' => $request->distrito,
+            ]);
+        } else {
+            $estudiante->update([
+                'primer_nombre' => $request->primer_nombre,
+                'otros_nombres' => $request->otros_nombres,
+                'apellido_paterno' => $request->apellido_paterno,
+                'apellido_materno' => $request->apellido_materno,
+                'dni' => $request->dni,
+                'email' => $request->email,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'sexo' => $request->sexo,
+                'año_ingreso' => $request->año_ingreso,
+                'telefono_celular' => $request->telefono_celular,
+                'lengua_materna' => $request->lengua_materna,
+                'colegio_procedencia' => $request->colegio_procedencia,
+                'nacionalidad' => $request->nacionalidad,
+                'departamento' => null,
+                'provincia' => null,
+                'distrito' => null,
+            ]);
+        }
+        
 
         if ($request->hasFile('photo')) {
             $estudiante->user->updateProfilePhoto($request->file('photo'));

@@ -184,7 +184,7 @@
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="colegio_procedencia">
                         Colegio de Procedencia
                     </label>
@@ -196,7 +196,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
+                <div class="w-full md:w-1/2 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="lengua_materna">
                         Lengua Materna
                     </label>
@@ -208,7 +208,7 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-0">
+                {{-- <div class="w-full md:w-1/3 px-3 mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
                         Nacionalidad
                     </label>
@@ -219,46 +219,25 @@
                     @error('nacionalidad')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
             </div>
     
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
-                        Departamento
+                <div class="w-full px-3 mb-6 lg:mb-0">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
+                        Nacionalidad
                     </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="departamento" name="departamento" type="text" placeholder="Departamento"
-                        value="{{ old('departamento', $estudiante->departamento) }}">
-                    @error('departamento')
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="nacionalidad" id="nacionalidad" onchange="ocultar()">
+                        <option value="Peruano(a)" {{ $estudiante->nacionalidad == 'Peruano(a)' ? 'selected' : '' }} >Peruano(a)</option>
+                        <option value="Extranjero(a)" {{ $estudiante->nacionalidad == 'Extranjero(a)' ? 'selected' : '' }} >Extranjero(a)</option>
+                    </select>
+                    @error('nacionalidad')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia">
-                        Provincia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="provincia" name="provincia" type="text" placeholder="Provincia"
-                        value="{{ old('provincia', $estudiante->provincia) }}">
-                    @error('provincia')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito">
-                        Distrito
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito" name="distrito" type="text" placeholder="Distrito"
-                        value="{{ old('distrito', $estudiante->distrito) }}">
-                    @error('distrito')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
+            </div>
+            <div id="datos-geograficos" class="flex flex-wrap -mx-3 mb-6">
+                <x-edit-ubicacion-select :entidad="$estudiante" :departamento-name="'departamento'" :provincia-name="'provincia'" :distrito-name="'distrito'"/>
             </div>
         </div>
     
@@ -291,7 +270,7 @@
                     @enderror
                 </div>
             </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
+            {{-- <div class="flex flex-wrap -mx-3 mb-6">
                 
                 <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento_d">
@@ -329,6 +308,9 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
+            </div> --}}
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <x-domicilio-ubicacion-select :entidad="$estudiante" :departamento-name="'departamento_d'" :provincia-name="'provincia_d'" :distrito-name="'distrito_d'"/>
             </div>
         </div>
     
@@ -344,6 +326,29 @@
 @endsection
 
 @section('scripts')
+    <script>
+        function ocultar() {
+            const div = document.getElementById('datos-geograficos');
+            const select = document.getElementById('nacionalidad');
+            console.log(select.value);
+            if (select.value) {
+                if (select.value == 'Extranjero(a)'){
+                    div.classList.add('smooth-hidden');
+                    div.classList.remove('smooth-visible');
+                    setTimeout(() => {
+                        div.classList.add('hidden');
+                    }, 600);
+                }
+                else {
+                    div.classList.remove('hidden');
+                    setTimeout(() => {
+                        div.classList.remove('smooth-hidden');
+                        div.classList.add('smooth-visible');
+                    }, 400);
+                }
+            }
+        }
+    </script>
     <script>
         document.getElementById('dni').addEventListener('input', function (e) {
             var value = e.target.value;

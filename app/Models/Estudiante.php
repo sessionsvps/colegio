@@ -101,4 +101,8 @@ class Estudiante extends Model
         return $registro ? $registro->id_seccion : null;
     }
 
+    public function domicilio() 
+    {
+        return $this->belongsTo(Domicilio::class, 'user_id');
+    }
 }
