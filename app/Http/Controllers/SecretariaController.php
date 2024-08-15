@@ -62,7 +62,7 @@ class SecretariaController extends BaseController
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validaciones = [
             'primer_nombre' => 'required|string|max:30',
             'otros_nombres' => 'nullable|string|max:30',
             'apellido_paterno' => 'required|string|max:30',
@@ -74,9 +74,9 @@ class SecretariaController extends BaseController
             'id_estado' => 'required|integer|exists:estados,id_estado',
             'fecha_nacimiento' => 'required|date',
             'nacionalidad' => 'required|string|max:30',
-            'departamento' => 'required|string|max:30',
-            'provincia' => 'required|string|max:30',
-            'distrito' => 'required|string|max:30',
+            // 'departamento' => 'required|string|max:30',
+            // 'provincia' => 'required|string|max:30',
+            // 'distrito' => 'required|string|max:30',
             'fecha_ingreso' => 'required|date',
             'direccion' => 'required|string|max:100',
             'telefono_fijo' => 'nullable|string|max:30',
@@ -84,7 +84,21 @@ class SecretariaController extends BaseController
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
-        ]);
+        ];
+
+        if ($request->nacionalidad === 'Extranjero(a)') {
+            // Si la nacionalidad es extranjera, los campos son opcionales
+            $validaciones['departamento'] = 'nullable|string|max:30';
+            $validaciones['provincia'] = 'nullable|string|max:30';
+            $validaciones['distrito'] = 'nullable|string|max:30';
+        } else {
+            // Si la nacionalidad no es extranjera, los campos son obligatorios
+            $validaciones['departamento'] = 'required|string|max:30';
+            $validaciones['provincia'] = 'required|string|max:30';
+            $validaciones['distrito'] = 'required|string|max:30';
+        }
+
+        $request->validate($validaciones);
 
         // Generar un código aleatorio de 5 dígitos
         do {
@@ -125,25 +139,47 @@ class SecretariaController extends BaseController
         ]);
 
         // Crear el secretarias
-        $secretarias = Secretaria::create([
-            'codigo_secretaria' => $codigoSecretaria,
-            'user_id' => $user->id,
-            'primer_nombre' => $request->input('primer_nombre'),
-            'otros_nombres' => $request->input('otros_nombres'),
-            'apellido_paterno' => $request->input('apellido_paterno'),
-            'apellido_materno' => $request->input('apellido_materno'),
-            'dni' => $request->input('dni'),
-            'email' => $request->input('email'),
-            'sexo' => $request->input('sexo'),
-            'telefono_celular' => $request->input('telefono_celular'),
-            'id_estado' => $request->input('id_estado'),
-            'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-            'nacionalidad' => $request->input('nacionalidad'),
-            'departamento' => $request->input('departamento'),
-            'provincia' => $request->input('provincia'),
-            'distrito' => $request->input('distrito'),
-            'fecha_ingreso' => $request->input('fecha_ingreso'),
-        ]);
+        if($request->nacionalidad == 'Peruano(a)') {
+            $secretarias = Secretaria::create([
+                'codigo_secretaria' => $codigoSecretaria,
+                'user_id' => $user->id,
+                'primer_nombre' => $request->input('primer_nombre'),
+                'otros_nombres' => $request->input('otros_nombres'),
+                'apellido_paterno' => $request->input('apellido_paterno'),
+                'apellido_materno' => $request->input('apellido_materno'),
+                'dni' => $request->input('dni'),
+                'email' => $request->input('email'),
+                'sexo' => $request->input('sexo'),
+                'telefono_celular' => $request->input('telefono_celular'),
+                'id_estado' => $request->input('id_estado'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'nacionalidad' => $request->input('nacionalidad'),
+                'departamento' => $request->input('departamento'),
+                'provincia' => $request->input('provincia'),
+                'distrito' => $request->input('distrito'),
+                'fecha_ingreso' => $request->input('fecha_ingreso'),
+            ]);
+        } else {
+            $secretarias = Secretaria::create([
+                'codigo_secretaria' => $codigoSecretaria,
+                'user_id' => $user->id,
+                'primer_nombre' => $request->input('primer_nombre'),
+                'otros_nombres' => $request->input('otros_nombres'),
+                'apellido_paterno' => $request->input('apellido_paterno'),
+                'apellido_materno' => $request->input('apellido_materno'),
+                'dni' => $request->input('dni'),
+                'email' => $request->input('email'),
+                'sexo' => $request->input('sexo'),
+                'telefono_celular' => $request->input('telefono_celular'),
+                'id_estado' => $request->input('id_estado'),
+                'fecha_nacimiento' => $request->input('fecha_nacimiento'),
+                'nacionalidad' => $request->input('nacionalidad'),
+                'departamento' => null,
+                'provincia' => null,
+                'distrito' => null,
+                'fecha_ingreso' => $request->input('fecha_ingreso'),
+            ]);
+        }
 
         // Enviar correo con credenciales generadas
         Mail::to($request->input('email'))->send(new Credenciales($email, $password,false));
@@ -163,7 +199,7 @@ class SecretariaController extends BaseController
         $secretaria = Secretaria::where('codigo_secretaria', $codigo_secretaria)->firstOrFail();
         $domicilio = Domicilio::findOrFail($secretaria->user_id);
 
-        $request->validate([
+        $validaciones = [
             'primer_nombre' => 'required|string|max:30',
             'otros_nombres' => 'nullable|string|max:30',
             'apellido_paterno' => 'required|string|max:30',
@@ -176,35 +212,69 @@ class SecretariaController extends BaseController
             'fecha_nacimiento' => 'required|date',
             'fecha_ingreso' => 'required|date',
             'nacionalidad' => 'required|string|max:30',
-            'departamento' => 'required|string|max:30',
-            'provincia' => 'required|string|max:30',
-            'distrito' => 'required|string|max:30',
+            // 'departamento' => 'required|string|max:30',
+            // 'provincia' => 'required|string|max:30',
+            // 'distrito' => 'required|string|max:30',
             'direccion' => 'required|string|max:100',
             'telefono_fijo' => 'nullable|string|max:30',
             'departamento_d' => 'required|string|max:30',
             'provincia_d' => 'required|string|max:30',
             'distrito_d' => 'required|string|max:30',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
-        ]);
+        ];
+
+        if ($request->nacionalidad === 'Extranjero(a)') {
+            // Si la nacionalidad es extranjera, los campos son opcionales
+            $validaciones['departamento'] = 'nullable|string|max:30';
+            $validaciones['provincia'] = 'nullable|string|max:30';
+            $validaciones['distrito'] = 'nullable|string|max:30';
+        } else {
+            // Si la nacionalidad no es extranjera, los campos son obligatorios
+            $validaciones['departamento'] = 'required|string|max:30';
+            $validaciones['provincia'] = 'required|string|max:30';
+            $validaciones['distrito'] = 'required|string|max:30';
+        }
+
+        $request->validate($validaciones);
 
         // Actualizar datos del secretaria
-        $secretaria->update([
-            'primer_nombre' => $request->primer_nombre,
-            'otros_nombres' => $request->otros_nombres,
-            'apellido_paterno' => $request->apellido_paterno,
-            'apellido_materno' => $request->apellido_materno,
-            'dni' => $request->dni,
-            'email' => $request->email,
-            'telefono_celular' => $request->telefono_celular,
-            'sexo' => $request->sexo,
-            'id_estado' => $request->id_estado,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
-            'fecha_ingreso' => $request->fecha_ingreso,
-            'nacionalidad' => $request->nacionalidad,
-            'departamento' => $request->departamento,
-            'provincia' => $request->provincia,
-            'distrito' => $request->distrito,
-        ]);
+        if($request->nacionalidad == 'Peruano(a)') {
+            $secretaria->update([
+                'primer_nombre' => $request->primer_nombre,
+                'otros_nombres' => $request->otros_nombres,
+                'apellido_paterno' => $request->apellido_paterno,
+                'apellido_materno' => $request->apellido_materno,
+                'dni' => $request->dni,
+                'email' => $request->email,
+                'telefono_celular' => $request->telefono_celular,
+                'sexo' => $request->sexo,
+                'id_estado' => $request->id_estado,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'fecha_ingreso' => $request->fecha_ingreso,
+                'nacionalidad' => $request->nacionalidad,
+                'departamento' => $request->departamento,
+                'provincia' => $request->provincia,
+                'distrito' => $request->distrito,
+            ]);
+        } else {
+            $secretaria->update([
+                'primer_nombre' => $request->primer_nombre,
+                'otros_nombres' => $request->otros_nombres,
+                'apellido_paterno' => $request->apellido_paterno,
+                'apellido_materno' => $request->apellido_materno,
+                'dni' => $request->dni,
+                'email' => $request->email,
+                'telefono_celular' => $request->telefono_celular,
+                'sexo' => $request->sexo,
+                'id_estado' => $request->id_estado,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'fecha_ingreso' => $request->fecha_ingreso,
+                'nacionalidad' => $request->nacionalidad,
+                'departamento' => null,
+                'provincia' => null,
+                'distrito' => null,
+            ]);
+        }
 
         if ($request->hasFile('photo')) {
             $secretaria->user->updateProfilePhoto($request->file('photo'));

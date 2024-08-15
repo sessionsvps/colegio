@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\ExoneracionController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\SecretariaController;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
@@ -73,4 +74,7 @@ Route::middleware([
     Route::resource('apoderados', ApoderadoController::class)->except('show');
     Route::get('/apoderados/buscar', [ApoderadoController::class, 'buscarPorDni'])->name('apoderados.buscar');
 
+    // Route::get('/get-departamentos', [LocationController::class, 'getDepartamentos']);
+    Route::get('/get-provincias/{id}', [LocationController::class, 'getProvincias']);
+    Route::get('/get-distritos/{id}', [LocationController::class, 'getDistritos']);
 });

@@ -42,4 +42,9 @@ class Secretaria extends Model
     {
         return Carbon::parse($value)->format('Y-m-d');
     }
+
+    public function domicilio()
+    {
+        return $this->belongsTo(Domicilio::class, 'user_id');
+    }
 }

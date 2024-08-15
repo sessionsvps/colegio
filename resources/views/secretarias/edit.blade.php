@@ -206,19 +206,19 @@
             </div>
 
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
+                <div class="w-full px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
                         Nacionalidad
                     </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="nacionalidad" name="nacionalidad" type="text" placeholder="Nacionalidad"
-                        value="{{ old('nacionalidad', $secretaria->nacionalidad) }}">
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="nacionalidad" id="nacionalidad" onchange="ocultar()">
+                        <option value="Peruano(a)" {{ $secretaria->nacionalidad == 'Peruano(a)' ? 'selected' : '' }} >Peruano(a)</option>
+                        <option value="Extranjero(a)" {{ $secretaria->nacionalidad == 'Extranjero(a)' ? 'selected' : '' }} >Extranjero(a)</option>
+                    </select>
                     @error('nacionalidad')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
+                {{-- <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
                         Departamento
                     </label>
@@ -251,7 +251,10 @@
                     @error('distrito')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
+            </div>
+            <div id="datos-geograficos" class="flex flex-wrap -mx-3 mb-6">
+                <x-edit-ubicacion-select :entidad="$secretaria" :departamento-name="'departamento'" :provincia-name="'provincia'" :distrito-name="'distrito'"/>
             </div>
         </div>
 
@@ -284,7 +287,8 @@
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
+                <x-domicilio-ubicacion-select :entidad="$secretaria" :departamento-name="'departamento_d'" :provincia-name="'provincia_d'" :distrito-name="'distrito_d'"/>
+                {{-- <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="_d">
                         Departamento
                     </label>
@@ -319,7 +323,7 @@
                     @error('distrito_d')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -335,6 +339,29 @@
 @endsection
 
 @section('scripts')
+<script>
+    function ocultar() {
+        const div = document.getElementById('datos-geograficos');
+        const select = document.getElementById('nacionalidad');
+        console.log(select.value);
+        if (select.value) {
+            if (select.value == 'Extranjero(a)'){
+                div.classList.add('smooth-hidden');
+                div.classList.remove('smooth-visible');
+                setTimeout(() => {
+                    div.classList.add('hidden');
+                }, 600);
+            }
+            else {
+                div.classList.remove('hidden');
+                setTimeout(() => {
+                    div.classList.remove('smooth-hidden');
+                    div.classList.add('smooth-visible');
+                }, 400);
+            }
+        }
+    }
+</script>
 <script>
     document.getElementById('dni').addEventListener('input', function (e) {
             var value = e.target.value;

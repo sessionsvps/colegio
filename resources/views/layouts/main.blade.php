@@ -23,6 +23,20 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <title>Colegio Sideral Carrión</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .smooth-hidden {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .smooth-visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+    </style>
 </head>
 
 <body>
