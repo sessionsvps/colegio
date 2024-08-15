@@ -254,42 +254,6 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <x-domicilio-ubicacion-select :entidad="$secretaria" :departamento-name="'departamento_d'" :provincia-name="'provincia_d'" :distrito-name="'distrito_d'"/>
-                {{-- <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="_d">
-                        Departamento
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="departamento_d" name="departamento_d" type="text" placeholder="Departamento"
-                        value="{{ old('departamento_d', $secretaria->user->domicilio->departamento) }}">
-                    @error('departamento_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 mb-6 md:mb-0 px-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia_d">
-                        Provincia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="provincia_d" name="provincia_d" type="text" placeholder="Provincia"
-                        value="{{ old('provincia_d', $secretaria->user->domicilio->provincia) }}">
-                    @error('provincia_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full px-3 md:w-1/3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito_d">
-                        Distrito
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito_d" name="distrito_d" type="text" placeholder="Distrito"
-                        value="{{ old('distrito_d', $secretaria->user->domicilio->distrito) }}">
-                    @error('distrito_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div> --}}
             </div>
         </div>
 

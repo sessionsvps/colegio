@@ -217,52 +217,21 @@
             </div>
         
             <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
+                <div class="w-full px-3 mb-6 lg:mb-0">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="nacionalidad">
                         Nacionalidad
                     </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="nacionalidad" name="nacionalidad" type="text" placeholder="Nacionalidad"
-                        value="{{ old('nacionalidad') }}">
+                    <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="nacionalidad" id="nacionalidad" onchange="ocultar()">
+                        <option value="Peruano(a)" {{ old('nacionalidad') == 'Peruano(a)' ? 'selected' : '' }} >Peruano(a)</option>
+                        <option value="Extranjero(a)" {{ old('nacionalidad') == 'Extranjero(a)' ? 'selected' : '' }} >Extranjero(a)</option>
+                    </select>
                     @error('nacionalidad')
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
-                        Departamento
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="departamento" name="departamento" type="text" placeholder="Departamento"
-                        value="{{ old('departamento') }}">
-                    @error('departamento')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia">
-                        Provincia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="provincia" name="provincia" type="text" placeholder="Provincia" value="{{ old('provincia') }}">
-                    @error('provincia')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito">
-                        Distrito
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito" name="distrito" type="text" placeholder="Distrito" value="{{ old('distrito') }}">
-                    @error('distrito')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
+            </div>
+            <div id="datos-geograficos" class="flex flex-wrap -mx-3 mb-6">
+                <x-ubicacion-select :departamento-name="'departamento'" :provincia-name="'provincia'" :distrito-name="'distrito'"/>
             </div>
         </div>
     
@@ -295,42 +264,7 @@
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
-                
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento_d">
-                        Departamento
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="departamento_d" name="departamento_d" type="text" placeholder="Departamento"
-                        value="{{ old('departamento_d') }}">
-                    @error('departamento_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia_d">
-                        Provincia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="provincia_d" name="provincia_d" type="text" placeholder="Provincia"
-                        value="{{ old('provincia_d') }}">
-                    @error('provincia_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/3 px-3 mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito_d">
-                        Distrito
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito_d" name="distrito_d" type="text" placeholder="Distrito" value="{{ old('distrito_d') }}">
-                    @error('distrito_d')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
+                <x-ubicacion-select :departamento-name="'departamento_d'" :provincia-name="'provincia_d'" :distrito-name="'distrito_d'"/>
             </div>
         </div>
     
@@ -346,6 +280,29 @@
 @endsection
 
 @section('scripts')
+    <script>
+        function ocultar() {
+            const div = document.getElementById('datos-geograficos');
+            const select = document.getElementById('nacionalidad');
+            console.log(select.value);
+            if (select.value) {
+                if (select.value == 'Extranjero(a)'){
+                    div.classList.add('smooth-hidden');
+                    div.classList.remove('smooth-visible');
+                    setTimeout(() => {
+                        div.classList.add('hidden');
+                    }, 600);
+                }
+                else {
+                    div.classList.remove('hidden');
+                    setTimeout(() => {
+                        div.classList.remove('smooth-hidden');
+                        div.classList.add('smooth-visible');
+                    }, 400);
+                }
+            }
+        }
+    </script>
     <script>
         document.getElementById('dni').addEventListener('input', function (e) {
             var value = e.target.value;
