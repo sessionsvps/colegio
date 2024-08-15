@@ -218,40 +218,6 @@
                     <p class="text-red-500 text-xs italic">{{ $message }}</p>
                     @enderror
                 </div>
-                {{-- <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 lg:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="departamento">
-                        Departamento
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="departamento" name="departamento" type="text" placeholder="Departamento"
-                        value="{{ old('departamento', $secretaria->departamento) }}">
-                    @error('departamento')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3 mb-6 md:mb-0">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="provincia">
-                        Provincia
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="provincia" name="provincia" type="text" placeholder="Provincia" value="{{ old('provincia', $secretaria->provincia) }}">
-                    @error('provincia')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div class="w-full md:w-1/2 lg:w-1/4 px-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="distrito">
-                        Distrito
-                    </label>
-                    <input
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="distrito" name="distrito" type="text" placeholder="Distrito" value="{{ old('distrito', $secretaria->distrito) }}">
-                    @error('distrito')
-                    <p class="text-red-500 text-xs italic">{{ $message }}</p>
-                    @enderror
-                </div> --}}
             </div>
             <div id="datos-geograficos" class="flex flex-wrap -mx-3 mb-6">
                 <x-edit-ubicacion-select :entidad="$secretaria" :departamento-name="'departamento'" :provincia-name="'provincia'" :distrito-name="'distrito'"/>
