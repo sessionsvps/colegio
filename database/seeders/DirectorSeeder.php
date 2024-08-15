@@ -38,9 +38,9 @@ class DirectorSeeder extends Seeder
             'user_id' => $user->id,
             'telefono_fijo' => '01 457191',
             'direccion' => 'Calle Aija 4900 Urb. Parque Naranjal',
-            'departamento' => 'Lima',
-            'provincia' => 'Lima',
-            'distrito' => 'San Martin de Porres',
+            'departamento' => 15,
+            'provincia' => 127,
+            'distrito' => 1285,
         ]);
 
         // Crear el director
@@ -57,10 +57,10 @@ class DirectorSeeder extends Seeder
             'telefono_celular' => '991001882',
             'id_estado' => 1,
             'fecha_nacimiento' => '1991-11-05',
-            'nacionalidad' => 'Peruano',
-            'departamento' => 'Lima',
-            'provincia' => 'Lima',
-            'distrito' => 'San Martin de Porres',
+            'nacionalidad' => 'Peruana',
+            'departamento' => 15,
+            'provincia' => 127,
+            'distrito' => 1285,
             'fecha_ingreso' => '2020-05-05',
         ]);
     }

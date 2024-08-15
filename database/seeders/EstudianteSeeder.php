@@ -61,9 +61,9 @@ class EstudianteSeeder extends Seeder
                 'user_id' => $userEstudiante->id,
                 'telefono_fijo' => $faker->optional()->regexify('[0-9]{7,9}'),
                 'direccion' => $faker->address,
-                'departamento' => $faker->state,
-                'provincia' => $faker->city,
-                'distrito' => $faker->city,
+                'departamento' => 15,
+                'provincia' => 127,
+                'distrito' => 1272,
             ]);
 
             // Crear el estudiante
@@ -84,10 +84,10 @@ class EstudianteSeeder extends Seeder
                 'año_ingreso' => $faker->numberBetween(2020, 2024),
                 'lengua_materna' => $faker->word,
                 'colegio_procedencia' => $faker->optional()->company,
-                'nacionalidad' => $faker->country,
-                'departamento' => $faker->state,
-                'provincia' => $faker->city,
-                'distrito' => $faker->city,
+                'nacionalidad' => 'Peruana',
+                'departamento' => 15,
+                'provincia' => 127,
+                'distrito' => 1272,
             ]);
         }
     }

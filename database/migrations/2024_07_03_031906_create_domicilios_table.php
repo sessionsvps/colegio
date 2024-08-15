@@ -15,11 +15,14 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->primary();
             $table->string('direccion',100);
             $table->string('telefono_fijo', 30)->nullable();
-            $table->string('departamento', 30);
-            $table->string('provincia', 30);
-            $table->string('distrito', 30);
+            $table->integer('departamento')->unsigned(false)->nullable();
+            $table->integer('provincia')->unsigned(false)->nullable();
+            $table->integer('distrito')->unsigned(false)->nullable();
             // FK
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('departamento')->references('id')->on('departamentos');
+            $table->foreign('provincia')->references('id')->on('provincias');
+            $table->foreign('distrito')->references('id')->on('distritos');
         });
     }
 

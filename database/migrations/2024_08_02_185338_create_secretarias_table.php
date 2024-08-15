@@ -24,9 +24,9 @@ return new class extends Migration
             $table->boolean('sexo');
             $table->string('telefono_celular', 9)->nullable();
             $table->string('nacionalidad', 30);
-            $table->string('departamento', 30);
-            $table->string('provincia', 30);
-            $table->string('distrito', 30);
+            $table->integer('departamento')->unsigned(false)->nullable();
+            $table->integer('provincia')->unsigned(false)->nullable();
+            $table->integer('distrito')->unsigned(false)->nullable();
             $table->unsignedtinyInteger('id_estado');
             $table->datetime('fecha_ingreso');
             $table->timestamps();
@@ -34,7 +34,10 @@ return new class extends Migration
             // Definir las claves foráneas
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_estado')->references('id_estado')->on('estados');
-
+            
+            $table->foreign('departamento')->references('id')->on('departamentos');
+            $table->foreign('provincia')->references('id')->on('provincias');
+            $table->foreign('distrito')->references('id')->on('distritos');
             // Definir clave primaria compuesta
             $table->primary(['codigo_secretaria', 'user_id']);
         });

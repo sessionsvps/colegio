@@ -42,9 +42,9 @@ class DocenteSeeder extends Seeder
                 'user_id' => $user->id,
                 'telefono_fijo' => $faker->optional()->regexify('[0-9]{7,9}'),
                 'direccion' => $faker->address,
-                'departamento' => $faker->state,
-                'provincia' => $faker->city,
-                'distrito' => $faker->citySuffix,
+                'departamento' => 15,
+                'provincia' => 127,
+                'distrito' => 1272,
             ]);
 
             // Crear el docente
@@ -61,10 +61,10 @@ class DocenteSeeder extends Seeder
                 'telefono_celular' => $faker->optional()->regexify('[0-9]{9}'),
                 'id_estado' => 1,
                 'fecha_nacimiento' => $faker->date('Y-m-d', '2000-01-01'),
-                'nacionalidad' => 'Peruano',
-                'departamento' => $faker->state,
-                'provincia' => $faker->city,
-                'distrito' => $faker->citySuffix,
+                'nacionalidad' => 'Peruana',
+                'departamento' => 15,
+                'provincia' => 127,
+                'distrito' => 1272,
                 'esTutor' => false,
                 'fecha_ingreso' => $faker->dateTimeBetween('2020-01-01', '2024-12-31')->format('Y-m-d'),
             ]);
