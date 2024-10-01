@@ -149,7 +149,6 @@ class EstudianteController extends BaseController
 
     public function store(Request $request)
     {
-
         $apoderado = Apoderado::where('dni', $request->input('dni_ap'))->first();
 
         if (!$apoderado){
@@ -262,7 +261,10 @@ class EstudianteController extends BaseController
             $user->updateProfilePhoto($request->file('photo'));
         }
 
+        $hayApRegistrado = True;
+
         if(!$apoderado){
+            $hayApRegistrado = False;
             // Generar el correo electrónico del apoderado
             $primerNombreAp = $request->input('primer_nombre_ap');
             $apellidoPaternoAp = $request->input('apellido_paterno_ap');
@@ -359,7 +361,7 @@ class EstudianteController extends BaseController
 
         // Enviar correo con credenciales generadas
         Mail::to($request->input('email'))->send(new Credenciales($email, $password,true));
-        if(!$apoderado){
+        if(!$hayApRegistrado){
             Mail::to($request->input('email_ap'))->send(new Credenciales($email_ap, $password_ap, false));
         }
 
