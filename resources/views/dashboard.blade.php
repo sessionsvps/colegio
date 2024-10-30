@@ -52,83 +52,40 @@
         <div class="flex flex-col mt-8 px-14">
             <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
                 <div class="mr-0 md:ml-5">
-                    <label for="grado" class="block text-sm font-medium text-gray-700">Nivel</label>
-                    <select id="grado" name="grado" required
+                    <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
+                    <select id="nivel" name="nivel" onchange="updateGrados()" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        @if(!isset($filtra_nivel))
                         <option value="" selected disabled>Seleccione un nivel</option>
-                        @else
-                        @if($filtra_nivel == 1)
-                        @foreach($grados_primaria as $grado_p)
-                        <option value="{{ $grado_p->id_grado }}" {{ request('grado')==$grado_p->id_grado ? 'selected' : '' }}>
-                            {{ $grado_p->detalle }}
-                        </option>
+                        @foreach($niveles as $nivel)
+                            <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
+                                {{ $nivel->detalle }}
+                            </option>
                         @endforeach
-                        @elseif($filtra_nivel == 2)
-                        @foreach($grados_secundaria as $grado_s)
-                        <option value="{{ $grado_s->id_grado }}" {{ request('grado')==$grado_s->id_grado ? 'selected' : '' }}>
-                            {{ $grado_s->detalle }}
-                        </option>
-                        @endforeach
-                        @endif
-                        @endif
                     </select>
                 </div>
                 <div class="mr-0 md:ml-5">
                     <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
                     <select id="grado" name="grado" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        @if(!isset($filtra_nivel))
                         <option value="" selected disabled>Seleccione un grado</option>
-                        @else
-                        @if($filtra_nivel == 1)
-                        @foreach($grados_primaria as $grado_p)
-                        <option value="{{ $grado_p->id_grado }}" {{ request('grado')==$grado_p->id_grado ? 'selected' : '' }}>
-                            {{ $grado_p->detalle }}
-                        </option>
-                        @endforeach
-                        @elseif($filtra_nivel == 2)
-                        @foreach($grados_secundaria as $grado_s)
-                        <option value="{{ $grado_s->id_grado }}" {{ request('grado')==$grado_s->id_grado ? 'selected' : '' }}>
-                            {{ $grado_s->detalle }}
-                        </option>
-                        @endforeach
-                        @endif
-                        @endif
                     </select>
                 </div>
                 <div class="mr-0 lg:ml-5">
-                    <label for="seccion" class="block text-sm font-medium text-gray-700">Bimestre</label>
-                    <select id="seccion" name="seccion" required
+                    <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
+                    <select id="bimestre" name="bimestre"
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="" selected disabled>Seleccione un bimestre</option>
-                        <option value="1" {{ request('seccion')==1 ? 'selected' : '' }}>A</option>
-                        <option value="2" {{ request('seccion')==2 ? 'selected' : '' }}>B</option>
-                        <option value="3" {{ request('seccion')==3 ? 'selected' : '' }}>C</option>
-                        <option value="4" {{ request('seccion')==4 ? 'selected' : '' }}>D</option>
+                        @foreach($bimestres as $bimestre)
+                        <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
+                            {{ $bimestre->descripcion }}
+                        </option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="mr-0 md:ml-5">
-                    <label for="grado" class="block text-sm font-medium text-gray-700">Curso</label>
-                    <select id="grado" name="grado" required
+                    <label for="curso" class="block text-sm font-medium text-gray-700">Curso</label>
+                    <select id="curso" name="curso" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        @if(!isset($filtra_nivel))
                         <option value="" selected disabled>Seleccione un curso</option>
-                        @else
-                        @if($filtra_nivel == 1)
-                        @foreach($grados_primaria as $grado_p)
-                        <option value="{{ $grado_p->id_grado }}" {{ request('grado')==$grado_p->id_grado ? 'selected' : '' }}>
-                            {{ $grado_p->detalle }}
-                        </option>
-                        @endforeach
-                        @elseif($filtra_nivel == 2)
-                        @foreach($grados_secundaria as $grado_s)
-                        <option value="{{ $grado_s->id_grado }}" {{ request('grado')==$grado_s->id_grado ? 'selected' : '' }}>
-                            {{ $grado_s->detalle }}
-                        </option>
-                        @endforeach
-                        @endif
-                        @endif
                     </select>
                 </div>
                 <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
@@ -448,4 +405,52 @@
 
         }); // end am5.ready()
     </script>
+    <script>
+        document.getElementById('nivel').addEventListener('change', function() {
+            updateGrados();
+            updateCursos();
+        });
+
+        function updateGrados() {
+            const nivel = document.getElementById('nivel').value;
+            const grados = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
+
+            const gradoSelect = document.getElementById('grado');
+            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset opciones
+
+            if (nivel == 1) { // Primaria
+                grados.primaria.forEach(grado => {
+                    const option = document.createElement('option');
+                    option.value = grado.id_grado;
+                    option.textContent = grado.detalle;
+                    gradoSelect.appendChild(option);
+                });
+            } else if (nivel == 2) { // Secundaria
+                grados.secundaria.forEach(grado => {
+                    const option = document.createElement('option');
+                    option.value = grado.id_grado;
+                    option.textContent = grado.detalle;
+                    gradoSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateCursos() {
+        const nivel = document.getElementById('nivel').value;
+        const cursos = @json($cursosPorNivel); // Supón que este JSON tiene todos los cursos agrupados
+
+        const cursoSelect = document.getElementById('curso');
+        cursoSelect.innerHTML = '<option value="" selected disabled>Seleccione un curso</option>'; // Reset opciones
+
+        if (nivel && cursos[nivel]) {
+            cursos[nivel].forEach(curso => {
+                const option = document.createElement('option');
+                option.value = curso.id_curso;
+                option.textContent = curso.nombre_curso;
+                cursoSelect.appendChild(option);
+            });
+        }
+    }
+    </script>
+
 @endsection

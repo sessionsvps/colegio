@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bimestre;
 use App\Models\Catedra;
 use App\Models\Curso_por_nivel;
 use App\Models\Estudiante_Seccion;
 use App\Models\Exoneracion;
+use App\Models\Grado;
+use App\Models\Nivel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +22,20 @@ class DashboardController extends Controller
         $user = User::findOrFail($userId);
 
         //$codigo_estudiante = $estudiante->codigo_estudiante;
+        $niveles = Nivel::all();
+        $grados_primaria = Grado::where('id_nivel', 1)->get();
+        $grados_secundaria = Grado::where('id_nivel', 2)->get();
+        $bimestres = Bimestre::all();
+
+        // Obtener cursos solo por nivel
+        $cursos = Curso_por_nivel::with('curso', 'nivel')->get();
+        $cursosPorNivel = [];
+        foreach ($cursos as $curso) {
+            $cursosPorNivel[$curso->nivel->id_nivel][] = [
+                'id_curso' => $curso->codigo_curso,
+                'nombre_curso' => $curso->curso->descripcion
+            ];
+        }
 
         if ($user->hasRole('Estudiante_Matriculado')) {
             $cantidadCursos = 0;
@@ -50,8 +67,8 @@ class DashboardController extends Controller
             $cantidadAulas = Catedra::where('user_id', $userId)->distinct('id_seccion')->count('id_seccion');
             return view('dashboard', compact('cantidadCatedras', 'cantidadAulas'));
         }else{
-            return view('dashboard');
+            return view('dashboard', compact('niveles', 'grados_primaria', 'grados_secundaria', 'bimestres', 'cursosPorNivel'));
         }
-        
+
     }
 }
