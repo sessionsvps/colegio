@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('id_seccion');
             $table->unsignedTinyInteger('id_nivel');
             $table->unsignedTinyInteger('id_grado');
-
+            $table->timestamps();
             // Definir la clave foránea
             $table->foreign('id_seccion')->references('id_seccion')->on('secciones');
             $table->foreign('id_nivel')->references('id_nivel')->on('secciones');

@@ -91,6 +91,32 @@ class EstudianteController extends BaseController
                         });
                     }
                 }
+
+                // Filtro por rango de fechas basado en 'created_at'
+                if ($request->filled('fechaInicio') || $request->filled('fechaFin')) {
+                    $fechaInicio = $request->input('fechaInicio');
+                    $fechaFin = $request->input('fechaFin');
+
+                    if ($fechaInicio && $fechaFin) {
+                        if ($request->input('filtrar_por') == 'matriculado') {
+                            // Filtrar por 'created_at' en la tabla estudiante_secciones
+                            $query->whereIn('codigo_estudiante', function ($subQuery) use ($fechaInicio, $fechaFin, $request) {
+                                $subQuery->select('codigo_estudiante')
+                                    ->from('estudiante_secciones')
+                                    ->whereColumn('estudiante_secciones.codigo_estudiante', 'estudiantes.codigo_estudiante')
+                                    ->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+                            });
+                        } else {
+                            // Filtrar por 'created_at' en la tabla estudiantes
+                            $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+                        }
+                    } elseif ($fechaInicio && !$fechaFin) {
+                        return redirect()->back()->with('error', 'Debe seleccionar una fecha de fin.');
+                    } elseif (!$fechaInicio && $fechaFin) {
+                        return redirect()->back()->with('error', 'Debe seleccionar una fecha de inicio.');
+                    }
+                }
+
                 $estudiantes = $query->paginate(10);
                 return view('estudiantes.index', compact('estudiantes'));
             case $user->hasRole('Apoderado'):

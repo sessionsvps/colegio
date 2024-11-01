@@ -47,8 +47,8 @@
         <h1 class="font-bold text-3xl">Nueva Matrícula</h1>
         <form method="POST" action="{{ route('estudiantes.realizarMatricula', $estudiante->codigo_estudiante) }}" >
             @csrf
-            <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
-                <div class="mr-0">
+            <div class="my-5 grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+                <div class="">
                     <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
                     <select id="nivel" name="nivel" onchange="updateGrados()" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -60,7 +60,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mr-0 md:ml-5">
+                <div class="">
                     <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
                     <select id="grado" name="grado" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -83,7 +83,7 @@
                         @endif
                     </select>
                 </div>
-                <div class="mr-0 lg:ml-5">
+                <div class="">
                     <label for="seccion" class="block text-sm font-medium text-gray-700">Sección</label>
                     <select id="seccion" name="seccion" required
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -94,12 +94,12 @@
                         <option value="4" {{ request('seccion')==4 ? 'selected' : '' }}>D</option>
                     </select>
                 </div>
-                <div class="md:ml-5 md:mt-0 lg:col-span-1">
+                <div class="">
                     <label for="año_escolar" class="block text-sm font-medium text-gray-700">Año Escolar</label>
                     <input name="año_escolar" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                     type="number" readonly value="" id="input_año_escolar">
                 </div>
-                <div class="mt-6 mx-auto col-span-4">
+                <div class="mt-3 xl:mt-6">
                     <button type="submit"
                         class="bg-indigo-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 inline-block">
                         Matricular
@@ -118,7 +118,7 @@
             var grados = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
             
             var gradoSelect = document.getElementById('grado');
-            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset options
+            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset options my-5 md:my-10 grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0
             
             if (nivel == 1) {
                 grados.primaria.forEach(function(grado) {
