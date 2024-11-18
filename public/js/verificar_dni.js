@@ -20,7 +20,7 @@ function mostrarMensaje(tipo, mensaje) {
 function traerDatos() {
     let dni = document.getElementById("dni").value;
     fetch(
-        `https://api.perudevs.com/api/v1/dni/complete?document=${dni}&key=cGVydWRldnMucHJvZHVjdGlvbi5maXRjb2RlcnMuNjcxMDhiNGQ5ZmE0MTczZjYxMzIwNDA1`
+        `https://api.perudevs.com/api/v1/dni/complete?document=${dni}&key=cGVydWRldnMucHJvZHVjdGlvbi5maXRjb2RlcnMuNjczYjkzNjM5ZmE0MTczZjYxMzIwNGIz`
     )
         .then((response) => response.json())
         .then((datos) => {
