@@ -65,7 +65,7 @@ class DashboardController extends Controller
             $cantidadCatedras = Catedra::where('user_id', $userId)->count();
             // Contar la cantidad de aulas (secciones) a las que dicta el docente
             $cantidadAulas = Catedra::where('user_id', $userId)->distinct('id_seccion')->count('id_seccion');
-            return view('dashboard', compact('cantidadCatedras', 'cantidadAulas'));
+            return view('dashboard', compact('cantidadCatedras', 'cantidadAulas', 'niveles', 'grados_primaria', 'grados_secundaria', 'bimestres', 'cursosPorNivel'));
         }else{
             return view('dashboard', compact('niveles', 'grados_primaria', 'grados_secundaria', 'bimestres', 'cursosPorNivel'));
         }
