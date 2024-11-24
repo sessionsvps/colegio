@@ -463,7 +463,7 @@
 
             // Verifica que todos los campos tengan un valor
             if (!nivel || !grado || !bimestre || !curso) {
-                alert('Por favor, complete todos los campos antes de filtrar.');
+                alertify.alert('Advertencia', 'Por favor, complete todos los campos antes de filtrar.');
                 return;
             }
 
@@ -545,8 +545,6 @@
 
             chart3.appear(1000, 100); // Animar el gráfico al actualizar
         }
-
-
     </script>
 
 @endsection
