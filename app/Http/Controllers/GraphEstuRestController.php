@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class GraphEstuRestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         //$estudiante = Estudiante_Seccion::where('user_id', Auth::user()->id)->first();
 
@@ -18,6 +18,10 @@ class GraphEstuRestController extends Controller
         //$estudiante = Estudiante_Seccion::where('user_id', $user_id)->first();
 
         //$codigo_estudiante = $estudiante->codigo_estudiante;
+        $nivel = $request->input('nivel');
+        $grado = $request->input('grado');
+        $bimestre = $request->input('bimestre');
+        $curso = $request->input('curso');
 
         $asis = DB::table('bimestres')
         ->join('asistencias', 'bimestres.id', '=', 'asistencias.id_bimestre')
@@ -48,10 +52,10 @@ class GraphEstuRestController extends Controller
             'notas_por_competencias.nivel_logro',
             DB::raw('COUNT(*) as total') // Cuenta todas las instancias, incluyendo repeticiones
         )
-            ->where('grados.id_nivel', 2) // Filtrar solo para secundaria
-            ->where('grados.id_grado', 1) // Filtrar para 1er grado de secundaria
-            ->where('notas_por_competencias.codigo_curso', '0342') // Filtrar para el curso "Ciencias Sociales"
-            ->where('notas_por_competencias.id_bimestre', 1) // Filtrar para el I Bimestre
+            ->where('grados.id_nivel', $nivel) // Filtrar solo para secundaria
+            ->where('grados.id_grado', $grado) // Filtrar para 1er grado de secundaria
+            ->where('notas_por_competencias.codigo_curso', $curso) // Filtrar para el curso "Ciencias Sociales"
+            ->where('notas_por_competencias.id_bimestre', $bimestre) // Filtrar para el I Bimestre
             ->groupBy('grado_seccion', 'notas_por_competencias.nivel_logro')
             ->get()
             ->groupBy('grado_seccion')

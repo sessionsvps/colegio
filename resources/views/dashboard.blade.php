@@ -89,7 +89,7 @@
                     </select>
                 </div>
                 <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
-                    <button type="submit"
+                    <button id="filtrarBtn" type="button" type type="submit"
                         class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
                         Filtrar
                     </button>
@@ -144,6 +144,7 @@
 
 @section('scripts')
     <script>
+        let chart3;
         am5.ready(function() {
             //var userId = "{{ Auth::user()->id }}"; // Obtener el ID del usuario autenticado
 
@@ -156,7 +157,7 @@
             ]);
 
             // Create chart
-            var chart3 = root3.container.children.push(am5xy.XYChart.new(root3, {
+            chart3 = root3.container.children.push(am5xy.XYChart.new(root3, {
                 panX: false,
                 panY: false,
                 paddingLeft: 0,
@@ -451,6 +452,101 @@
             });
         }
     }
+    </script>
+
+    <script>
+        document.getElementById('filtrarBtn').addEventListener('click', function () {
+            const nivel = document.getElementById('nivel').value;
+            const grado = document.getElementById('grado').value;
+            const bimestre = document.getElementById('bimestre').value;
+            const curso = document.getElementById('curso').value;
+
+            // Verifica que todos los campos tengan un valor
+            if (!nivel || !grado || !bimestre || !curso) {
+                alert('Por favor, complete todos los campos antes de filtrar.');
+                return;
+            }
+
+            // Construye la URL con los parámetros seleccionados
+            const apiUrl = `/api/asistencias?nivel=${nivel}&grado=${grado}&bimestre=${bimestre}&curso=${curso}`;
+
+            // Llama a la API para obtener los datos
+            fetch(apiUrl)
+                .then((response) => response.json())
+                .then((data) => {
+                    const logrosPorGradoSeccion = data.logrosPorGradoSeccion;
+
+                    // Actualizar el gráfico de "Notas Alumnos por Sección"
+                    actualizarGraficoNotasPorSeccion(logrosPorGradoSeccion);
+                })
+                .catch((error) => {
+                    console.error('Error al cargar los datos:', error);
+                });
+        });
+
+        function actualizarGraficoNotasPorSeccion(data) {
+            // Verifica que chart3 esté inicializado
+            if (!chart3) {
+                console.error("El gráfico aún no está inicializado.");
+                return;
+            }
+
+            // Limpia las series existentes
+            chart3.series.clear();
+
+            // Configurar los ejes
+            const xAxis = chart3.xAxes.getIndex(0);
+            const yAxis = chart3.yAxes.getIndex(0);
+
+            if (xAxis) xAxis.data.setAll(data);
+            if (yAxis) yAxis.data.setAll(data);
+
+            // Crear nuevas series con los datos actualizados
+            function makeSeries(name, fieldName) {
+                const series = chart3.series.push(
+                    am5xy.ColumnSeries.new(chart3._root, {
+                        name: name,
+                        xAxis: xAxis,
+                        yAxis: yAxis,
+                        valueYField: fieldName,
+                        categoryXField: "grado_seccion",
+                    })
+                );
+
+                series.columns.template.setAll({
+                    tooltipText: "{name}, {categoryX}: {valueY}",
+                    width: am5.percent(90),
+                    tooltipY: 0,
+                    strokeOpacity: 0,
+                });
+
+                series.data.setAll(data);
+
+                // Añadir etiquetas a las columnas
+                series.bullets.push(function () {
+                    return am5.Bullet.new(chart3._root, {
+                        locationY: 0,
+                        sprite: am5.Label.new(chart3._root, {
+                            text: "{valueY}",
+                            fill: chart3._root.interfaceColors.get("alternativeText"),
+                            centerY: 0,
+                            centerX: am5.p50,
+                            populateText: true,
+                        }),
+                    });
+                });
+            }
+
+            // Crear series para cada nivel de logro
+            makeSeries("A", "nivel_logro_A");
+            makeSeries("AD", "nivel_logro_AD");
+            makeSeries("B", "nivel_logro_B");
+            makeSeries("C", "nivel_logro_C");
+
+            chart3.appear(1000, 100); // Animar el gráfico al actualizar
+        }
+
+
     </script>
 
 @endsection
