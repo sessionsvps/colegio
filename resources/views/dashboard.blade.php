@@ -50,55 +50,61 @@
         </div>
     @elseif (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin'))
         <div class="flex flex-col mt-8 px-14">
-            <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
-                <div class="mr-0 md:ml-5">
-                    <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
-                    <select id="nivel" name="nivel" onchange="updateGrados()" required
-                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="" selected disabled>Seleccione un nivel</option>
-                        @foreach($niveles as $nivel)
-                            <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
-                                {{ $nivel->detalle }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mr-0 md:ml-5">
-                    <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
-                    <select id="grado" name="grado" required
-                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="" selected disabled>Seleccione un grado</option>
-                    </select>
-                </div>
-                <div class="mr-0 lg:ml-5">
-                    <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
-                    <select id="bimestre" name="bimestre"
-                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        @foreach($bimestres as $bimestre)
-                        <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
-                            {{ $bimestre->descripcion }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mr-0 md:ml-5">
-                    <label for="curso" class="block text-sm font-medium text-gray-700">Curso</label>
-                    <select id="curso" name="curso" required
-                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                        <option value="" selected disabled>Seleccione un curso</option>
-                    </select>
-                </div>
-                <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
-                    <button id="filtrarBtn" type="button" type type="submit"
-                        class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                        Filtrar
-                    </button>
-                </div>
-            </div>
+
             <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
+                    <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
+                        <div class="mr-0 md:ml-5">
+                            <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
+                            <select id="nivel" name="nivel" onchange="updateGrados()" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un nivel</option>
+                                @foreach($niveles as $nivel)
+                                    <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
+                                        {{ $nivel->detalle }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mr-0 md:ml-5">
+                            <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
+                            <select id="grado" name="grado" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un grado</option>
+                            </select>
+                        </div>
+                        <div class="mr-0 lg:ml-5">
+                            <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
+                            <select id="bimestre" name="bimestre"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                @foreach($bimestres as $bimestre)
+                                <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
+                                    {{ $bimestre->descripcion }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mr-0 md:ml-5">
+                            <label for="curso" class="block text-sm font-medium text-gray-700">Curso</label>
+                            <select id="curso" name="curso" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un curso</option>
+                            </select>
+                        </div>
+                        <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
+                            <button id="filtrarBtn" type="button" type type="submit"
+                                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                                Filtrar
+                            </button>
+                        </div>
+                    </div>
                     <div id="chartdiv3" class="h-96 mb-20">
                         <h4 class="text-xl text-center py-4 font-semibold">Notas Alumnos por Sección</h4>
+                    </div>
+                </div>
+                <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
+                    <div id="chartdiv4" class="h-96 mb-20">
+                        <h4 class="text-xl text-center py-4 font-semibold">Estudiantes Matriculados</h4>
                     </div>
                 </div>
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
