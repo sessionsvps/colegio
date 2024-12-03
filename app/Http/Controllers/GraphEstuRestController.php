@@ -23,6 +23,12 @@ class GraphEstuRestController extends Controller
         $bimestre = $request->input('bimestre');
         $curso = $request->input('curso');
 
+        $nivel2 = $request->input('nivel2');
+        $grado2 = $request->input('grado2');
+        $curso2 = $request->input('curso2');
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+
         $asis = DB::table('bimestres')
         ->join('asistencias', 'bimestres.id', '=', 'asistencias.id_bimestre')
         ->select(
@@ -92,11 +98,44 @@ class GraphEstuRestController extends Controller
                 return $item;
             });
 
+        $matriculadosQuery = DB::table('estudiante_secciones')
+        ->join('grados', 'estudiante_secciones.id_grado', '=', 'grados.id_grado')
+        ->join('secciones', 'estudiante_secciones.id_seccion', '=', 'secciones.id_seccion')
+        ->join('estudiantes', 'estudiante_secciones.codigo_estudiante', '=', 'estudiantes.codigo_estudiante') // Nueva unión
+        ->leftJoin('exoneraciones', function ($join) use ($curso2) {
+            $join->on('estudiante_secciones.codigo_estudiante', '=', 'exoneraciones.codigo_estudiante')
+            ->where('exoneraciones.codigo_curso', '=', $curso2);
+        })
+        ->select(
+            DB::raw("CONCAT(grados.detalle, ' ', secciones.detalle) as grado_seccion"),
+            DB::raw('COUNT(DISTINCT estudiante_secciones.codigo_estudiante) as total_estudiantes')
+        )
+        ->whereNull('exoneraciones.codigo_estudiante')
+        ->groupBy('grado_seccion');
+
+
+        // Aplicar filtros si existen
+        if ($nivel2) {
+            $matriculadosQuery->where('grados.id_nivel', $nivel2);
+        }
+        if ($grado2) {
+            $matriculadosQuery->where('estudiante_secciones.id_grado', $grado2);
+        }
+        if ($fechaInicio && $fechaFin) {
+            $fechaInicio .= ' 00:00:00';
+            $fechaFin .= ' 23:59:59';
+            $matriculadosQuery->whereBetween('estudiantes.created_at', [$fechaInicio, $fechaFin]);
+        }
+
+
+        $matriculados = $matriculadosQuery->get();
+
         // Combinando ambas respuestas en un solo JSON
         $response = [
             'asistencias' => $asis,
             'logros' => $logros,
-            'logrosPorGradoSeccion' => $logrosPorGradoSeccion
+            'logrosPorGradoSeccion' => $logrosPorGradoSeccion,
+            'matriculados' => $matriculados
         ];
 
         return response()->json($response, 200);

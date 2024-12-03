@@ -50,7 +50,6 @@
         </div>
     @elseif (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Secretaria') || Auth::user()->hasRole('Admin'))
         <div class="flex flex-col mt-8 px-14">
-
             <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
                     <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
@@ -92,7 +91,7 @@
                             </select>
                         </div>
                         <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
-                            <button id="filtrarBtn" type="button" type type="submit"
+                            <button id="filtrarBtn" type="submit"
                                 class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
                                 Filtrar
                             </button>
@@ -102,7 +101,58 @@
                         <h4 class="text-xl text-center py-4 font-semibold">Notas Alumnos por Sección</h4>
                     </div>
                 </div>
-                <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
+                <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white pt-10">
+                    <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <div class="mr-0 md:ml-5">
+                            <label for="nivel2" class="block text-sm font-medium text-gray-700">Nivel</label>
+                            <select id="nivel2" name="nivel2" onchange="updateGrados2()" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un nivel</option>
+                                @foreach($niveles as $nivel)
+                                    <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
+                                        {{ $nivel->detalle }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mr-0 md:ml-5">
+                            <label for="grado2" class="block text-sm font-medium text-gray-700">Grado</label>
+                            <select id="grado2" name="grado2" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-
+                                300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un grado</option>
+                            </select>
+                        </div>
+                        <div class="mr-0 md:ml-5">
+                            <label for="curso2" class="block text-sm font-medium text-gray-700">Curso</label>
+                            <select id="curso2" name="curso2" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="" selected disabled>Seleccione un curso</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de Inicio</label>
+                            <input type="date" id="fechaInicio" name="fechaInicio" value="{{ request('fechaInicio') }}"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            @if ($errors->has('fechaInicio'))
+                                <span class="text-red-500 text-xs">{{ $errors->first('fechaInicio') }}</span>
+                            @endif
+                        </div>
+                        <div>
+                            <label for="fechaFin" class="block text-sm font-medium text-gray-700">Fecha de Fin</label>
+                            <input type="date" id="fechaFin" name="fechaFin" value="{{ request('fechaFin') }}"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            @if ($errors->has('fechaFin'))
+                                <span class="text-red-500 text-xs">{{ $errors->first('fechaFin') }}</span>
+                            @endif
+                        </div>
+                        <div class="md:col-span-2 lg:col-span-1" id="botonFiltrar">
+                            <button id="filtrarBtn2" type="submit"
+                                class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                                Filtrar
+                            </button>
+                        </div>
+                    </div>
                     <div id="chartdiv4" class="h-96 mb-20">
                         <h4 class="text-xl text-center py-4 font-semibold">Estudiantes Matriculados</h4>
                     </div>
@@ -151,8 +201,33 @@
 @section('scripts')
     <script>
         let chart3;
+        let chart4;
         am5.ready(function() {
             //var userId = "{{ Auth::user()->id }}"; // Obtener el ID del usuario autenticado
+
+            // Crear root element para el cuarto gráfico
+            var root4 = am5.Root.new("chartdiv4");
+
+            root4.setThemes([
+                am5themes_Animated.new(root4)
+            ]);
+
+            chart4 = root4.container.children.push(am5xy.XYChart.new(root4, {
+                panX: false,
+                panY: false,
+                paddingLeft: 0,
+                wheelX: "panX",
+                wheelY: "zoomX",
+                layout: root4.verticalLayout
+            }));
+
+            // Añadir leyenda
+            var legend4 = chart4.children.push(
+                am5.Legend.new(root4, {
+                    centerX: am5.p50,
+                    x: am5.p50
+                })
+            );
 
             // Create root element for first chart
             var root3 = am5.Root.new("chartdiv3");
@@ -461,6 +536,54 @@
     </script>
 
     <script>
+        document.getElementById('nivel2').addEventListener('change', function() {
+            updateGrados2();
+            updateCursos2();
+        });
+
+        function updateGrados2() {
+            const nivel2 = document.getElementById('nivel2').value;
+            const grados2 = @json(['primaria' => $grados_primaria, 'secundaria' => $grados_secundaria]);
+
+            const gradoSelect = document.getElementById('grado2');
+            gradoSelect.innerHTML = '<option value="" selected disabled>Seleccione un grado</option>'; // Reset opciones
+
+            if (nivel2 == 1) { // Primaria
+                grados2.primaria.forEach(grado => {
+                    const option = document.createElement('option');
+                    option.value = grado.id_grado;
+                    option.textContent = grado.detalle;
+                    gradoSelect.appendChild(option);
+                });
+            } else if (nivel2 == 2) { // Secundaria
+                grados2.secundaria.forEach(grado => {
+                    const option = document.createElement('option');
+                    option.value = grado.id_grado;
+                    option.textContent = grado.detalle;
+                    gradoSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateCursos2() {
+        const nivel2 = document.getElementById('nivel2').value;
+        const cursos2 = @json($cursosPorNivel); // Supón que este JSON tiene todos los cursos agrupados
+
+        const cursoSelect = document.getElementById('curso2');
+        cursoSelect.innerHTML = '<option value="" selected disabled>Seleccione un curso</option>'; // Reset opciones
+
+        if (nivel2 && cursos2[nivel2]) {
+            cursos2[nivel2].forEach(curso => {
+                const option = document.createElement('option');
+                option.value = curso.id_curso;
+                option.textContent = curso.nombre_curso;
+                cursoSelect.appendChild(option);
+            });
+        }
+    }
+    </script>
+
+    <script>
         document.getElementById('filtrarBtn').addEventListener('click', function () {
             const nivel = document.getElementById('nivel').value;
             const grado = document.getElementById('grado').value;
@@ -551,6 +674,105 @@
 
             chart3.appear(1000, 100); // Animar el gráfico al actualizar
         }
+
+        document.getElementById('filtrarBtn2').addEventListener('click', function () {
+            const nivel2 = document.getElementById('nivel2').value;
+            const grado2 = document.getElementById('grado2').value;
+            const curso2 = document.getElementById('curso2').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+
+            if (!nivel2 || !grado2 || !curso2 || !fechaInicio || !fechaFin) {
+                alertify.alert('Advertencia', 'Por favor, complete todos los campos antes de filtrar.');
+                return;
+            }
+
+            const apiUrl = `/api/asistencias?nivel2=${nivel2}&grado2=${grado2}&curso2=${curso2}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+
+            // Al hacer la petición a la API
+            fetch(apiUrl)
+                .then((response) => response.json())
+                .then((data) => {
+                    const matriculados = data.matriculados; // Nuevo conjunto de datos
+
+                    // Actualizar el gráfico de "Estudiantes Matriculados"
+                    actualizarGraficoEstudiantesMatriculados(matriculados);
+                })
+                .catch((error) => {
+                    console.error('Error al cargar los datos:', error);
+                });
+
+        });
+
+        function actualizarGraficoEstudiantesMatriculados(data) {
+            // Limpiar datos existentes
+            chart4.series.clear();
+            chart4.xAxes.clear();
+            chart4.yAxes.clear();
+
+            // Crear ejes
+            var xAxis4 = chart4.xAxes.push(am5xy.CategoryAxis.new(chart4._root, {
+                categoryField: "grado_seccion",
+                renderer: am5xy.AxisRendererX.new(chart4._root, {
+                    minGridDistance: 30
+                })
+            }));
+
+            var yAxis4 = chart4.yAxes.push(am5xy.ValueAxis.new(chart4._root, {
+                renderer: am5xy.AxisRendererY.new(chart4._root, {})
+            }));
+
+            xAxis4.data.setAll(data);
+
+            // Crear serie
+            var series4 = chart4.series.push(am5xy.ColumnSeries.new(chart4._root, {
+                name: "Estudiantes Matriculados",
+                xAxis: xAxis4,
+                yAxis: yAxis4,
+                valueYField: "total_estudiantes",
+                categoryXField: "grado_seccion",
+                tooltip: am5.Tooltip.new(chart4._root, {
+                    labelText: "{categoryX}: {valueY}"
+                })
+            }));
+
+            series4.columns.template.setAll({
+                tooltipText: "{categoryX}: {valueY}",
+                width: am5.percent(90),
+                tooltipY: 0,
+                strokeOpacity: 0
+            });
+
+            series4.data.setAll(data);
+
+            // Añadir etiquetas
+            series4.bullets.push(function () {
+                return am5.Bullet.new(chart4._root, {
+                    locationY: 0,
+                    sprite: am5.Label.new(chart4._root, {
+                        text: "{valueY}",
+                        fill: chart4._root.interfaceColors.get("alternativeText"),
+                        centerY: 0,
+                        centerX: am5.p50,
+                        populateText: true
+                    })
+                });
+            });
+
+            // Añadir leyenda
+            var legend4 = chart4.children.push(
+                am5.Legend.new(chart4._root, {
+                    centerX: am5.p50,
+                    x: am5.p50
+                })
+            );
+
+            legend4.data.push(series4);
+
+            // Animar el gráfico
+            chart4.appear(1000, 100);
+        }
+
     </script>
 
 @endsection
