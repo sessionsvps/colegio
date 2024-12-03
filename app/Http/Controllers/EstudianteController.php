@@ -91,6 +91,32 @@ class EstudianteController extends BaseController
                         });
                     }
                 }
+
+                // Filtro por rango de fechas basado en 'created_at'
+                if ($request->filled('fechaInicio') || $request->filled('fechaFin')) {
+                    $fechaInicio = $request->input('fechaInicio');
+                    $fechaFin = $request->input('fechaFin');
+
+                    if ($fechaInicio && $fechaFin) {
+                        if ($request->input('filtrar_por') == 'matriculado') {
+                            // Filtrar por 'created_at' en la tabla estudiante_secciones
+                            $query->whereIn('codigo_estudiante', function ($subQuery) use ($fechaInicio, $fechaFin, $request) {
+                                $subQuery->select('codigo_estudiante')
+                                    ->from('estudiante_secciones')
+                                    ->whereColumn('estudiante_secciones.codigo_estudiante', 'estudiantes.codigo_estudiante')
+                                    ->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+                            });
+                        } else {
+                            // Filtrar por 'created_at' en la tabla estudiantes
+                            $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+                        }
+                    } elseif ($fechaInicio && !$fechaFin) {
+                        return redirect()->back()->with('error', 'Debe seleccionar una fecha de fin.');
+                    } elseif (!$fechaInicio && $fechaFin) {
+                        return redirect()->back()->with('error', 'Debe seleccionar una fecha de inicio.');
+                    }
+                }
+
                 $estudiantes = $query->paginate(10);
                 return view('estudiantes.index', compact('estudiantes'));
             case $user->hasRole('Apoderado'):
@@ -635,14 +661,25 @@ class EstudianteController extends BaseController
 
     public function destroy(string $codigo_estudiante)
     {
-        $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)->firstOrFail();
+        $estudiante = Estudiante::where('codigo_estudiante', $codigo_estudiante)
+        ->whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })
+        ->firstOrFail();    
         $apoderado  = Apoderado::findOrFail($estudiante->id_apoderado);
+        $cant_hijos = Estudiante::where('id_apoderado', $apoderado->id)
+        ->whereHas('user', function ($query) {
+            $query->where('esActivo', 1);
+        })
+        ->count();
         $user = User::findOrFail($estudiante->user_id);
-        $userAp = User::findOrFail($apoderado->user_id);
         $user->esActivo = 0;
-        $userAp->esActivo = 0;
         $user->save();
-        $userAp->save();
+        if ($cant_hijos == 1){
+            $userAp = User::findOrFail($apoderado->user_id);
+            $userAp->esActivo = 0;
+            $userAp->save();
+        }
         return redirect()->route('estudiantes.index')->with('success', 'Estudiante eliminado exitosamente.');
     }
 }

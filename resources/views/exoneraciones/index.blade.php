@@ -36,7 +36,6 @@
                     <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
                     <select id="grado" name="grado"
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-        
                     </select>
                 </div>
                 <div class="mr-5 mt-1 md:mt-0 md:mr-0">
