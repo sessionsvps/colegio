@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>{{ $titulo }}</title>
 
     <style>
         table {
@@ -32,6 +32,7 @@
                     <h2>COLEGIO</h2>
                     <h4>Sideral Carrion</h4>
                     <h4>Año Académico 2023-2024</h4>
+                    <h1>{{ $titulo }}</h1>
                 </th>
             </tr>
             <tr>

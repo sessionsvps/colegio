@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\View;
+use Illuminate\Http\Request;
 
 class ExportController extends Controller
 {
@@ -23,10 +24,91 @@ class ExportController extends Controller
         return Excel::download(new EstudiantesExport, 'estudiantes.xlsx');
     }
 
-    public function exportPdfEstu()
+    public function exportPdfEstu(Request $request)
     {
-        // Obtener los datos de los estudiantes
-        $estudiantes = Estudiante::all();
+        // Obtener los filtros del request
+        $filtrarPor = $request->input('filtrar_por');
+        $añoIngreso = $request->input('año_ingreso');
+        $buscarPor = $request->input('buscar_por');
+        $fechaInicio = $request->input('fechaInicio');
+        $fechaFin = $request->input('fechaFin');
+
+        // Iniciar la consulta
+        $estudiantesQuery = Estudiante::query();
+
+        // Inicializar el título
+        $titulo = 'Registro de estudiantes';
+
+        // Aplicar filtros
+        if ($filtrarPor == 'matriculado') {
+            // Estudiantes matriculados
+            $estudiantesQuery->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('estudiante_secciones')
+                    ->whereRaw('estudiante_secciones.codigo_estudiante = estudiantes.codigo_estudiante');
+            });
+            $titulo = 'Registro de estudiantes matriculados';
+        } elseif ($filtrarPor == 'no_matriculado') {
+            // Estudiantes no matriculados
+            $estudiantesQuery->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('estudiante_secciones')
+                    ->whereRaw('estudiante_secciones.codigo_estudiante = estudiantes.codigo_estudiante');
+            });
+            $titulo = 'Registro de estudiantes no matriculados';
+        }
+
+        if ($añoIngreso) {
+            $estudiantesQuery->where('año_ingreso', $añoIngreso);
+            $titulo .= ' - Año de ingreso: ' . $añoIngreso;
+        }
+
+        if ($buscarPor) {
+            $searchValue = null;
+            switch ($buscarPor) {
+                case 'codigo':
+                    $searchValue = $request->input('codigo');
+                    if ($searchValue) {
+                        $estudiantesQuery->where('codigo_estudiante', 'like', "%$searchValue%");
+                        $titulo .= ' - Código: ' . $searchValue;
+                    }
+                    break;
+                case 'nombre':
+                    $searchValue = $request->input('nombre');
+                    if ($searchValue) {
+                        $estudiantesQuery->where(function ($query) use ($searchValue) {
+                            $query->where('primer_nombre', 'like', "%$searchValue%")
+                            ->orWhere('otros_nombres', 'like', "%$searchValue%")
+                            ->orWhere('apellido_paterno', 'like', "%$searchValue%")
+                            ->orWhere('apellido_materno', 'like', "%$searchValue%");
+                        });
+                        $titulo .= ' - Nombre: ' . $searchValue;
+                    }
+                    break;
+                case 'dni':
+                    $searchValue = $request->input('dni');
+                    if ($searchValue) {
+                        $estudiantesQuery->where('dni', 'like', "%$searchValue%");
+                        $titulo .= ' - DNI: ' . $searchValue;
+                    }
+                    break;
+                case 'correo':
+                    $searchValue = $request->input('correo');
+                    if ($searchValue) {
+                        $estudiantesQuery->where('email', 'like', "%$searchValue%");
+                        $titulo .= ' - Correo: ' . $searchValue;
+                    }
+                    break;
+            }
+        }
+
+        if ($fechaInicio && $fechaFin) {
+            $estudiantesQuery->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+            $titulo .= ' - Fecha: ' . $fechaInicio . ' a ' . $fechaFin;
+        }
+
+        // Obtener los estudiantes filtrados
+        $estudiantes = $estudiantesQuery->get();
 
         // Convertir la imagen a base64
         $path = public_path('img/logo.png');
@@ -34,8 +116,12 @@ class ExportController extends Controller
         $data = file_get_contents($path);
         $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
 
-        // Generar el HTML de la vista Blade
-        $htmlContent = View::make('exportar.exEstudiantes', ['estudiantes' => $estudiantes, 'base64' => $base64])->render();
+        // Generar el HTML de la vista Blade, pasando el título
+        $htmlContent = View::make('exportar.exEstudiantes', [
+            'estudiantes' => $estudiantes,
+            'base64' => $base64,
+            'titulo' => $titulo
+        ])->render();
 
         // Crear una instancia de Dompdf con opciones
         $options = new Options();
@@ -61,6 +147,7 @@ class ExportController extends Controller
             'estudiantes.pdf'
         );
     }
+
 
     public function exportPdfNotas(string $codigo_estudiante, string $año_escolar)
     {

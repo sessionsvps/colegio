@@ -27,7 +27,7 @@
     </div>
 
     @if (Auth::user()->hasRole('Docente') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
-        <form method="GET" action="{{ route('estudiantes.index') }}">
+        <form method="GET" id="filterForm" action="{{ route('estudiantes.index') }}">
             <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <div>
                     <label for="filtrar_por" class="block text-sm font-medium text-gray-700">Filtrar Por</label>
@@ -88,26 +88,16 @@
                         Buscar
                     </button>
                 </div>
+                <div class="md:col-span-2 lg:col-span-1" id="reportButton">
+                    <button type="submit"
+                        class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                        Generar Reporte
+                    </button>
+                </div>
             </div>
         </form>
 
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div>
-                <label for="reporte" class="block text-sm font-medium text-gray-700">Seleccione un Formato</label>
-                <select id="reporte" name="reporte"
-                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" selected disabled></option>
-                    <option value="0">PDF</option>
-                    <option value="1">EXCEL</option>
-                </select>
-            </div>
-            <div>
-                <a id="reportButton"
-                    class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                    Generar Reporte
-                </a>
-            </div>
-        </div>
+
     @endif
 
     <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -308,18 +298,10 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var reporteSelect = document.getElementById('reporte');
-            var generateReportButton = document.getElementById('reportButton');
-
-            reporteSelect.addEventListener('change', function() {
-                var selectedValue = this.value;
-                if (selectedValue == '1') { // EXCEL
-                    generateReportButton.href = "{{ route('export') }}";
-                } else if (selectedValue == '0') { // PDF
-                    generateReportButton.href = "{{ route('exportPdfEstu') }}";
-                }
-            });
+        document.getElementById('reportButton').addEventListener('click', function() {
+            var form = document.getElementById('filterForm');
+            form.action = "{{ route('exportPdfEstu') }}";
+            form.submit();
         });
     </script>
 @endsection
