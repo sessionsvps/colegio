@@ -24,23 +24,24 @@
     </style>
 </head>
 <body>
+    <div colspan="5" style="text-align: center;">
+        <img src="{{ $base64 }}" alt="Logo" style="height: 50px;">
+        <h2>COLEGIO</h2>
+        <h4>Sideral Carrion</h4>
+        <h4>Año Académico 2023-2024</h4>
+        <h1>{{ $titulo }}</h1>
+    </div>
     <table>
         <thead>
-            <tr>
-                <th colspan="5" style="text-align: center;">
-                    <img src="{{ $base64 }}" alt="Logo" style="height: 50px;">
-                    <h2>COLEGIO</h2>
-                    <h4>Sideral Carrion</h4>
-                    <h4>Año Académico 2023-2024</h4>
-                    <h1>{{ $titulo }}</h1>
-                </th>
-            </tr>
             <tr>
                 <th>CÓDIGO</th>
                 <th>NOMBRE</th>
                 <th>APELLIDOS</th>
                 <th>DNI</th>
                 <th>CORREO</th>
+                @if ($filtrarPor == 'matriculado')
+                    <th>FECHA DE MATRÍCULA</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -51,6 +52,9 @@
                     <td>{{ $estudiante->apellido_paterno . ' ' . $estudiante->apellido_materno }}</td>
                     <td>{{ $estudiante->dni }}</td>
                     <td>{{ $estudiante->email }}</td>
+                    @if ($filtrarPor == 'matriculado')
+                        <td>{{ \Carbon\Carbon::parse($estudiante->created_at)->format('d/m/Y') }}</td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

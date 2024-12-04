@@ -120,7 +120,8 @@ class ExportController extends Controller
         $htmlContent = View::make('exportar.exEstudiantes', [
             'estudiantes' => $estudiantes,
             'base64' => $base64,
-            'titulo' => $titulo
+            'titulo' => $titulo,
+            'filtrarPor' => $filtrarPor
         ])->render();
 
         // Crear una instancia de Dompdf con opciones
