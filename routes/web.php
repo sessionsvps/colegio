@@ -28,6 +28,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/notas-alumnos-por-seccion', [DashboardController::class, 'notasAlumnosPorSeccion'])->name('dashboard.notas-alumnos-por-seccion');
 
     Route::resource('estudiantes',EstudianteController::class)->except('show');
     Route::get('/matriculas',[EstudianteController::class,'matricular'])->name('estudiantes.matricular');

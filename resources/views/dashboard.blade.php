@@ -52,54 +52,106 @@
         <div class="flex flex-col mt-8 px-14">
             <div class="py-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white">
-                    <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
-                        <div class="mr-0 md:ml-5">
-                            <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
-                            <select id="nivel" name="nivel" onchange="updateGrados()" required
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="" selected disabled>Seleccione un nivel</option>
-                                @foreach($niveles as $nivel)
-                                    <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
-                                        {{ $nivel->detalle }}
+                    <form method="POST" action="{{ route('dashboard.notas-alumnos-por-seccion') }}">
+                        @csrf
+                        <div class="my-5 md:my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-0">
+                            <div class="mr-0 md:ml-5">
+                                <label for="nivel" class="block text-sm font-medium text-gray-700">Nivel</label>
+                                <select id="nivel" name="nivel" onchange="updateGrados()" required
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    <option value="" selected disabled>Seleccione un nivel</option>
+                                    @foreach($niveles as $nivel)
+                                        <option value="{{ $nivel->id_nivel }}" {{ request('nivel') == $nivel->id_nivel ? 'selected' : '' }}>
+                                            {{ $nivel->detalle }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mr-0 md:ml-5">
+                                <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
+                                <select id="grado" name="grado" required
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    <option value="" selected disabled>Seleccione un grado</option>
+                                </select>
+                            </div>
+                            <div class="mr-0 lg:ml-5">
+                                <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
+                                <select id="bimestre" name="bimestre"
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    @foreach($bimestres as $bimestre)
+                                    <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
+                                        {{ $bimestre->descripcion }}
                                     </option>
-                                @endforeach
-                            </select>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mr-0 md:ml-5">
+                                <label for="curso" class="block text-sm font-medium text-gray-700">Curso</label>
+                                <select id="curso" name="curso" required
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    <option value="" selected disabled>Seleccione un curso</option>
+                                </select>
+                            </div>
+                            <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
+                                <button id="filtrarBtn" type="submit"
+                                    class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
+                                    Filtrar
+                                </button>
+                            </div>
                         </div>
-                        <div class="mr-0 md:ml-5">
-                            <label for="grado" class="block text-sm font-medium text-gray-700">Grado</label>
-                            <select id="grado" name="grado" required
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="" selected disabled>Seleccione un grado</option>
-                            </select>
-                        </div>
-                        <div class="mr-0 lg:ml-5">
-                            <label for="bimestre" class="block text-sm font-medium text-gray-700">Bimestre</label>
-                            <select id="bimestre" name="bimestre"
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                @foreach($bimestres as $bimestre)
-                                <option value="{{ $bimestre->id }}" {{ request('bimestre')==$bimestre->id ? 'selected' : '' }}>
-                                    {{ $bimestre->descripcion }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mr-0 md:ml-5">
-                            <label for="curso" class="block text-sm font-medium text-gray-700">Curso</label>
-                            <select id="curso" name="curso" required
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="" selected disabled>Seleccione un curso</option>
-                            </select>
-                        </div>
-                        <div class="md:ml-5 md:mt-0 lg:col-span-1" id="botonBuscar">
-                            <button id="filtrarBtn" type="submit"
-                                class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                                Filtrar
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                     <div id="chartdiv3" class="h-96 mb-20">
                         <h4 class="text-xl text-center py-4 font-semibold">Notas Alumnos por Sección</h4>
                     </div>
+                    @if(isset($logrosPorGradoSeccion) && count($logrosPorGradoSeccion) > 0)
+                        <div class="mt-6">
+                            <h4 class="text-xl text-center py-4 font-semibold">Reporte de Notas por Sección</h4>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full bg-white">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="py-2 px-4 border-b border-gray-200 text-left text-sm font-semibold text-gray-600">
+                                                Grado y Sección
+                                            </th>
+                                            <th class="py-2 px-4 border-b border-gray-200 text-center text-sm font-semibold text-gray-600">
+                                                Nivel de Logro A
+                                            </th>
+                                            <th class="py-2 px-4 border-b border-gray-200 text-center text-sm font-semibold text-gray-600">
+                                                Nivel de Logro AD
+                                            </th>
+                                            <th class="py-2 px-4 border-b border-gray-200 text-center text-sm font-semibold text-gray-600">
+                                                Nivel de Logro B
+                                            </th>
+                                            <th class="py-2 px-4 border-b border-gray-200 text-center text-sm font-semibold text-gray-600">
+                                                Nivel de Logro C
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($logrosPorGradoSeccion as $item)
+                                            <tr>
+                                                <td class="py-2 px-4 border-b border-gray-200 text-left text-sm text-gray-700">
+                                                    {{ $item['grado_seccion'] }}
+                                                </td>
+                                                <td class="py-2 px-4 border-b border-gray-200 text-center text-sm text-gray-700">
+                                                    {{ $item['nivel_logro_A'] }}
+                                                </td>
+                                                <td class="py-2 px-4 border-b border-gray-200 text-center text-sm text-gray-700">
+                                                    {{ $item['nivel_logro_AD'] }}
+                                                </td>
+                                                <td class="py-2 px-4 border-b border-gray-200 text-center text-sm text-gray-700">
+                                                    {{ $item['nivel_logro_B'] }}
+                                                </td>
+                                                <td class="py-2 px-4 border-b border-gray-200 text-center text-sm text-gray-700">
+                                                    {{ $item['nivel_logro_C'] }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 <div class="min-w-full rounded-lg border-b border-gray-200 shadow sm:rounded-lg bg-white pt-10">
                     <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -255,12 +307,21 @@
                 })
             );
 
-            // Load data from API for chartdiv3
-            am5.net.load(`http://127.0.0.1:8000/api/asistencias`).then(function(result) {
-                var response = am5.JSONParser.parse(result.response);
-                var logrosPorGradoSeccion = response.logrosPorGradoSeccion;
-                console.log(logrosPorGradoSeccion);  // Log para verificar la estructura de los datos
+            if (logrosPorGradoSeccion) {
+                // Si hay datos filtrados, usar esos datos
+                crearGraficoNotasPorSeccion(logrosPorGradoSeccion);
+            } else {
+                // Si no hay datos filtrados, cargar datos desde el API sin filtros
+                am5.net.load(`/api/asistencias`).then(function(result) {
+                    var response = am5.JSONParser.parse(result.response);
+                    var logrosPorGradoSeccionAPI = response.logrosPorGradoSeccion;
+                    crearGraficoNotasPorSeccion(logrosPorGradoSeccionAPI);
+                }).catch(function(result) {
+                    console.log("Error loading " + result.xhr.responseURL);
+                });
+            }
 
+            function crearGraficoNotasPorSeccion(data) {
                 // Create axes
                 var xRenderer3 = am5xy.AxisRendererX.new(root3, {
                     cellStartLocation: 0.1,
@@ -278,7 +339,7 @@
                     location: 1
                 });
 
-                xAxis3.data.setAll(logrosPorGradoSeccion);
+                xAxis3.data.setAll(data);
 
                 var yAxis3 = chart3.yAxes.push(am5xy.ValueAxis.new(root3, {
                     renderer: am5xy.AxisRendererY.new(root3, {
@@ -303,7 +364,7 @@
                         strokeOpacity: 0
                     });
 
-                    series.data.setAll(logrosPorGradoSeccion);
+                    series.data.setAll(data);
 
                     // Add labels for each column
                     series.bullets.push(function () {
@@ -330,9 +391,8 @@
 
                 // Make chart appear on load
                 chart3.appear(1000, 100);
-            }).catch(function(result) {
-                console.log("Error loading " + result.xhr.responseURL);
-            });
+            }
+
 
 
 
@@ -487,6 +547,46 @@
 
         }); // end am5.ready()
     </script>
+
+    <script>
+        @if(isset($logrosPorGradoSeccion))
+            var logrosPorGradoSeccion = {!! json_encode($logrosPorGradoSeccion) !!};
+        @else
+            var logrosPorGradoSeccion = null;
+        @endif
+    </script>
+
+    <script>
+        var selectedNivel = "{{ $selectedNivel ?? '' }}";
+        var selectedGrado = "{{ $selectedGrado ?? '' }}";
+        var selectedBimestre = "{{ $selectedBimestre ?? '' }}";
+        var selectedCurso = "{{ $selectedCurso ?? '' }}";
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Actualizar grados y cursos si ya hay un nivel seleccionado
+            @if(isset($selectedNivel))
+                document.getElementById('nivel').value = "{{ $selectedNivel }}";
+                updateGrados();
+                updateCursos();
+            @endif
+
+            @if(isset($selectedGrado))
+                setTimeout(function() {
+                    document.getElementById('grado').value = "{{ $selectedGrado }}";
+                }, 500); // Esperar medio segundo para asegurar que los grados se hayan cargado
+            @endif
+
+            @if(isset($selectedCurso))
+                setTimeout(function() {
+                    document.getElementById('curso').value = "{{ $selectedCurso }}";
+                }, 500); // Esperar medio segundo para asegurar que los cursos se hayan cargado
+            @endif
+        });
+
+    </script>
+
     <script>
         document.getElementById('nivel').addEventListener('change', function() {
             updateGrados();
