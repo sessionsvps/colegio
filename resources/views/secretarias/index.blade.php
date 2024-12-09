@@ -2,27 +2,27 @@
 
 @section('contenido')
     @if (session('success'))
-    <div id="success-message"
-        class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
-        role="alert">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor" viewBox="0 0 20 20">
-            <path
-                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-        </svg>
-        <span class="sr-only">Info</span>
-        <div>
-            <span class="font-medium">¡Éxito!</span> {{ session('success') }}
+        <div id="success-message"
+            class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+            role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-medium">¡Éxito!</span> {{ session('success') }}
+            </div>
         </div>
-    </div>
     @endif
     <div class="flex justify-between items-center mb-10">
         <h2 class="text-xl md:text-2xl lg:text-3xl font-bold">Lista de Secretarias</h2>
         @can('Registrar Secretarias')
-        <a href="{{ route('secretarias.create') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Añadir
-        </a>
+            <a href="{{ route('secretarias.create') }}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Añadir
+            </a>
         @endcan
     </div>
 
@@ -30,12 +30,13 @@
         <div class="mb-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
                 <label for="buscar_por" class="block text-sm font-medium text-gray-700">Buscar Por</label>
-                <select id="buscar_por" name="buscar_por" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <option value="" {{ request('buscar_por')=='' ? 'selected' : '' }}>Todos</option>
-                    <option value="codigo" {{ request('buscar_por')=='codigo' ? 'selected' : '' }}>Código</option>
-                    <option value="nombre" {{ request('buscar_por')=='nombre' ? 'selected' : '' }}>Nombre</option>
-                    <option value="dni" {{ request('buscar_por')=='dni' ? 'selected' : '' }}>DNI</option>
-                    <option value="correo" {{ request('buscar_por')=='correo' ? 'selected' : '' }}>Correo</option>
+                <select id="buscar_por" name="buscar_por"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="" {{ request('buscar_por') == '' ? 'selected' : '' }}>Todos</option>
+                    <option value="codigo" {{ request('buscar_por') == 'codigo' ? 'selected' : '' }}>Código</option>
+                    <option value="nombre" {{ request('buscar_por') == 'nombre' ? 'selected' : '' }}>Nombre</option>
+                    <option value="dni" {{ request('buscar_por') == 'dni' ? 'selected' : '' }}>DNI</option>
+                    <option value="correo" {{ request('buscar_por') == 'correo' ? 'selected' : '' }}>Correo</option>
                 </select>
             </div>
             <div id="inputContainer">
@@ -66,46 +67,51 @@
                     <th scope="col" class="px-6 py-3">
                         Correo
                     </th>
-                    <th scope="col" class="px-6 py-3">
-                        Acciones
-                    </th>
+                    @if (!Auth::user()->hasRole('Director'))
+                        <th scope="col" class="px-6 py-3">
+                            Acciones
+                        </th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @forelse ($secretarias as $secretaria)
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ $secretaria->codigo_secretaria }}
-                    </th>
-                    <td class="px-6 py-4">
-                        {{ $secretaria->primer_nombre }} {{ $secretaria->otros_nombres }} {{ $secretaria->apellido_paterno }} {{
-                        $secretaria->apellido_materno }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $secretaria->dni }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $secretaria->email }}
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-center">
-                            @can('Editar Secretarias')
-                                <a href="{{ route('secretarias.edit', $secretaria->codigo_secretaria) }}"
-                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
-                            @endcan
-                            @can('Eliminar Secretarias')
-                                <button type="button" onclick="confirmDelete('{{ $secretaria->codigo_secretaria }}')"
-                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
-                            @endcan
-                        </div>
-                    </td>
-                </tr>
+                    <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            {{ $secretaria->codigo_secretaria }}
+                        </th>
+                        <td class="px-6 py-4">
+                            {{ $secretaria->primer_nombre }} {{ $secretaria->otros_nombres }}
+                            {{ $secretaria->apellido_paterno }} {{ $secretaria->apellido_materno }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $secretaria->dni }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $secretaria->email }}
+                        </td>
+                        @if (!Auth::user()->hasRole('Director'))
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-center">
+                                    @can('Editar Secretarias')
+                                        <a href="{{ route('secretarias.edit', $secretaria->codigo_secretaria) }}"
+                                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                                    @endcan
+                                    @can('Eliminar Secretarias')
+                                        <button type="button" onclick="confirmDelete('{{ $secretaria->codigo_secretaria }}')"
+                                            class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
+                                    @endcan
+                                </div>
+                            </td>
+                        @endif
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center">
-                        No hay registros
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center">
+                            No hay registros
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -118,27 +124,27 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var successMessage = document.getElementById('success-message');
+                if (successMessage) {
+                    successMessage.style.transition = 'opacity 0.5s ease';
+                    successMessage.style.opacity = '0';
                     setTimeout(function() {
-                        var successMessage = document.getElementById('success-message');
-                        if (successMessage) {
-                            successMessage.style.transition = 'opacity 0.5s ease';
-                            successMessage.style.opacity = '0';
-                            setTimeout(function() {
-                                successMessage.remove();
-                            }, 500); // Espera el tiempo de la transición para eliminar el elemento
-                        }
-                    }, 3000); // 3 segundos antes de empezar a desvanecer
-                });
+                        successMessage.remove();
+                    }, 500); // Espera el tiempo de la transición para eliminar el elemento
+                }
+            }, 3000); // 3 segundos antes de empezar a desvanecer
+        });
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const buscarPorSelect = document.getElementById('buscar_por');
             const inputContainer = document.getElementById('inputContainer');
-    
+
             function updateInputContainer() {
                 inputContainer.innerHTML = ''; // Clear the container
-    
+
                 if (buscarPorSelect.value === 'codigo') {
                     inputContainer.innerHTML = `
                         <label for="codigo" class="block text-sm font-medium text-gray-700">Código</label>
@@ -178,29 +184,29 @@
                     `;
                 }
             }
-    
+
             // Add event listener for change
             buscarPorSelect.addEventListener('change', updateInputContainer);
-    
+
             // Initial call to set the correct input on page load
             updateInputContainer();
         });
     </script>
 
     <script>
-        function confirmDelete(id){
-                alertify.confirm("¿Seguro que quieres eliminar a la secretaria?",
-                function(){
+        function confirmDelete(id) {
+            alertify.confirm("¿Seguro que quieres eliminar a la secretaria?",
+                function() {
                     let form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '/secretarias/' + id ;
-                    form.innerHTML = '@csrf @method("DELETE")';
+                    form.action = '/secretarias/' + id;
+                    form.innerHTML = '@csrf @method('DELETE')';
                     document.body.appendChild(form);
                     form.submit();
                 },
-                function(){
+                function() {
                     alertify.error('Cancelado');
                 });
-            }
+        }
     </script>
 @endsection

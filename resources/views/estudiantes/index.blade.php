@@ -26,7 +26,7 @@
         @endcan
     </div>
 
-    @if (Auth::user()->hasRole('Docente') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
+    @if (Auth::user()->hasRole('Director') || Auth::user()->hasRole('Admin') || Auth::user()->hasRole('Secretaria'))
         <form method="GET" id="filterForm" action="{{ route('estudiantes.index') }}">
             <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <div>
@@ -126,7 +126,7 @@
                             Apoderado(a)
                         </th>
                     @endif
-                    @if (!Auth::user()->hasRole('Apoderado'))
+                    @if (!Auth::user()->hasRole('Apoderado') && !Auth::user()->hasRole('Director'))
                         <th scope="col" class="px-6 py-3">
                             Acciones
                         </th>
@@ -177,7 +177,7 @@
                                 {{ $estudiante->apoderado->apellido_materno }}
                             </td>
                         @endif
-                        @if (!Auth::user()->hasRole('Apoderado'))
+                        @if (!Auth::user()->hasRole('Apoderado') && !Auth::user()->hasRole('Director'))
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-center">
                                     @can('Editar Estudiantes')
