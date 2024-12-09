@@ -189,13 +189,6 @@
                             </select>
                         </div>
                         <div>
-                            <label for="curso2" class="block text-sm font-medium text-gray-700">Curso</label>
-                            <select id="curso2" name="curso2" required
-                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="" selected disabled>Seleccione un curso</option>
-                            </select>
-                        </div>
-                        <div>
                             <label for="fechaInicio" class="block text-sm font-medium text-gray-700">Fecha de
                                 Inicio</label>
                             <input type="date" id="fechaInicio" name="fechaInicio"
@@ -787,17 +780,16 @@
             document.getElementById('filtrarBtn2').addEventListener('click', function() {
                 const nivel2 = document.getElementById('nivel2').value;
                 const grado2 = document.getElementById('grado2').value;
-                const curso2 = document.getElementById('curso2').value;
                 const fechaInicio = document.getElementById('fechaInicio').value;
                 const fechaFin = document.getElementById('fechaFin').value;
 
-                if (!nivel2 || !grado2 || !curso2 || !fechaInicio || !fechaFin) {
+                if (!nivel2 || !grado2 || !fechaInicio || !fechaFin) {
                     alertify.alert('Advertencia', 'Por favor, complete todos los campos antes de filtrar.');
                     return;
                 }
 
                 const apiUrl =
-                    `/api/asistencias?nivel2=${nivel2}&grado2=${grado2}&curso2=${curso2}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+                    `/api/asistencias?nivel2=${nivel2}&grado2=${grado2}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
 
                 // Al hacer la petición a la API
                 fetch(apiUrl)

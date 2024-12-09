@@ -25,7 +25,6 @@ class GraphEstuRestController extends Controller
 
         $nivel2 = $request->input('nivel2');
         $grado2 = $request->input('grado2');
-        $curso2 = $request->input('curso2');
         $fechaInicio = $request->input('fechaInicio');
         $fechaFin = $request->input('fechaFin');
 
@@ -102,15 +101,10 @@ class GraphEstuRestController extends Controller
         ->join('grados', 'estudiante_secciones.id_grado', '=', 'grados.id_grado')
         ->join('secciones', 'estudiante_secciones.id_seccion', '=', 'secciones.id_seccion')
         ->join('estudiantes', 'estudiante_secciones.codigo_estudiante', '=', 'estudiantes.codigo_estudiante') // Nueva unión
-        ->leftJoin('exoneraciones', function ($join) use ($curso2) {
-            $join->on('estudiante_secciones.codigo_estudiante', '=', 'exoneraciones.codigo_estudiante')
-            ->where('exoneraciones.codigo_curso', '=', $curso2);
-        })
         ->select(
             DB::raw("CONCAT(grados.detalle, ' ', secciones.detalle) as grado_seccion"),
             DB::raw('COUNT(DISTINCT estudiante_secciones.codigo_estudiante) as total_estudiantes')
         )
-        ->whereNull('exoneraciones.codigo_estudiante')
         ->groupBy('grado_seccion');
 
 
