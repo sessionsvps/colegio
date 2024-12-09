@@ -85,7 +85,7 @@ function mostrarMensaje_ap(tipo, mensaje) {
 function traerDatos_ap() {
     let dni = document.getElementById("dni_ap").value;
     fetch(
-        `https://api.perudevs.com/api/v1/dni/complete?document=${dni}&key=cGVydWRldnMucHJvZHVjdGlvbi5maXRjb2RlcnMuNjczYjkzNjM5ZmE0MTczZjYxMzIwNGIz`
+        `https://api.perudevs.com/api/v1/dni/complete?document=${dni}&key=cGVydWRldnMucHJvZHVjdGlvbi5maXRjb2RlcnMuNjc1NzBiOGU5ZmE0MTczZjYxMzIwNTQw`
     )
         .then((response) => response.json())
         .then((datos) => {

@@ -82,22 +82,22 @@
                         <span class="text-red-500 text-xs">{{ $errors->first('fechaFin') }}</span>
                     @endif
                 </div>
-                <div class="md:col-span-2 lg:col-span-1" id="botonBuscar">
-                    <button type="submit"
-                        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                        Buscar
-                    </button>
-                </div>
-                <div class="md:col-span-2 lg:col-span-1" id="reportButton">
-                    <button type="submit"
-                        class="md:mt-6 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-auto">
-                        Generar Reporte
-                    </button>
+                <div class="md:col-span-2 lg:col-span-1 grid grid-cols-2 gap-4">
+                    <div id="botonBuscar">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-full">
+                            Buscar
+                        </button>
+                    </div>
+                    <div id="reportButton">
+                        <button type="submit"
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 w-full lg:w-full">
+                            Generar Reporte
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
-
-
     @endif
 
     <div class="mt-10 relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -185,8 +185,7 @@
                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
                                     @endcan
                                     @can('Eliminar Estudiantes')
-                                        <button type="button"
-                                            onclick="confirmDelete('{{ $estudiante->codigo_estudiante }}')"
+                                        <button type="button" onclick="confirmDelete('{{ $estudiante->codigo_estudiante }}')"
                                             class="font-medium text-red-600 dark:text-red-500 hover:underline ml-4">Eliminar</button>
                                     @endcan
                                 </div>
