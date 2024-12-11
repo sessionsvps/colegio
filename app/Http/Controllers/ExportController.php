@@ -308,6 +308,8 @@ class ExportController extends Controller
         // Renderizar el PDF
         $dompdf->render();
 
+        $dompdf->stream('reporte-notas-alumnos.pdf', ['Attachment' => false]);
+
         // Configurar la respuesta HTTP para descargar el archivo PDF
         return response()->streamDownload(
             function () use ($dompdf) {
